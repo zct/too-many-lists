@@ -1,0 +1,446 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Breaking - Learning Rust With Entirely Too Many Linked Lists</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Learning Rust With Entirely Too Many Linked Lists">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="first.html"><strong aria-hidden="true">2.</strong> A Bad Stack</a></li><li><ol class="section"><li><a href="first-layout.html"><strong aria-hidden="true">2.1.</strong> Layout</a></li><li><a href="first-new.html"><strong aria-hidden="true">2.2.</strong> New</a></li><li><a href="first-ownership.html"><strong aria-hidden="true">2.3.</strong> Ownership 101</a></li><li><a href="first-push.html"><strong aria-hidden="true">2.4.</strong> Push</a></li><li><a href="first-pop.html"><strong aria-hidden="true">2.5.</strong> Pop</a></li><li><a href="first-test.html"><strong aria-hidden="true">2.6.</strong> Testing</a></li><li><a href="first-drop.html"><strong aria-hidden="true">2.7.</strong> Drop</a></li><li><a href="first-final.html"><strong aria-hidden="true">2.8.</strong> Final Code</a></li></ol></li><li><a href="second.html"><strong aria-hidden="true">3.</strong> An Ok Stack</a></li><li><ol class="section"><li><a href="second-option.html"><strong aria-hidden="true">3.1.</strong> Option</a></li><li><a href="second-generic.html"><strong aria-hidden="true">3.2.</strong> Generic</a></li><li><a href="second-peek.html"><strong aria-hidden="true">3.3.</strong> Peek</a></li><li><a href="second-into-iter.html"><strong aria-hidden="true">3.4.</strong> IntoIter</a></li><li><a href="second-iter.html"><strong aria-hidden="true">3.5.</strong> Iter</a></li><li><a href="second-iter-mut.html"><strong aria-hidden="true">3.6.</strong> IterMut</a></li><li><a href="second-final.html"><strong aria-hidden="true">3.7.</strong> Final Code</a></li></ol></li><li><a href="third.html"><strong aria-hidden="true">4.</strong> A Persistent Stack</a></li><li><ol class="section"><li><a href="third-layout.html"><strong aria-hidden="true">4.1.</strong> Layout</a></li><li><a href="third-basics.html"><strong aria-hidden="true">4.2.</strong> Basics</a></li><li><a href="third-drop.html"><strong aria-hidden="true">4.3.</strong> Drop</a></li><li><a href="third-arc.html"><strong aria-hidden="true">4.4.</strong> Arc</a></li><li><a href="third-final.html"><strong aria-hidden="true">4.5.</strong> Final Code</a></li></ol></li><li><a href="fourth.html"><strong aria-hidden="true">5.</strong> A Bad Safe Deque</a></li><li><ol class="section"><li><a href="fourth-layout.html"><strong aria-hidden="true">5.1.</strong> Layout</a></li><li><a href="fourth-building.html"><strong aria-hidden="true">5.2.</strong> Building</a></li><li><a href="fourth-breaking.html" class="active"><strong aria-hidden="true">5.3.</strong> Breaking</a></li><li><a href="fourth-peek.html"><strong aria-hidden="true">5.4.</strong> Peek</a></li><li><a href="fourth-symmetry.html"><strong aria-hidden="true">5.5.</strong> Symmetric Cases</a></li><li><a href="fourth-iteration.html"><strong aria-hidden="true">5.6.</strong> Iteration</a></li><li><a href="fourth-final.html"><strong aria-hidden="true">5.7.</strong> Final Code</a></li></ol></li><li><a href="fifth.html"><strong aria-hidden="true">6.</strong> An Unsafe Queue</a></li><li><ol class="section"><li><a href="fifth-layout.html"><strong aria-hidden="true">6.1.</strong> Layout</a></li><li><a href="fifth-unsafe.html"><strong aria-hidden="true">6.2.</strong> Unsafe</a></li><li><a href="fifth-basics.html"><strong aria-hidden="true">6.3.</strong> Basics</a></li><li><a href="fifth-extras.html"><strong aria-hidden="true">6.4.</strong> Extras</a></li><li><a href="fifth-final.html"><strong aria-hidden="true">6.5.</strong> Final Code</a></li></ol></li><li><a href="sixth.html"><strong aria-hidden="true">7.</strong> An Ok Unsafe Deque</a></li><li><a href="infinity.html"><strong aria-hidden="true">8.</strong> A Bunch of Silly Lists</a></li><li><ol class="section"><li><a href="infinity-double-single.html"><strong aria-hidden="true">8.1.</strong> The Double Single</a></li></ol></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Learning Rust With Entirely Too Many Linked Lists</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#breaking-down" id="breaking-down"><h1>Breaking Down</h1></a>
+<p><code>pop_front</code> should be the same basic logic as <code>push_front</code>, but backwards. Let's
+try:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
+    // need to take the old head, ensuring it's -2
+    self.head.take().map(|old_head| {                         // -1 old
+        match old_head.borrow_mut().next.take() {
+            Some(new_head) =&gt; {                               // -1 new
+                // not emptying list
+                new_head.borrow_mut().prev.take();            // -1 old
+                self.head = Some(new_head);                   // +1 new
+                // total: -2 old, +0 new
+            }
+            None =&gt; {
+                // emptying list
+                self.tail.take();                             // -1 old
+                // total: -2 old, (no new)
+            }
+        }
+        old_head.elem
+    })
+}
+#}</code></pre></pre>
+<pre><code class="language-text">&gt; cargo build
+   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+src/fourth.rs:63:13: 63:26 error: attempted access of field `elem` on type `alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`, but no field with that name was found
+src/fourth.rs:63             old_head.elem
+                             ^~~~~~~~~~~~~
+note: in expansion of closure expansion
+src/fourth.rs:49:30: 64:10 note: expansion site
+error: aborting due to previous error
+Could not compile `lists`.
+</code></pre>
+<p>ACK. <em>RefCells</em>. Gotta <code>borrow_mut</code> again I guess...</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
+    self.head.take().map(|old_head| {
+        match old_head.borrow_mut().next.take() {
+            Some(new_head) =&gt; {
+                new_head.borrow_mut().prev.take();
+                self.head = Some(new_head);
+            }
+            None =&gt; {
+                self.tail.take();
+            }
+        }
+        old_head.borrow_mut().elem
+    })
+}
+#}</code></pre></pre>
+<pre><code class="language-text">cargo build
+   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+src/fourth.rs:58:13: 58:34 error: cannot move out of borrowed content
+src/fourth.rs:58             old_head.borrow_mut().elem
+                             ^~~~~~~~~~~~~~~~~~~~~
+note: in expansion of closure expansion
+src/fourth.rs:48:30: 59:10 note: expansion site
+error: aborting due to previous error
+Could not compile `lists`.
+</code></pre>
+<p><em>sigh</em></p>
+<blockquote>
+<p>cannot move out of borrowed content</p>
+</blockquote>
+<p>Hrm... It seems that Box was <em>really</em> spoiling us. <code>borrow_mut</code> only gets us
+an <code>&amp;mut Node&lt;T&gt;</code>, but we can't move out of that!</p>
+<p>We need something that takes a <code>RefCell&lt;T&gt;</code> and gives us a <code>T</code>. Let's check
+<a href="https://doc.rust-lang.org/std/cell/struct.RefCell.html">the docs</a> for something like that:</p>
+<blockquote>
+<p><code>fn into_inner(self) -&gt; T</code></p>
+<p>Consumes the RefCell, returning the wrapped value.</p>
+</blockquote>
+<p>That looks promising!</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+old_head.into_inner().elem
+#}</code></pre></pre>
+<pre><code class="language-text">&gt; cargo build
+   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+src/fourth.rs:58:13: 58:21 error: cannot move out of borrowed content
+src/fourth.rs:58             old_head.into_inner().elem
+                             ^~~~~~~~
+note: in expansion of closure expansion
+src/fourth.rs:48:30: 59:10 note: expansion site
+error: aborting due to previous error
+Could not compile `lists`.
+</code></pre>
+<p>Uh... what? Nothing changed! Dang compiler!</p>
+<p>It's actually telling us the right thing, but it's not giving us quite enough
+information to figure it out. So I'm just going to cut the chase: where
+previously we were trying to move a <code>T</code> out of the <code>&amp;mut Node&lt;T&gt;</code>, now we're
+trying to move a <code>RefCell&lt;T&gt;</code> out of an <code>&amp;RefCell&lt;T&gt;</code>. We've just pushed the
+problem up the ownership chain.</p>
+<p>As we saw in the previous chapter, <code>Rc&lt;T&gt;</code> only lets us get shared references
+into its internals. That makes sense, because that's <em>the whole point</em> of
+reference counted pointers: they're shared!</p>
+<p>This was a problem for us when we wanted to implement Drop for our reference
+counted list, because we needed to gain ownership of the nodes to drop them
+one at a time.</p>
+<p>Now we can use <code>Rc::try_unwrap</code>, which moves out the contents of an Rc out
+if its refcount is 1.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+Rc::try_unwrap(old_head).unwrap().into_inner().elem
+#}</code></pre></pre>
+<p><code>Rc::try_unwrap</code> returns a <code>Result&lt;T, Rc&lt;T&gt;&gt;</code>. Results are basically a
+generalized <code>Option</code>, where the <code>None</code> case has data associated with it. In
+this case, the <code>Rc</code> you tried to unwrap. Since we don't care about the case
+where it fails (if we wrote our program correctly, it <em>has</em> to succeed), we
+just call <code>unwrap</code> on it.</p>
+<p><code>unwrap</code> is a function on Results and Options that basically says &quot;get the
+the value out, or panic the program&quot;. Panics are A Whole Thing, so I'll simplify
+things by just saying a panics crash your program in a controlled manner,
+effectively making every function instantly return. Notably, it makes sure to
+call all the destructors that happen to be laying around on the way out. So your
+memory will get freed (meh? OS does that anyway, right?) and your Connections
+and Files will get properly saved/closed (yay!).</p>
+<p>This is a bit of a lie, there's cases where you can stop a panic. In particular
+at a thread boundary if you're into that whole &quot;parallelism&quot; thing. That whole
+freeing your memory thing is less lame there, <em>I guess</em>.</p>
+<p>Anyway, let's see what compiler error we get next (let's face it, there's going
+to be one).</p>
+<pre><code class="language-text">&gt; cargo build
+   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+src/fourth.rs:58:38: 58:46 error: no method named `unwrap` found for type `core::result::Result&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;, alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;&gt;` in the current scope
+src/fourth.rs:58             Rc::try_unwrap(old_head).unwrap().into_inner().elem
+                                                      ^~~~~~~~
+note: in expansion of closure expansion
+src/fourth.rs:48:30: 59:10 note: expansion site
+src/fourth.rs:58:38: 58:46 note: the method `unwrap` exists but the following trait bounds were not satisfied: `alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt; : core::fmt::Debug`
+error: aborting due to previous error
+Could not compile `lists`.
+</code></pre>
+<p>UGH. This is dumb. Rust is dumb. <code>unwrap</code> on Result requires that you can
+debug-print the error case. <code>RefCell&lt;T&gt;</code> only implements <code>Debug</code> if <code>T</code> does.
+<code>Node</code> doesn't implement Debug. We could just implement Debug for Node but I'm
+not in the mood. Let's just work around this by turning the <code>Result</code> into an
+<code>Option</code> with the <code>ok</code> method:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+Rc::try_unwrap(old_head).ok().unwrap().into_inner().elem
+#}</code></pre></pre>
+<p>PLEASE.</p>
+<pre><code class="language-text">cargo build
+   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+</code></pre>
+<p>YES.</p>
+<p><em>phew</em></p>
+<p>We did it.</p>
+<p>We implemented <code>push</code> and <code>pop</code>.</p>
+<p>Let's test by stealing the old <code>stack</code> basic test (because that's all that
+we've implemented so far):</p>
+<pre><code>#[cfg(test)]
+mod test {
+    use super::List;
+
+    #[test]
+    fn basics() {
+        let mut list = List::new();
+
+        // Check empty list behaves right
+        assert_eq!(list.pop_front(), None);
+
+        // Populate list
+        list.push_front(1);
+        list.push_front(2);
+        list.push_front(3);
+
+        // Check normal removal
+        assert_eq!(list.pop_front(), Some(3));
+        assert_eq!(list.pop_front(), Some(2));
+
+        // Push some more just to make sure nothing's corrupted
+        list.push_front(4);
+        list.push_front(5);
+
+        // Check normal removal
+        assert_eq!(list.pop_front(), Some(5));
+        assert_eq!(list.pop_front(), Some(4));
+
+        // Check exhaustion
+        assert_eq!(list.pop_front(), Some(1));
+        assert_eq!(list.pop_front(), None);
+    }
+}
+</code></pre>
+<pre><code class="language-text">cargo test
+   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+     Running target/debug/lists-5c71138492ad4b4a
+
+running 9 tests
+test first::test::basics ... ok
+test fourth::test::basics ... ok
+test second::test::iter_mut ... ok
+test second::test::basics ... ok
+test fifth::test::iter_mut ... ok
+test third::test::basics ... ok
+test second::test::iter ... ok
+test third::test::iter ... ok
+test second::test::into_iter ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured
+
+   Doc-tests lists
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
+</code></pre>
+<p><em>Nailed it</em>.</p>
+<p>Now that we can properly remove things from the list, we can implement Drop.
+Drop is a little more conceptually interesting this time around. Where
+previously we bothered to implement Drop for our stacks just to avoid unbounded
+recursion, now we need to implement Drop to get <em>anything</em> to happen at all.</p>
+<p><code>Rc</code> can't deal with cycles. If there's a cycle, everything will keep everything
+else alive. A doubly linked list, as it turns out, is just a big chain of tiny
+cycles! So when we drop our list, the two end nodes will have their refcounts
+decremented down to 1... and then nothing else will happen. Well, if our list
+contains exactly one node we're good to go. But ideally a list should work right
+if it contains multiple elements. Maybe that's just me.</p>
+<p>As we saw, removing elements was a bit painful. So the easiest thing for us to
+do is just <code>pop</code> until we get None:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl&lt;T&gt; Drop for List&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        while self.pop_front().is_some() {}
+    }
+}
+#}</code></pre></pre>
+<pre><code class="language-text">cargo build
+   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+</code></pre>
+<p>(We actually could have done this with our mutable stacks, but shortcuts are for
+people who understand things!)</p>
+<p>We could look at implementing the <code>_back</code> versions of <code>push</code> and <code>pop</code>, but
+they're just copy-paste jobs which we'll defer to later in the chapter. For now
+let's look at more interesting things!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="fourth-building.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="fourth-peek.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="fourth-building.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="fourth-peek.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
