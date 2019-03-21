@@ -166,7 +166,7 @@ impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0106]: missing lifetime specifier
   --&gt; src/second.rs:72:18
    |
@@ -208,7 +208,7 @@ those <code>'a</code> things to our struct? Let's try that.</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0106]: missing lifetime specifier
   --&gt; src/second.rs:83:22
    |
@@ -246,7 +246,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error: expected `:`, found `node`
   --&gt; src/second.rs:77:47
    |
@@ -383,7 +383,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
 </code></pre>
 <p>Alright, I think we got it this time y'all.</p>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0308]: mismatched types
   --&gt; src/second.rs:77:22
    |
@@ -517,7 +517,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">lists::cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>🎉 🎉 🎉</p>
 <p>You may be thinking &quot;wow that <code>&amp;**</code> thing is really janky&quot;, and you're not wrong.
@@ -554,7 +554,7 @@ fn iter() {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 5 tests
@@ -566,11 +566,6 @@ test second::test::peek ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Heck yeah.</p>
 <p>Finally, it should be noted that we <em>can</em> actually apply lifetime elision here:</p>

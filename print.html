@@ -1003,7 +1003,7 @@ the Empty dance again!</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
    Finished dev [unoptimized + debuginfo] target(s) in 0.22s
 </code></pre>
 <p>O M G</p>
@@ -1030,7 +1030,7 @@ actually the value that functions which don't declare a return value -- like
 completely lost its braces, because we only have one expression to
 evaluate. Just a nice shorthand for simple cases.</p>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
    Finished dev [unoptimized + debuginfo] target(s) in 0.22s
 </code></pre>
 <p>Nice, still works!</p>
@@ -1063,12 +1063,7 @@ running 1 test
 test first::test::basics ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+; 0 filtered out
 </code></pre>
 <p>Yay our do-nothing test passed! Let's make it not-do-nothing. We'll do that
 with the <code>assert_eq!</code> macro. This isn't some special testing magic. All it
@@ -1106,7 +1101,7 @@ match. Yep, you indicate failure to the test harness by freaking out!</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0433]: failed to resolve: use of undeclared type or module `List`
   --&gt; src/first.rs:43:24
    |
@@ -1123,7 +1118,7 @@ it.</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: unused import: `super::List`
   --&gt; src/first.rs:45:9
    |
@@ -1139,12 +1134,7 @@ running 1 test
 test first::test::basics ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+; 0 filtered out
 </code></pre>
 <p>Yay!</p>
 <p>What's up with that warning though...? We clearly use List in our test!</p>
@@ -1237,7 +1227,7 @@ write an iterative drop for <code>List</code> that hoists nodes out of their box
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 1 test
@@ -1245,11 +1235,6 @@ test first::test::basics ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Great!</p>
 <a class="header" href="#the-final-code" id="the-final-code"><h1>The Final Code</h1></a>
@@ -1496,7 +1481,7 @@ only place we do a <code>match</code> is in <code>pop</code>, so let's just rewr
 </code></pre>
 <p>Ah, much better. Let's make sure we didn't break anything:</p>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 2 tests
@@ -1505,11 +1490,6 @@ test second::test::basics ... ok
 
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Great! Let's move on to actually improving the code's <em>behaviour</em>.</p>
 <a class="header" href="#making-it-all-generic" id="making-it-all-generic"><h1>Making it all Generic</h1></a>
@@ -1533,7 +1513,7 @@ struct Node&lt;T&gt; {
 generic. Of course, we can't <em>just</em> do this, or else the compiler's going
 to be Super Mad.</p>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0107]: wrong number of type arguments: expected 1, found 0
   --&gt; src/second.rs:14:6
    |
@@ -1586,7 +1566,7 @@ impl&lt;T&gt; Drop for List&lt;T&gt; {
 </code></pre>
 <p>...and that's it!</p>
 <pre><code>&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 2 tests
@@ -1595,11 +1575,6 @@ test second::test::basics ... ok
 
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>All of our code is now completely generic over arbitrary values of T. Dang,
 Rust is <em>easy</em>. I'd like to make a particular shout-out to <code>new</code> which didn't
@@ -1624,7 +1599,7 @@ the head of the list, if it exists. Sounds easy, let's try:</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0515]: cannot return reference to local data `node.elem`
   --&gt; src/second.rs:37:13
    |
@@ -1659,7 +1634,7 @@ thankfully the <code>.</code> operator handles that for us.</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
     Finished dev [unoptimized + debuginfo] target(s) in 0.32s
 </code></pre>
 <p>Nailed it.</p>
@@ -1671,7 +1646,7 @@ thankfully the <code>.</code> operator handles that for us.</p>
 }
 </code></pre>
 <pre><code class="language-text">lists::cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>EZ</p>
 <p>Don't forget to test it:</p>
@@ -1687,7 +1662,7 @@ fn peek() {
 }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 3 tests
@@ -1697,11 +1672,6 @@ test second::test::peek ... ok
 
 test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>That's nice, but we didn't really test to see if we could mutate that <code>peek_mut</code> return value, did we?  If a reference is mutable but nobody mutates it, have we really tested the mutability?  Let's try using <code>map</code> on this <code>Option&lt;&amp;mut T&gt;</code> to put a profound value in:</p>
 <pre><code class="language-rust ignore">#[test]
@@ -1722,7 +1692,7 @@ fn peek() {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0384]: cannot assign twice to immutable variable `value`
    --&gt; src/second.rs:100:13
     |
@@ -1754,7 +1724,7 @@ error[E0384]: cannot assign twice to immutable variable `value`
     }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 3 tests
@@ -1764,11 +1734,6 @@ test second::test::peek ... ok
 
 test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Much better!</p>
 <a class="header" href="#intoiter" id="intoiter"><h1>IntoIter</h1></a>
@@ -1831,7 +1796,7 @@ fn into_iter() {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 4 tests
@@ -1842,11 +1807,6 @@ test second::test::peek ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Nice!</p>
 <a class="header" href="#iter" id="iter"><h1>Iter</h1></a>
@@ -1879,7 +1839,7 @@ impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0106]: missing lifetime specifier
   --&gt; src/second.rs:72:18
    |
@@ -1921,7 +1881,7 @@ those <code>'a</code> things to our struct? Let's try that.</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0106]: missing lifetime specifier
   --&gt; src/second.rs:83:22
    |
@@ -1959,7 +1919,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error: expected `:`, found `node`
   --&gt; src/second.rs:77:47
    |
@@ -2096,7 +2056,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
 </code></pre>
 <p>Alright, I think we got it this time y'all.</p>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0308]: mismatched types
   --&gt; src/second.rs:77:22
    |
@@ -2230,7 +2190,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">lists::cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>🎉 🎉 🎉</p>
 <p>You may be thinking &quot;wow that <code>&amp;**</code> thing is really janky&quot;, and you're not wrong.
@@ -2267,7 +2227,7 @@ fn iter() {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 5 tests
@@ -2279,11 +2239,6 @@ test second::test::peek ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Heck yeah.</p>
 <p>Finally, it should be noted that we <em>can</em> actually apply lifetime elision here:</p>
@@ -2421,7 +2376,7 @@ the Option to get it.</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>Uh... wow. Holy shit! IterMut Just Works!</p>
 <p>Let's test this:</p>
@@ -2437,7 +2392,7 @@ fn iter_mut() {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 6 tests
@@ -2450,11 +2405,6 @@ test second::test::peek ... ok
 
 test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Yep. It works.</p>
 <p>Holy shit.</p>
@@ -2759,7 +2709,7 @@ struct Node&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0412]: cannot find type `Rc` in this scope
  --&gt; src/third.rs:5:23
   |
@@ -2776,7 +2726,7 @@ lame that it's not even implicitly imported into every single Rust program.
 <pre><code class="language-rust ignore">use std::rc::Rc;
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `head`
  --&gt; src/third.rs:4:5
   |
@@ -2834,7 +2784,7 @@ Clone implementation that does exactly the thing we want.</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `elem`
   --&gt; src/third.rs:10:5
    |
@@ -2860,7 +2810,7 @@ element in the list (if it exists). Let's try this:</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0308]: mismatched types
   --&gt; src/third.rs:27:22
    |
@@ -2878,7 +2828,7 @@ use <code>and_then</code> to let us return an Option.</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>Great.</p>
 <p>Now that we have <code>tail</code>, we should probably provide <code>head</code>, which returns a
@@ -2888,7 +2838,7 @@ reference to the first element. That's just <code>peek</code> from the mutable l
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>Nice.</p>
 <p>That's enough functionality that we can test it:</p>
@@ -2921,7 +2871,7 @@ mod test {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 5 tests
@@ -2933,11 +2883,6 @@ test third::test::basics ... ok
 
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Perfect!</p>
 <p>Iter is also identical to how it was for our mutable list:</p>
@@ -2973,7 +2918,7 @@ fn iter() {
 }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 7 tests
@@ -2987,11 +2932,6 @@ test third::test::iter ... ok
 
 test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Who ever said dynamic typing was easier?</p>
 <p>(chumps did)</p>
@@ -3272,7 +3212,7 @@ struct Node&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `head`
  --&gt; src/fourth.rs:5:5
   |
@@ -3366,7 +3306,7 @@ successor, while the nodes on the ends are pointed to by the list itself.</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0609]: no field `prev` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
   --&gt; src/fourth.rs:39:26
    |
@@ -3463,7 +3403,7 @@ RefCell. The <code>.</code> operator's not going to do it for us. Weird. Let's t
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `elem`
   --&gt; src/fourth.rs:12:5
    |
@@ -3497,7 +3437,7 @@ try:</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0609]: no field `elem` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
   --&gt; src/fourth.rs:64:22
    |
@@ -3521,7 +3461,7 @@ error[E0609]: no field `elem` on type `std::rc::Rc&lt;std::cell::RefCell&lt;four
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0507]: cannot move out of borrowed content
   --&gt; src/fourth.rs:64:13
    |
@@ -3544,7 +3484,7 @@ an <code>&amp;mut Node&lt;T&gt;</code>, but we can't move out of that!</p>
 <pre><code class="language-rust ignore">old_head.into_inner().elem
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0507]: cannot move out of an `Rc`
   --&gt; src/fourth.rs:64:13
    |
@@ -3568,7 +3508,7 @@ just call <code>unwrap</code> on it.</p>
 <p>Anyway, let's see what compiler error we get next (let's face it, there's going
 to be one).</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0599]: no method named `unwrap` found for type `std::result::Result&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;, std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;&gt;` in the current scope
   --&gt; src/fourth.rs:64:38
    |
@@ -3586,7 +3526,7 @@ an Option with <code>ok</code>:</p>
 </code></pre>
 <p>PLEASE.</p>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>YES.</p>
 <p><em>phew</em></p>
@@ -3629,7 +3569,7 @@ mod test {
 }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 9 tests
@@ -3645,11 +3585,6 @@ test second::test::into_iter ... ok
 
 test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p><em>Nailed it</em>.</p>
 <p>Now that we can properly remove things from the list, we can implement Drop.
@@ -3671,7 +3606,7 @@ do is just <code>pop</code> until we get None:</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>(We actually could have done this with our mutable stacks, but shortcuts are for
 people who understand things!)</p>
@@ -3701,7 +3636,7 @@ That was always really easy before. Gotta still be easy, right?</p>
 </code></pre>
 <p>HAH.</p>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0515]: cannot return value referencing temporary value
   --&gt; src/fourth.rs:66:13
    |
@@ -3756,7 +3691,7 @@ What if we returns Refs?</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0412]: cannot find type `Ref` in this scope
   --&gt; src/fourth.rs:63:40
    |
@@ -3773,7 +3708,7 @@ help: possible candidates are found in other modules, you can import them into s
 <pre><code class="language-rust ignore">use std::cell::{Ref, RefCell};
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0308]: mismatched types
   --&gt; src/fourth.rs:64:9
    |
@@ -3825,7 +3760,7 @@ fn peek() {
 }
 </code></pre>
 <pre><code>&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 10 tests
@@ -3842,11 +3777,6 @@ test third::test::iter ... ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Great!</p>
 <a class="header" href="#symmetric-junk" id="symmetric-junk"><h1>Symmetric Junk</h1></a>
@@ -3980,7 +3910,7 @@ fn peek() {
 <p>Are there some cases we're not testing? Probably. The combinatoric space
 has really blown up here. Our code is at very least not <em>obviously wrong</em>.</p>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 10 tests
@@ -3997,11 +3927,6 @@ test third::test::basics ... ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Nice. Copy-pasting is the best kind of programming.</p>
 <a class="header" href="#iteration" id="iteration"><h1>Iteration</h1></a>
@@ -4063,7 +3988,7 @@ fn into_iter() {
 }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 11 tests
@@ -4081,11 +4006,6 @@ test second::test::peek ... ok
 
 test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Nice.</p>
 <a class="header" href="#iter-1" id="iter-1"><h2>Iter</h2></a>
@@ -4101,7 +4021,7 @@ impl&lt;T&gt; List&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>So far so good. Implementing <code>next</code> is going to be a bit hairy, but I think
 it's the same basic logic as the old stack IterMut but with extra RefCell
@@ -4117,7 +4037,7 @@ madness:</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0521]: borrowed data escapes outside of closure
    --&gt; src/fourth.rs:155:13
     |
@@ -4646,7 +4566,7 @@ writing this code that I'm not showing. You can only see me leave off a <code>mu
 <code>;</code> so many times before it stops being instructive. Don't worry, we'll see
 plenty of <em>other</em> error messages!</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0382]: use of moved value: `new_tail`
   --&gt; src/fifth.rs:38:38
    |
@@ -4715,7 +4635,7 @@ impl&lt;T&gt; List&lt;T&gt; {
 using some of that implicit return goodness to extract the tail reference from
 wherever we stuff the actual Box.</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0106]: missing lifetime specifier
  --&gt; src/fifth.rs:3:18
   |
@@ -4768,7 +4688,7 @@ impl&lt;'a, T&gt; List&lt;'a, T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0495]: cannot infer an appropriate lifetime for autoref due to conflicting requirements
   --&gt; src/fifth.rs:35:27
    |
@@ -4812,7 +4732,7 @@ what if we tell it <code>self</code> <em>does</em> last that long..?</p>
 <pre><code class="language-rust ignore">    pub fn push(&amp;'a mut self, elem: T) {
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `elem`
  --&gt; src/fifth.rs:9:5
   |
@@ -4872,7 +4792,7 @@ warning: field is never used: `elem`
 }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0499]: cannot borrow `list` as mutable more than once at a time
   --&gt; src/fifth.rs:68:9
    |
@@ -5008,7 +4928,7 @@ you're gonna have a bad time.</p>
 </code></pre>
 <p>But we're not using Option for the <code>tail</code> anymore:</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0308]: mismatched types
   --&gt; src/fifth.rs:15:34
    |
@@ -5035,7 +4955,7 @@ impl&lt;T&gt; List&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `head`
  --&gt; src/fifth.rs:4:5
   |
@@ -5096,7 +5016,7 @@ the previous reference version:</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
   --&gt; src/fifth.rs:31:23
    |
@@ -5112,7 +5032,7 @@ operation. So let's do that:</p>
 <pre><code class="language-rust ignore">*self.tail.next = Some(new_tail);
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
   --&gt; src/fifth.rs:31:23
    |
@@ -5125,7 +5045,7 @@ error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
 <pre><code class="language-rust ignore">(*self.tail).next = Some(new_tail);
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
   --&gt; src/fifth.rs:31:13
    |
@@ -5267,7 +5187,7 @@ mod test {
 I also added some extra steps at the end to make sure that tail-pointer
 corruption case in <code>pop</code> doesn't occur.</p>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 12 tests
@@ -5421,7 +5341,7 @@ mod test {
 
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 15 tests
@@ -5856,7 +5776,7 @@ mod test {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 16 tests

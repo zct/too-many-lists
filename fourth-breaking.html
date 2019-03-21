@@ -160,7 +160,7 @@ try:</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0609]: no field `elem` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
   --&gt; src/fourth.rs:64:22
    |
@@ -184,7 +184,7 @@ error[E0609]: no field `elem` on type `std::rc::Rc&lt;std::cell::RefCell&lt;four
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0507]: cannot move out of borrowed content
   --&gt; src/fourth.rs:64:13
    |
@@ -207,7 +207,7 @@ an <code>&amp;mut Node&lt;T&gt;</code>, but we can't move out of that!</p>
 <pre><code class="language-rust ignore">old_head.into_inner().elem
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0507]: cannot move out of an `Rc`
   --&gt; src/fourth.rs:64:13
    |
@@ -231,7 +231,7 @@ just call <code>unwrap</code> on it.</p>
 <p>Anyway, let's see what compiler error we get next (let's face it, there's going
 to be one).</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0599]: no method named `unwrap` found for type `std::result::Result&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;, std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;&gt;` in the current scope
   --&gt; src/fourth.rs:64:38
    |
@@ -249,7 +249,7 @@ an Option with <code>ok</code>:</p>
 </code></pre>
 <p>PLEASE.</p>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>YES.</p>
 <p><em>phew</em></p>
@@ -292,7 +292,7 @@ mod test {
 }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 9 tests
@@ -308,11 +308,6 @@ test second::test::into_iter ... ok
 
 test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p><em>Nailed it</em>.</p>
 <p>Now that we can properly remove things from the list, we can implement Drop.
@@ -334,7 +329,7 @@ do is just <code>pop</code> until we get None:</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>(We actually could have done this with our mutable stacks, but shortcuts are for
 people who understand things!)</p>

@@ -147,7 +147,7 @@
 </code></pre>
 <p>But we're not using Option for the <code>tail</code> anymore:</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0308]: mismatched types
   --&gt; src/fifth.rs:15:34
    |
@@ -174,7 +174,7 @@ impl&lt;T&gt; List&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `head`
  --&gt; src/fifth.rs:4:5
   |
@@ -235,7 +235,7 @@ the previous reference version:</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
   --&gt; src/fifth.rs:31:23
    |
@@ -251,7 +251,7 @@ operation. So let's do that:</p>
 <pre><code class="language-rust ignore">*self.tail.next = Some(new_tail);
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
   --&gt; src/fifth.rs:31:23
    |
@@ -264,7 +264,7 @@ error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
 <pre><code class="language-rust ignore">(*self.tail).next = Some(new_tail);
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
   --&gt; src/fifth.rs:31:13
    |
@@ -406,7 +406,7 @@ mod test {
 I also added some extra steps at the end to make sure that tail-pointer
 corruption case in <code>pop</code> doesn't occur.</p>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 12 tests

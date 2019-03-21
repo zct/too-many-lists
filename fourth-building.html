@@ -196,7 +196,7 @@ successor, while the nodes on the ends are pointed to by the list itself.</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0609]: no field `prev` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
   --&gt; src/fourth.rs:39:26
    |
@@ -293,7 +293,7 @@ RefCell. The <code>.</code> operator's not going to do it for us. Weird. Let's t
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `elem`
   --&gt; src/fourth.rs:12:5
    |

@@ -147,7 +147,7 @@ the head of the list, if it exists. Sounds easy, let's try:</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0515]: cannot return reference to local data `node.elem`
   --&gt; src/second.rs:37:13
    |
@@ -182,7 +182,7 @@ thankfully the <code>.</code> operator handles that for us.</p>
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
     Finished dev [unoptimized + debuginfo] target(s) in 0.32s
 </code></pre>
 <p>Nailed it.</p>
@@ -194,7 +194,7 @@ thankfully the <code>.</code> operator handles that for us.</p>
 }
 </code></pre>
 <pre><code class="language-text">lists::cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 </code></pre>
 <p>EZ</p>
 <p>Don't forget to test it:</p>
@@ -210,7 +210,7 @@ fn peek() {
 }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 3 tests
@@ -220,11 +220,6 @@ test second::test::peek ... ok
 
 test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>That's nice, but we didn't really test to see if we could mutate that <code>peek_mut</code> return value, did we?  If a reference is mutable but nobody mutates it, have we really tested the mutability?  Let's try using <code>map</code> on this <code>Option&lt;&amp;mut T&gt;</code> to put a profound value in:</p>
 <pre><code class="language-rust ignore">#[test]
@@ -245,7 +240,7 @@ fn peek() {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0384]: cannot assign twice to immutable variable `value`
    --&gt; src/second.rs:100:13
     |
@@ -277,7 +272,7 @@ error[E0384]: cannot assign twice to immutable variable `value`
     }
 </code></pre>
 <pre><code class="language-text">cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 3 tests
@@ -287,11 +282,6 @@ test second::test::peek ... ok
 
 test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Much better!</p>
 

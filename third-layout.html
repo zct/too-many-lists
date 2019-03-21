@@ -201,7 +201,7 @@ struct Node&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0412]: cannot find type `Rc` in this scope
  --&gt; src/third.rs:5:23
   |
@@ -218,7 +218,7 @@ lame that it's not even implicitly imported into every single Rust program.
 <pre><code class="language-rust ignore">use std::rc::Rc;
 </code></pre>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 warning: field is never used: `head`
  --&gt; src/third.rs:4:5
   |

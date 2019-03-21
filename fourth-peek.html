@@ -159,7 +159,7 @@ That was always really easy before. Gotta still be easy, right?</p>
 </code></pre>
 <p>HAH.</p>
 <pre><code class="language-text">cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0515]: cannot return value referencing temporary value
   --&gt; src/fourth.rs:66:13
    |
@@ -214,7 +214,7 @@ What if we returns Refs?</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0412]: cannot find type `Ref` in this scope
   --&gt; src/fourth.rs:63:40
    |
@@ -231,7 +231,7 @@ help: possible candidates are found in other modules, you can import them into s
 <pre><code class="language-rust ignore">use std::cell::{Ref, RefCell};
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
 error[E0308]: mismatched types
   --&gt; src/fourth.rs:64:9
    |
@@ -283,7 +283,7 @@ fn peek() {
 }
 </code></pre>
 <pre><code>&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+
      Running target/debug/lists-5c71138492ad4b4a
 
 running 10 tests
@@ -300,11 +300,6 @@ test third::test::iter ... ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured
 
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Great!</p>
 
