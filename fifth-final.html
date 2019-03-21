@@ -141,7 +141,9 @@
 time improvement over the naive safe queue, and we managed to reuse almost
 all of the logic from the safe stack!</p>
 <p>We also notably <em>didn't</em> have to write any crazy Rc or RefCell stuff.</p>
-<pre><pre class="playpen"><code class="language-rust">#fn main() {}
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
 use std::ptr;
 
 pub struct List&lt;T&gt; {
@@ -346,7 +348,7 @@ mod test {
         assert_eq!(iter.next(), None);
     }
 }
-</code></pre></pre>
+#}</code></pre></pre>
 
                     </main>
 

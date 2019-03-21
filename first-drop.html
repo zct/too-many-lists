@@ -201,10 +201,7 @@ impl Drop for Node {
 <p>We <em>can't</em> drop the contents of the Box <em>after</em> deallocating, so there's no
 way to drop in a tail-recursive manner! Instead we're going to have to manually
 write an iterative drop for <code>List</code> that hoists nodes out of their boxes.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Drop for List {
+<pre><code class="language-rust ignore">impl Drop for List {
     fn drop(&amp;mut self) {
         let mut cur_link = mem::replace(&amp;mut self.head, Link::Empty);
         // `while let` == &quot;do this thing until this pattern doesn't match&quot;
@@ -216,7 +213,7 @@ impl Drop for List {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a

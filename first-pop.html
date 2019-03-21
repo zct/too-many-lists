@@ -155,10 +155,7 @@ as its variants <code>Some</code> and <code>None</code> (so we don't have to say
 T. That means that you can make an Option for <em>any</em> type!</p>
 <p>So uh, we have this <code>Link</code> thing, how do we figure out if it's Empty or has
 More? Pattern matching with <code>match</code>!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     match self.head {
         Link::Empty =&gt; {
             // TODO
@@ -168,7 +165,7 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
         }
     };
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
 error[E0308]: mismatched types
@@ -187,10 +184,7 @@ return <code>None</code>, but in this case it's probably a better idea to return
 <code>unimplemented!()</code>, to indicate that we aren't done implementing the function.
 <code>unimplemented!()</code> is a macro (<code>!</code> indicates a macro) that panics the program
 when we get to it (~crashes it in a controlled manner).</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     match self.head {
         Link::Empty =&gt; {
             // TODO
@@ -201,7 +195,7 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     };
     unimplemented!()
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Unconditional panics are an example of a <a href="http://doc.rust-lang.org/nightly/book/functions.html#diverging-functions">diverging function</a>.
 Diverging functions never return to the caller, so they may be used in places
 where a value of any type is expected. Here, <code>unimplemented!()</code> is being
@@ -277,10 +271,7 @@ warning: field is never used: `next`
 Option, so let's make a variable for that. In the Empty case we need to return
 None. In the More case we need to return <code>Some(i32)</code>, and change the head of
 the list. So, let's try to do basically that?</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     let result;
     match self.head {
         Link::Empty =&gt; {
@@ -293,7 +284,7 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     };
     result
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (/Users/ABeingessner/dev/temp/lists)
 error[E0507]: cannot move out of borrowed content

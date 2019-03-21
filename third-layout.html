@@ -175,10 +175,7 @@ the Rc's derived from it are dropped. Unforuntately, this flexibility comes at
 a serious cost: we can only take a shared reference to its internals. This means
 we can't ever really get data out of one of our lists, nor can we mutate them.</p>
 <p>So what's our layout gonna look like? Well, previously we had:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
 }
 
@@ -188,12 +185,9 @@ struct Node&lt;T&gt; {
     elem: T,
     next: Link&lt;T&gt;,
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Can we just change Box to Rc?</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// in third.rs
+<pre><code class="language-rust ignore">// in third.rs
 
 pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
@@ -205,7 +199,7 @@ struct Node&lt;T&gt; {
     elem: T,
     next: Link&lt;T&gt;,
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0412]: cannot find type `Rc` in this scope
@@ -221,11 +215,8 @@ help: possible candidate is found in another module, you can import it into scop
 <p>Oh dang, sick burn. Unlike everything we used for our mutable lists, Rc is so
 lame that it's not even implicitly imported into every single Rust program.
 <em>What a loser</em>.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use std::rc::Rc;
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">use std::rc::Rc;
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 warning: field is never used: `head`

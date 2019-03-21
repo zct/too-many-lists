@@ -248,11 +248,8 @@ error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
 <p>Rust is kinda a jerk when you use raw pointers. To access the contents of a
 raw pointer, it insists that we manually deref them, because it's such an unsafe
 operation. So let's do that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-*self.tail.next = Some(new_tail);
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">*self.tail.next = Some(new_tail);
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
@@ -264,11 +261,8 @@ error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
    |             help: `self.tail` is a raw pointer; try dereferencing it: `(*self.tail).next`
 </code></pre>
 <p>Uuuugh operator precedence.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-(*self.tail).next = Some(new_tail);
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">(*self.tail).next = Some(new_tail);
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
@@ -287,10 +281,7 @@ it becomes an Unsafe Rust function and can only be called in an <code>unsafe</co
 context. This isn't great, because we want our list to be safe to use. Second,
 we can write an <code>unsafe</code> block inside our function, to delimit the FFI boundary.
 This declares the overall function to be safe. Let's do that one:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: T) {
     let mut new_tail = Box::new(Node {
         elem: elem,
         next: None,
@@ -311,7 +302,7 @@ pub fn push(&amp;mut self, elem: T) {
 
     self.tail = raw_tail;
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
 warning: field is never used: `elem`
   --&gt; src/fifth.rs:11:5

@@ -139,24 +139,18 @@
                         <a class="header" href="#using-option" id="using-option"><h1>Using Option</h1></a>
 <p>Particularly observant readers may have noticed that we actually reinvented
 a really bad version of Option:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-enum Link {
+<pre><code class="language-rust ignore">enum Link {
     Empty,
     More(Box&lt;Node&gt;),
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Link is just <code>Option&lt;Box&lt;Node&gt;&gt;</code>. Now, it's nice not to have to write
 <code>Option&lt;Box&lt;Node&gt;&gt;</code> everywhere, and unlike <code>pop</code>, we're not exposing this
 to the outside world, so maybe it's fine. However Option has some <em>really
 nice</em> methods that we've been manually implementing ourselves. Let's <em>not</em>
 do that, and replace everything with Options. First, we'll do it naively
 by just renaming everything to use Some and None:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use std::mem;
+<pre><code class="language-rust ignore">use std::mem;
 
 pub struct List {
     head: Link,
@@ -203,14 +197,11 @@ impl Drop for List {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>This is marginally better, but the big wins will come from Option's methods.</p>
 <p>First, <code>mem::replace(&amp;mut option, None)</code> is such an incredibly
 common idiom that Option actually just went ahead and made it a method: <code>take</code>.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct List {
+<pre><code class="language-rust ignore">pub struct List {
     head: Link,
 }
 
@@ -254,7 +245,7 @@ impl Drop for List {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Second, <code>match option { None =&gt; None, Some(x) =&gt; Some(y) }</code> is such an
 incredibly common idiom that it was called <code>map</code>. <code>map</code> takes a function to
 execute on the <code>x</code> in the <code>Some(x)</code> to produce the <code>y</code> in <code>Some(y)</code>. We could

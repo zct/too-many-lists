@@ -146,17 +146,14 @@ want to hide that it's happening. There's gotta be a better way!</p>
 implement a singly-linked queue to dip our toes into <em>raw pointers</em>
 and <em>Unsafe Rust</em>.</p>
 <p>Let's add a new file called <code>fifth.rs</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// in lib.rs
+<pre><code class="language-rust ignore">// in lib.rs
 
 pub mod first;
 pub mod second;
 pub mod third;
 pub mod fourth;
 pub mod fifth;
-#}</code></pre></pre>
+</code></pre>
 <p>Our code is largely going to be derived from second.rs, since a queue is
 mostly an augmentation of a stack in the world of linked lists. Still, we're
 going to go from scratch because there's some fundamental issues we want to

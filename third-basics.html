@@ -140,7 +140,7 @@
 <p>We already know a lot of the basics of Rust now, so we can do a lot of the
 simple stuff again.</p>
 <p>For the constructor, we can again just copy-paste:</p>
-<pre><code>impl&lt;T&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
     pub fn new() -&gt; Self {
         List { head: None }
     }
@@ -161,16 +161,13 @@ rather than moving a Box to be in the sublist, we just clone the head of the
 old list. We don't even need to match on the head, because Option exposes a
 Clone implementation that does exactly the thing we want.</p>
 <p>Alright, let's give it a shot:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn append(&amp;self, elem: T) -&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub fn append(&amp;self, elem: T) -&gt; List&lt;T&gt; {
     List { head: Some(Rc::new(Node {
         elem: elem,
         next: self.head.clone(),
     }))}
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 warning: field is never used: `elem`
@@ -193,13 +190,10 @@ so far.</p>
 <p><code>tail</code> is the logical inverse of this operation. It takes a list and returns the
 whole list with the first element removed. All that is is cloning the <em>second</em>
 element in the list (if it exists). Let's try this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn tail(&amp;self) -&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub fn tail(&amp;self) -&gt; List&lt;T&gt; {
     List { head: self.head.as_ref().map(|node| node.next.clone()) }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0308]: mismatched types
@@ -214,35 +208,26 @@ error[E0308]: mismatched types
 <p>Hrm, we messed up. <code>map</code> expects us to return a Y, but here we're returning an
 <code>Option&lt;Y&gt;</code>. Thankfully, this is another common Option pattern, and we can just
 use <code>and_then</code> to let us return an Option.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn tail(&amp;self) -&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub fn tail(&amp;self) -&gt; List&lt;T&gt; {
     List { head: self.head.as_ref().and_then(|node| node.next.clone()) }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 </code></pre>
 <p>Great.</p>
 <p>Now that we have <code>tail</code>, we should probably provide <code>head</code>, which returns a
 reference to the first element. That's just <code>peek</code> from the mutable list:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn head(&amp;self) -&gt; Option&lt;&amp;T&gt; {
+<pre><code class="language-rust ignore">pub fn head(&amp;self) -&gt; Option&lt;&amp;T&gt; {
     self.head.as_ref().map(|node| &amp;node.elem )
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 </code></pre>
 <p>Nice.</p>
 <p>That's enough functionality that we can test it:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[cfg(test)]
+<pre><code class="language-rust ignore">#[cfg(test)]
 mod test {
     use super::List;
 
@@ -269,7 +254,7 @@ mod test {
 
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -291,10 +276,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Perfect!</p>
 <p>Iter is also identical to how it was for our mutable list:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Iter&lt;'a, T&gt; {
+<pre><code class="language-rust ignore">pub struct Iter&lt;'a, T&gt; {
     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
 }
 
@@ -314,11 +296,8 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
         })
     }
 }
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+</code></pre>
+<pre><code class="language-rust ignore">#[test]
 fn iter() {
     let list = List::new().append(1).append(2).append(3);
 
@@ -327,7 +306,7 @@ fn iter() {
     assert_eq!(iter.next(), Some(&amp;2));
     assert_eq!(iter.next(), Some(&amp;1));
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a

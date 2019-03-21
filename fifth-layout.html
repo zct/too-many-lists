@@ -185,8 +185,7 @@ because our list is singly-linked, we can't do that effeciently.
 If we instead invert <code>push</code> we only have to move the &quot;head&quot; pointer
 forwards, which is easy.</p>
 <p>Let's try that:</p>
-<pre><pre class="playpen"><code class="language-rust">use std::mem;
-# fn main() {}
+<pre><code class="language-rust ignore">use std::mem;
 
 pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
@@ -227,7 +226,7 @@ impl&lt;T&gt; List&lt;T&gt; {
         }
     }
 }
-</code></pre></pre>
+</code></pre>
 <p>I'm going a bit faster with the impl details now since we should be pretty
 comfortable with this sort of thing. Not that you should necessarily expect
 to produce this code on the first try. I'm just skipping over some of the
@@ -259,8 +258,7 @@ it's dropped. If our <code>push</code> implementation compiled, we'd double-free
 of our list! Actually, as written, our code would free the old_tail on every
 push. Yikes! 🙀</p>
 <p>Alright, well we know how to make a non-owning pointer. That's just a reference!</p>
-<pre><pre class="playpen"><code class="language-rust"># fn main() {}
-pub struct List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
     tail: Option&lt;&amp;mut Node&lt;T&gt;&gt;, // NEW!
 }
@@ -301,7 +299,7 @@ impl&lt;T&gt; List&lt;T&gt; {
         self.tail = new_tail;
     }
 }
-</code></pre></pre>
+</code></pre>
 <p>Nothing too tricky here. Same basic idea as the previous code, except we're
 using some of that implicit return goodness to extract the tail reference from
 wherever we stuff the actual Box.</p>
@@ -316,8 +314,7 @@ error[E0106]: missing lifetime specifier
 <p>Oh right, we need to give references in types lifetimes. Hmm... what's the
 lifetime of this reference? Well, this seems like IterMut, right? Let's try
 what we did for IterMut, and just add a generic <code>'a</code>:</p>
-<pre><pre class="playpen"><code class="language-rust"># fn main() {}
-pub struct List&lt;'a, T&gt; {
+<pre><code class="language-rust ignore">pub struct List&lt;'a, T&gt; {
     head: Link&lt;T&gt;,
     tail: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;, // NEW!
 }
@@ -358,7 +355,7 @@ impl&lt;'a, T&gt; List&lt;'a, T&gt; {
         self.tail = new_tail;
     }
 }
-</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0495]: cannot infer an appropriate lifetime for autoref due to conflicting requirements

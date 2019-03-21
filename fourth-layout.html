@@ -157,10 +157,7 @@ the previous and next node. Also, the list itself has a pointer to the
 first and last node. This gives us fast insertion and removal on <em>both</em>
 ends of the list.</p>
 <p>So we probably want something like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use std::rc::Rc;
+<pre><code class="language-rust ignore">use std::rc::Rc;
 use std::cell::RefCell;
 
 pub struct List&lt;T&gt; {
@@ -175,7 +172,7 @@ struct Node&lt;T&gt; {
     next: Link&lt;T&gt;,
     prev: Link&lt;T&gt;,
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 warning: field is never used: `head`

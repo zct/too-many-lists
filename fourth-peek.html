@@ -178,12 +178,9 @@ sadness. Up until now, RefCells have just been a nuisance. Now they're going to
 become a nightmare.</p>
 <p>So what's going on? To understand that, we need to go back to the definition of
 <code>borrow</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn borrow&lt;'a&gt;(&amp;'a self) -&gt; Ref&lt;'a, T&gt;
+<pre><code class="language-rust ignore">fn borrow&lt;'a&gt;(&amp;'a self) -&gt; Ref&lt;'a, T&gt;
 fn borrow_mut&lt;'a&gt;(&amp;'a self) -&gt; RefMut&lt;'a, T&gt;
-#}</code></pre></pre>
+</code></pre>
 <p>In the layout section we said:</p>
 <blockquote>
 <p>Rather than enforcing this statically, RefCell enforces them at runtime.
@@ -210,15 +207,12 @@ to keep this Ref thing around. But as soon as we return the reference from
 totally encapsulate the use of RefCells like that.</p>
 <p>But... what if we just give up on totally hiding our implementation details?
 What if we returns Refs?</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
+<pre><code class="language-rust ignore">pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
     self.head.as_ref().map(|node| {
         node.borrow()
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0412]: cannot find type `Ref` in this scope
@@ -234,11 +228,8 @@ help: possible candidates are found in other modules, you can import them into s
    |
 </code></pre>
 <p>Blurp. Gotta import some stuff.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use std::cell::{Ref, RefCell};
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">use std::cell::{Ref, RefCell};
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0308]: mismatched types
@@ -259,13 +250,10 @@ expose access to an <code>&amp;T</code>.</p>
 <p>Both of those options are <em>kinda</em> lame.</p>
 <p>Instead, we're going to go deeper down. Let's
 have some <em>fun</em>. Our source of fun is <em>this beast</em>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-map&lt;U, F&gt;(orig: Ref&lt;'b, T&gt;, f: F) -&gt; Ref&lt;'b, U&gt;
+<pre><code class="language-rust ignore">map&lt;U, F&gt;(orig: Ref&lt;'b, T&gt;, f: F) -&gt; Ref&lt;'b, U&gt;
     where F: FnOnce(&amp;T) -&gt; &amp;U,
           U: ?Sized
-#}</code></pre></pre>
+</code></pre>
 <blockquote>
 <p>Make a new Ref for a component of the borrowed data.</p>
 </blockquote>
@@ -274,24 +262,18 @@ map&lt;U, F&gt;(orig: Ref&lt;'b, T&gt;, f: F) -&gt; Ref&lt;'b, U&gt;
 I don't care about any of that. Also I don't think it's a proper monad since
 there's no None-like case, but I digress.</p>
 <p>It's cool and that's all that matters to me. <em>I need this</em>.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
+<pre><code class="language-rust ignore">pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
     self.head.as_ref().map(|node| {
         Ref::map(node.borrow(), |node| &amp;node.elem)
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
 </code></pre>
 <p>Awww yissss</p>
 <p>Let's make sure this is working by munging up the test from our stack. We need
 to do some munging to deal with the fact that Refs don't implement comparisons.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+<pre><code class="language-rust ignore">#[test]
 fn peek() {
     let mut list = List::new();
     assert!(list.peek_front().is_none());
@@ -299,7 +281,7 @@ fn peek() {
 
     assert_eq!(&amp;*list.peek_front().unwrap(), &amp;3);
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code>&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a

@@ -223,14 +223,11 @@ enum List&lt;T&gt; {
 <p>Wow, uh. That is perhaps the most relevant and helpful documentation I have ever seen. Literally the first thing in the documentation is <em>exactly what we're trying to write, why it didn't work, and how to fix it</em>.</p>
 <p>Dang, docs rule.</p>
 <p>Ok, let's do that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub enum List {
+<pre><code class="language-rust ignore">pub enum List {
     Empty,
     Elem(i32, Box&lt;List&gt;),
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
 </code></pre>
@@ -305,15 +302,12 @@ ever moving it. You just fiddle with pointers and stuff gets &quot;moved&quot;. 
 trashes this property.</p>
 <p>Alright, I'm reasonably convinced Layout 1 is bad. How do we rewrite our List?
 Well, we could do something like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub enum List {
+<pre><code class="language-rust ignore">pub enum List {
     Empty,
     ElemThenEmpty(i32),
     ElemThenNotEmpty(i32, Box&lt;List&gt;),
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Hopefully this seems like an even worse idea to you. Most notably, this really
 complicates our logic, because there is now a completely invalid state:
 <code>ElemThenNotEmpty(0, Box(Empty))</code>. It also <em>still</em> suffers from non-uniformly
@@ -350,10 +344,7 @@ our List into two types: A List, and a Node.</p>
 <p>As before, a List is either Empty or has an element followed by another List.
 By representing the &quot;has an element followed by another List&quot; case by an
 entirely separate type, we can hoist the Box to be in a more optimal position:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-struct Node {
+<pre><code class="language-rust ignore">struct Node {
     elem: i32,
     next: List,
 }
@@ -362,7 +353,7 @@ pub enum List {
     Empty,
     More(Box&lt;Node&gt;),
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Let's check our priorities:</p>
 <ul>
 <li>Tail of a list never allocates extra junk: check!</li>
@@ -390,10 +381,7 @@ an <code>enum</code> are totally public, and we're not allowed to publicly talk 
 private types. We could make all of <code>Node</code> totally public, but generally in Rust
 we favour keeping implementation details private. Let's make <code>List</code> a struct, so
 that we can hide the implementation details:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct List {
+<pre><code class="language-rust ignore">pub struct List {
     head: Link,
 }
 
@@ -406,7 +394,7 @@ struct Node {
     elem: i32,
     next: Link,
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Because <code>List</code> is a struct with a single field, its size is the same as that
 field. Yay zero-cost abstractions!</p>
 <pre><code class="language-text">&gt; cargo build

@@ -141,10 +141,7 @@
 with this new system. <code>new</code> is still trivial, just None out all the fields.
 Also because it's getting a bit unwieldy, let's break out a Node constructor
 too:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; Node&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; Node&lt;T&gt; {
     fn new(elem: T) -&gt; Rc&lt;RefCell&lt;Self&gt;&gt; {
         Rc::new(RefCell::new(Node {
             elem: elem,
@@ -159,7 +156,7 @@ impl&lt;T&gt; List&lt;T&gt; {
         List { head: None, tail: None }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
 
 **A BUNCH OF DEAD CODE WARNINGS BUT IT BUILT**
@@ -178,10 +175,7 @@ the following invariant: each node should have exactly two pointers to it.
 Each node in the middle of the list is pointed at by its predecessor and
 successor, while the nodes on the ends are pointed to by the list itself.</p>
 <p>Let's take a crack at it:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push_front(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push_front(&amp;mut self, elem: T) {
     // new node needs +2 links, everything else should be +0
     let new_head = Node::new(elem);
     match self.head.take() {
@@ -200,7 +194,7 @@ pub fn push_front(&amp;mut self, elem: T) {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0609]: no field `prev` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
@@ -261,7 +255,7 @@ multiply-aliased, they can only be borrowed as shared references, not mutable re
 Without cells it would be impossible to mutate data inside of shared boxes at all!</p>
 <p>It's very common then to put a <code>RefCell&lt;T&gt;</code> inside shared pointer types to reintroduce
 mutability:</p>
-<pre><pre class="playpen"><code class="language-rust">use std::collections::HashMap;
+<pre><code class="language-rust ignore">use std::collections::HashMap;
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -272,24 +266,18 @@ fn main() {
     shared_map.borrow_mut().insert(&quot;piccadilly&quot;, 11826);
     shared_map.borrow_mut().insert(&quot;marbles&quot;, 38);
 }
-</code></pre></pre>
+</code></pre>
 <p>Note that this example uses <code>Rc&lt;T&gt;</code> and not <code>Arc&lt;T&gt;</code>. <code>RefCell&lt;T&gt;</code>s are for single-threaded
 scenarios. Consider using <code>Mutex&lt;T&gt;</code> if you need shared mutability in a multi-threaded
 situation.</p>
 </blockquote>
 <p>Hey, Rust's docs continue to be incredibly awesome.</p>
 <p>The meaty bit we care about is this line:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-shared_map.borrow_mut().insert(&quot;africa&quot;, 92388);
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">shared_map.borrow_mut().insert(&quot;africa&quot;, 92388);
+</code></pre>
 <p>In particular, the <code>borrow_mut</code> thing. Seems we need to explicitly borrow a
 RefCell. The <code>.</code> operator's not going to do it for us. Weird. Let's try:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push_front(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push_front(&amp;mut self, elem: T) {
     let new_head = Node::new(elem);
     match self.head.take() {
         Some(old_head) =&gt; {
@@ -303,7 +291,7 @@ pub fn push_front(&amp;mut self, elem: T) {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 warning: field is never used: `elem`

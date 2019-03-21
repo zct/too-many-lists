@@ -144,10 +144,7 @@ next. Because that node may not exist (the list is empty or we're otherwise
 done iterating), we want that reference to be an Option. When we yield an
 element, we want to proceed to the current node's <code>next</code> node.</p>
 <p>Alright, let's try that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Iter&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct Iter&lt;T&gt; {
     next: Option&lt;&amp;Node&lt;T&gt;&gt;,
 }
 
@@ -167,7 +164,7 @@ impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
         })
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 error[E0106]: missing lifetime specifier
@@ -545,10 +542,7 @@ applied to it, so we don't need to manually apply all those *'s!</p>
 <p>But in this case I don't think it's really an improvement, this was just a
 thinly veiled excuse to show off deref coercion and the sometimes-useful turbofish. 😅</p>
 <p>Let's write a test to be sure we didn't no-op it or anything:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+<pre><code class="language-rust ignore">#[test]
 fn iter() {
     let mut list = List::new();
     list.push(1); list.push(2); list.push(3);
@@ -558,7 +552,7 @@ fn iter() {
     assert_eq!(iter.next(), Some(&amp;2));
     assert_eq!(iter.next(), Some(&amp;1));
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -580,25 +574,19 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Heck yeah.</p>
 <p>Finally, it should be noted that we <em>can</em> actually apply lifetime elision here:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
     pub fn iter&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;'a, T&gt; {
         Iter { next: self.head.as_ref().map(|node| &amp;**node) }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>is equivalent to:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
     pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
         Iter { next: self.head.as_ref().map(|node| &amp;**node) }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Yay less lifetimes!</p>
 <p>Or, if you're not comfortable &quot;hiding&quot; that a struct contains a lifetime,
 you can use the Rust 2018 &quot;explicitly elided lifetime&quot; syntax,  <code>'_</code>:</p>

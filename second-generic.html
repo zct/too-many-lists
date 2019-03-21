@@ -142,10 +142,7 @@ far we've managed to avoid declaring any new type that is actually generic
 over arbitrary elements.</p>
 <p>It turns out that's actually really easy. Let's make all of our types generic
 right now:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
 }
 
@@ -155,7 +152,7 @@ struct Node&lt;T&gt; {
     elem: T,
     next: Link&lt;T&gt;,
 }
-#}</code></pre></pre>
+</code></pre>
 <p>You just make everything a little more pointy, and suddenly your code is
 generic. Of course, we can't <em>just</em> do this, or else the compiler's going
 to be Super Mad.</p>
@@ -180,10 +177,7 @@ real anymore. Like Option and Box, we now always have to talk about
 <p>But what's the Something we use in all these impls? Just like List, we want our
 implementations to work with <em>all</em> the T's. So, just like List, let's make our
 <code>impl</code>s pointy:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
     pub fn new() -&gt; Self {
         List { head: None }
     }
@@ -213,7 +207,7 @@ impl&lt;T&gt; Drop for List&lt;T&gt; {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>...and that's it!</p>
 <pre><code>&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
@@ -234,13 +228,10 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 <p>All of our code is now completely generic over arbitrary values of T. Dang,
 Rust is <em>easy</em>. I'd like to make a particular shout-out to <code>new</code> which didn't
 even change:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn new() -&gt; Self {
+<pre><code class="language-rust ignore">pub fn new() -&gt; Self {
     List { head: None }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Bask in the Glory that is Self, guardian of refactoring and copy-pasta coding.
 Also of interest, we don't write <code>List&lt;T&gt;</code> when we construct an instance of
 list. That part's inferred for us based on the fact that we're returning it

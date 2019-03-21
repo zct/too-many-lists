@@ -143,12 +143,9 @@ understand the language.</p>
 <p>We'll put our first list in <code>src/first.rs</code>. We need to tell Rust that <code>first.rs</code> is
 something that our lib uses. All that requires is that we put this at the top of
 <code>src/lib.rs</code> (which Cargo made for us):</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// in lib.rs
+<pre><code class="language-rust ignore">// in lib.rs
 pub mod first;
-#}</code></pre></pre>
+</code></pre>
 
                     </main>
 
