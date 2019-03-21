@@ -172,7 +172,7 @@ impl&lt;T&gt; List&lt;T&gt; {
     }
 
     pub fn head(&amp;self) -&gt; Option&lt;&amp;T&gt; {
-        self.head.as_ref().map(|node| &amp;node.elem )
+        self.head.as_ref().map(|node| &amp;node.elem)
     }
 
     pub fn iter(&amp;self) -&gt; Iter&lt;'_, T&gt; {

@@ -141,8 +141,6 @@
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-use std::mem;
-
 pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
 }
@@ -202,7 +200,7 @@ impl&lt;T&gt; List&lt;T&gt; {
 
 impl&lt;T&gt; Drop for List&lt;T&gt; {
     fn drop(&amp;mut self) {
-        let mut cur_link = mem::replace(&amp;mut self.head, None);
+        let mut cur_link = self.head.take();
         while let Some(mut boxed_node) = cur_link {
             cur_link = boxed_node.next.take();
         }
@@ -227,7 +225,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     type Item = &amp;'a T;
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
         self.next.map(|node| {
-            self.next = node.next.as_ref().map::&lt;&amp;Node&lt;T&gt;, _&gt;(|node| &amp;node);
+            self.next = node.next.as_ref().map(|node| &amp;**node);
             &amp;node.elem
         })
     }
