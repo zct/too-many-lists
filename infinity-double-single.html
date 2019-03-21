@@ -143,30 +143,24 @@ with this because we brought in our preconceived notions of what a linked
 list <em>is</em>. Namely, we assumed that all the links go in the same direction.</p>
 <p>Instead, we can smash our list into two halves: one going to the left,
 and one going to the right:</p>
-<pre><code>// lib.rs
+<pre><code class="language-rust ignore">// lib.rs
 // ...
 pub mod silly1;     // NEW!
 </code></pre>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// silly1.rs
+<pre><code class="language-rust ignore">// silly1.rs
 use second::List as Stack;
 
 struct List&lt;T&gt; {
     left: Stack&lt;T&gt;,
     right: Stack&lt;T&gt;,
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Now, rather than having a mere safe stack, we have a general purpose list.
 We can grow the list leftwards or rightwards by pushing onto either stack.
 We can also &quot;walk&quot; along the list by popping values off one end and onto the
 other. To avoid needless allocations, we're going to copy the source of
 our safe Stack to get access to its private details:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Stack&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct Stack&lt;T&gt; {
     head: Link&lt;T&gt;,
 }
 
@@ -220,9 +214,9 @@ impl&lt;T&gt; Drop for Stack&lt;T&gt; {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And just rework <code>push</code> and <code>pop</code> a bit:</p>
-<pre><code>pub fn push(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: T) {
     let new_node = Box::new(Node {
         elem: elem,
         next: None,
@@ -250,10 +244,7 @@ fn pop_node(&amp;mut self) -&gt; Option&lt;Box&lt;Node&lt;T&gt;&gt;&gt; {
 }
 </code></pre>
 <p>Now we can make our List:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct List&lt;T&gt; {
     left: Stack&lt;T&gt;,
     right: Stack&lt;T&gt;,
 }
@@ -263,12 +254,9 @@ impl&lt;T&gt; List&lt;T&gt; {
         List { left: Stack::new(), right: Stack::new() }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And we can do the usual stuff:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push_left(&amp;mut self, elem: T) { self.left.push(elem) }
+<pre><code class="language-rust ignore">pub fn push_left(&amp;mut self, elem: T) { self.left.push(elem) }
 pub fn push_right(&amp;mut self, elem: T) { self.right.push(elem) }
 pub fn pop_left(&amp;mut self) -&gt; Option&lt;T&gt; { self.left.pop() }
 pub fn pop_right(&amp;mut self) -&gt; Option&lt;T&gt; { self.right.pop() }
@@ -276,12 +264,9 @@ pub fn peek_left(&amp;self) -&gt; Option&lt;&amp;T&gt; { self.left.peek() }
 pub fn peek_right(&amp;self) -&gt; Option&lt;&amp;T&gt; { self.right.peek() }
 pub fn peek_left_mut(&amp;mut self) -&gt; Option&lt;&amp;mut T&gt; { self.left.peek_mut() }
 pub fn peek_right_mut(&amp;mut self) -&gt; Option&lt;&amp;mut T&gt; { self.right.peek_mut() }
-#}</code></pre></pre>
+</code></pre>
 <p>But most interestingly, we can walk around!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn go_left(&amp;mut self) -&gt; bool {
+<pre><code class="language-rust ignore">pub fn go_left(&amp;mut self) -&gt; bool {
     self.left.pop_node().map(|node| {
         self.right.push_node(node);
     }).is_some()
@@ -292,13 +277,10 @@ pub fn go_right(&amp;mut self) -&gt; bool {
         self.left.push_node(node);
     }).is_some()
 }
-#}</code></pre></pre>
+</code></pre>
 <p>We return booleans here as just a convenience to indicate whether we actually
 managed to move. Now let's test this baby out:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[cfg(test)]
+<pre><code class="language-rust ignore">#[cfg(test)]
 mod test {
     use super::List;
 
@@ -332,7 +314,7 @@ mod test {
 
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -356,12 +338,6 @@ test second::test::peek ... ok
 test silly1::test::walk_aboot ... ok
 
 test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured
-
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>This is an extreme example of a <em>finger</em> data structure, where we maintain
 some kind of finger into the structure, and as a consequence can support

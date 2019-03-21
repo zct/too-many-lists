@@ -188,7 +188,6 @@ impl List {
         match mem::replace(&amp;mut self.head, None) {
             None =&gt; None,
             Some(node) =&gt; {
-                let node = *node;
                 self.head = node.next;
                 Some(node.elem)
             }
@@ -240,7 +239,6 @@ impl List {
         match self.head.take() {
             None =&gt; None,
             Some(node) =&gt; {
-                let node = *node;
                 self.head = node.next;
                 Some(node.elem)
             }
@@ -259,24 +257,20 @@ impl Drop for List {
 #}</code></pre></pre>
 <p>Second, <code>match option { None =&gt; None, Some(x) =&gt; Some(y) }</code> is such an
 incredibly common idiom that it was called <code>map</code>. <code>map</code> takes a function to
-execute on <code>x</code> in the <code>Some(x)</code> to produce the <code>y</code> in <code>Some(y)</code>. We could
+execute on the <code>x</code> in the <code>Some(x)</code> to produce the <code>y</code> in <code>Some(y)</code>. We could
 write a proper <code>fn</code> and pass it to <code>map</code>, but we'd much rather write what to
 do <em>inline</em>.</p>
 <p>The way to do this is with a <em>closure</em>. Closures are anonymous functions with
 an extra super-power: they can refer to local variables <em>outside</em> the closure!
 This makes them super useful for doing all sorts of conditional logic. The
 only place we do a <code>match</code> is in <code>pop</code>, so let's just rewrite that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     self.head.take().map(|node| {
-        let node = *node;
         self.head = node.next;
         node.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Ah, much better. Let's make sure we didn't break anything:</p>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)

@@ -143,45 +143,32 @@ bit emotional there. Compile-time correctness is a hell of a drug.</p>
 That was always really easy before. Gotta still be easy, right?</p>
 <p>Right?</p>
 <p>In fact, I think I can just copy-paste it!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
+<pre><code class="language-rust ignore">pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
     self.head.as_ref().map(|node| {
         &amp;node.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Wait. Not this time.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
+<pre><code class="language-rust ignore">pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
     self.head.as_ref().map(|node| {
+        // BORROW!!!!
         &amp;node.borrow().elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>HAH.</p>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:64:14: 64:27 error: borrowed value does not live long enough
-src/fourth.rs:64             &amp;node.borrow().elem
-                              ^~~~~~~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:63:32: 65:10 note: expansion site
-src/fourth.rs:62:44: 66:6 note: reference must be valid for the anonymous lifetime #1 defined on the block at 62:43...
-src/fourth.rs:62     pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
-src/fourth.rs:63         self.head.as_ref().map(|node| {
-src/fourth.rs:64             &amp;node.borrow().elem
-src/fourth.rs:65         })
-src/fourth.rs:66     }
-src/fourth.rs:63:39: 65:10 note: ...but borrowed value is only valid for the block at 63:38
-src/fourth.rs:63         self.head.as_ref().map(|node| {
-src/fourth.rs:64             &amp;node.borrow().elem
-src/fourth.rs:65         })
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0515]: cannot return value referencing temporary value
+  --&gt; src/fourth.rs:66:13
+   |
+66 |             &amp;node.borrow().elem
+   |             ^   ----------^^^^^
+   |             |   |
+   |             |   temporary value created here
+   |             |
+   |             returns a value referencing data owned by the current function
 </code></pre>
 <p>Ok I'm just burning my computer.</p>
 <p>This is exactly the same logic as our singly linked stack. Why are things
@@ -202,14 +189,14 @@ fn borrow_mut&lt;'a&gt;(&amp;'a self) -&gt; RefMut&lt;'a, T&gt;
 <p>Rather than enforcing this statically, RefCell enforces them at runtime.
 If you break the rules, RefCell will just panic and crash the program.
 Why does it return these Ref and RefMut things? Well, they basically behave
-like <code>Rc</code>s but for borrowing. They keep the RefCell borrowed until they go out
-of scope. We'll get to that later.</p>
+like <code>Rc</code>s but for borrowing. Also they keep the RefCell borrowed until they go out
+of scope. <strong>We'll get to that later.</strong></p>
 </blockquote>
 <p>It's later.</p>
 <p><code>Ref</code> and <code>RefMut</code> implement <code>Deref</code> and <code>DerefMut</code> respectively. So for most
 intents and purposes they behave <em>exactly</em> like <code>&amp;T</code> and <code>&amp;mut T</code>. However,
 because of how those traits work, the reference that's returned is connected
-to the lifetime of the Ref, and not actual RefCell. This means that the Ref
+to the lifetime of the Ref, and not the actual RefCell. This means that the Ref
 has to be sitting around as long as we keep the reference around.</p>
 <p>This is in fact necessary for correctness. When a Ref gets dropped, it tells
 the RefCell that it's not borrowed anymore. So if we <em>did</em> manage to hold onto our
@@ -234,31 +221,36 @@ pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:62:40: 62:46 error: use of undeclared type name `Ref` [E0412]
-src/fourth.rs:62     pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
-                                                        ^~~~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0412]: cannot find type `Ref` in this scope
+  --&gt; src/fourth.rs:63:40
+   |
+63 |     pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
+   |                                        ^^^ not found in this scope
+help: possible candidates are found in other modules, you can import them into scope
+   |
+1  | use core::cell::Ref;
+   |
+1  | use std::cell::Ref;
+   |
 </code></pre>
 <p>Blurp. Gotta import some stuff.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-use std::cell::{Ref, RefMut, RefCell};
+use std::cell::{Ref, RefCell};
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:63:9: 65:11 error: mismatched types:
- expected `core::option::Option&lt;core::cell::Ref&lt;'_, T&gt;&gt;`,
-    found `core::option::Option&lt;core::cell::Ref&lt;'_, fourth::Node&lt;T&gt;&gt;&gt;`
-(expected type parameter,
-    found struct `fourth::Node`) [E0308]
-src/fourth.rs:63         self.head.as_ref().map(|node| {
-src/fourth.rs:64             node.borrow()
-src/fourth.rs:65         })
-src/fourth.rs:63:9: 65:11 help: run `rustc --explain E0308` to see a detailed explanation
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0308]: mismatched types
+  --&gt; src/fourth.rs:64:9
+   |
+64 | /         self.head.as_ref().map(|node| {
+65 | |             node.borrow()
+66 | |         })
+   | |__________^ expected type parameter, found struct `fourth::Node`
+   |
+   = note: expected type `std::option::Option&lt;std::cell::Ref&lt;'_, T&gt;&gt;`
+              found type `std::option::Option&lt;std::cell::Ref&lt;'_, fourth::Node&lt;T&gt;&gt;&gt;`
 </code></pre>
 <p>Hmm... that's right. We have a <code>Ref&lt;Node&lt;T&gt;&gt;</code>, but we want a <code>Ref&lt;T&gt;</code>. We could
 abandon all hope of encapsulation and just return that. We could also make
@@ -280,7 +272,7 @@ map&lt;U, F&gt;(orig: Ref&lt;'b, T&gt;, f: F) -&gt; Ref&lt;'b, U&gt;
 <p>Yes: just like you can map over an Option, you can map over a Ref.</p>
 <p>I'm sure someone somewhere is really excited because <em>monads</em> or whatever but
 I don't care about any of that. Also I don't think it's a proper monad since
-there's no None-like case. But I digress.</p>
+there's no None-like case, but I digress.</p>
 <p>It's cool and that's all that matters to me. <em>I need this</em>.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -292,10 +284,6 @@ pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
 }
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:1:22: 1:28 warning: unused import, #[warn(unused_imports)] on by default
-src/fourth.rs:1 use std::cell::{Ref, RefMut, RefCell};
-                                     ^~~~~~
 </code></pre>
 <p>Awww yissss</p>
 <p>Let's make sure this is working by munging up the test from our stack. We need
@@ -314,9 +302,6 @@ fn peek() {
 #}</code></pre></pre>
 <pre><code>&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:1:22: 1:28 warning: unused import, #[warn(unused_imports)] on by default
-src/fourth.rs:1 use std::cell::{Ref, RefMut, RefCell};
-                                     ^~~~~~
      Running target/debug/lists-5c71138492ad4b4a
 
 running 10 tests

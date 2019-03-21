@@ -171,7 +171,7 @@ reference, here's what we're going to be making:</p>
 feed into my terminal. I'll also be using Rust's standard package manager, Cargo,
 to develop the project. Cargo isn't necessary to write a Rust program, but it's
 <em>so much</em> better than using rustc directly. If you just want to futz around you
-can also run some simple programs in the browser via https://play.rust-lang.org/.</p>
+can also run some simple programs in the browser via <a href="https://play.rust-lang.org/">play.rust-lang.org</a>.</p>
 <p>Let's get started and make our project:</p>
 <pre><code class="language-text">&gt; cargo new --lib lists
 &gt; cd lists
@@ -185,7 +185,7 @@ excellent compiler errors and documentation is <em>incredibly</em> important to
 being a productive Rust programmer.</p>
 <p>Although actually that's a lie. In writing this I encountered <em>way</em> more
 compiler errors than I show. In particular, in the later chapters I won't be
-showing a lot of the random &quot;I typed (read: copy-pasted) bad&quot; errors that you
+showing a lot of the random &quot;I typed (copy-pasted) bad&quot; errors that you
 expect to encounter in every language. This is a <em>guided tour</em> of having the
 compiler scream at us.</p>
 <p>We're going to be going pretty slow, and I'm honestly not going to be very
@@ -226,7 +226,7 @@ things in my list of <em>great use cases</em>. The thing right after the first
 paragraph!</p>
 <p>Just so I can link directly to a detailed argument, here are several attempts
 at counter-arguments I have seen, and my response to them. Feel free to skip
-to <a href="#take-a-breath">the end</a> if you just want to learn some Rust!</p>
+to <a href="first.html">the first chapter</a> if you just want to learn some Rust!</p>
 <a class="header" href="#performance-doesnt-always-matter" id="performance-doesnt-always-matter"><h2>Performance doesn't always matter</h2></a>
 <p>Yes! Maybe your application is I/O-bound or the code in question is in some
 cold case that just doesn't matter. But this isn't even an argument for using
@@ -336,6 +336,7 @@ Well, singly linked lists are pretty simple. Doubly linked lists
 can get kinda gnarly, as we'll see.</p>
 <a class="header" href="#take-a-breath" id="take-a-breath"><h1>Take a Breath</h1></a>
 <p>Ok. That's out of the way. Let's write a bajillion linked lists.</p>
+<p><a href="first.html">On to the first chapter!</a></p>
 <a class="header" href="#a-bad-singly-linked-stack" id="a-bad-singly-linked-stack"><h1>A Bad Singly-Linked Stack</h1></a>
 <p>This one's gonna be <em>by far</em> the longest, as we need to introduce basically
 all of Rust, and are gonna build up some things &quot;the hard way&quot; to better
@@ -351,7 +352,7 @@ pub mod first;
 #}</code></pre></pre>
 <a class="header" href="#basic-data-layout" id="basic-data-layout"><h1>Basic Data Layout</h1></a>
 <p>Alright, so what's a linked list? Well basically, it's a bunch of pieces of data
-on the heap (shhh Linux Kernel!) that point to each other in sequence. Linked
+on the heap (hush, kernel people!) that point to each other in sequence. Linked
 lists are something procedural programmers shouldn't touch with a 10-foot pole,
 and what functional programmers use for everything. It seems fair, then, that we
 should ask functional programmers for the definition of a linked list. They will
@@ -377,22 +378,22 @@ pub enum List {
 <p><em>phew</em>, I'm swamped. Let's just go ahead and compile that:</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:1:1: 4:2 error: recursive type `first::List` has infinite size [E0072]
-src/first.rs:1 pub enum List {
-              ^
-src/first.rs:1:1: 4:2 help: run `rustc --explain E0072` to see a detailed explanation
-src/first.rs:1:1: 4:2 help: insert indirection (e.g., a `Box`, `Rc`, or `&amp;`) at some point to make `first::List` representable
-error: aborting due to previous error
-error: Could not compile `list`.
-
-To learn more, run the command again with --verbose.
+error[E0072]: recursive type `first::List` has infinite size
+ --&gt; src/first.rs:4:1
+  |
+4 | pub enum List {
+  | ^^^^^^^^^^^^^ recursive type has infinite size
+5 |     Empty,
+6 |     Elem(i32, List),
+  |               ---- recursive without indirection
+  |
+  = help: insert indirection (e.g., a `Box`, `Rc`, or `&amp;`) at some point to make `first::List` representable
 </code></pre>
-<p>Noooooooo!!!! Functional programmers tricked us! That made us do something
-<em>illegal</em>! This is entrapment!</p>
-<p>...</p>
-<p>I'm ok now. Are you ok now? If we actually check out the error message (instead
-of getting ready to flee the country, as *ahem* <em>some</em> of us did), we can see
-that rustc is actually telling us exactly how to solve this problem:</p>
+<p>Well. I don't know about you, but I certainly feel betrayed by the functional
+programming community.</p>
+<p>If we actually check out the error message (after we get over the whole
+betrayal thing), we can see that rustc is actually telling us exactly
+how to solve this problem:</p>
 <blockquote>
 <p>insert indirection (e.g., a <code>Box</code>, <code>Rc</code>, or <code>&amp;</code>) at some point to make <code>first::List</code> representable</p>
 </blockquote>
@@ -433,7 +434,8 @@ enum List&lt;T&gt; {
 <p><code>Cons(T, List&lt;T&gt;),</code></p>
 <p>It wouldn't work. This is because the size of a List depends on how many elements are in the list, and so we don't know how much memory to allocate for a Cons. By introducing a Box, which has a defined size, we know how big Cons needs to be.</p>
 </blockquote>
-<p>Wow, uh. That is perhaps the most relevant and helpful documentation I have ever seen. Literally the first thing in the documentation is <em>exactly what we're trying to write, why it didn't work, and how to fix it</em>. Dang, yo. Docs.</p>
+<p>Wow, uh. That is perhaps the most relevant and helpful documentation I have ever seen. Literally the first thing in the documentation is <em>exactly what we're trying to write, why it didn't work, and how to fix it</em>.</p>
+<p>Dang, docs rule.</p>
 <p>Ok, let's do that:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -447,7 +449,7 @@ pub enum List {
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
 </code></pre>
 <p>Hey it built!</p>
-<p>...but this is actually a really stupid definition of a List, for a few reasons.</p>
+<p>...but this is actually a really foolish definition of a List, for a few reasons.</p>
 <p>Consider a list with two elements:</p>
 <pre><code class="language-text">[] = Stack
 () = Heap
@@ -469,16 +471,13 @@ key difference is the absence of the <em>junk</em> from our first layout. What i
 this junk? To understand that, we'll need to look at how an enum is laid out
 in memory.</p>
 <p>In general, if we have an enum like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-enum Foo {
+<pre><code class="language-rust ignore">enum Foo {
     D1(T1),
     D2(T2),
     ...
     Dn(Tn),
 }
-#}</code></pre></pre>
+</code></pre>
 <p>A Foo will need to store some integer to indicate which <em>variant</em> of the enum it
 represents (<code>D1</code>, <code>D2</code>, .. <code>Dn</code>). This is the <em>tag</em> of the enum. It will also
 need enough space to store the <em>largest</em> of <code>T1</code>, <code>T2</code>, .. <code>Tn</code> (plus some extra
@@ -529,8 +528,8 @@ pub enum List {
     ElemThenNotEmpty(i32, Box&lt;List&gt;),
 }
 #}</code></pre></pre>
-<p>Hopefully this seems like an even worse idea to you. For one, this really
-complicates our logic. In particular, there is now a completely invalid state:
+<p>Hopefully this seems like an even worse idea to you. Most notably, this really
+complicates our logic, because there is now a completely invalid state:
 <code>ElemThenNotEmpty(0, Box(Empty))</code>. It also <em>still</em> suffers from non-uniformly
 allocating our elements.</p>
 <p>However it does have <em>one</em> interesting property: it totally avoids allocating
@@ -539,24 +538,22 @@ in doing so it manages to waste <em>even more space</em>! This is because the pr
 layout took advantage of the <em>null pointer optimization</em>.</p>
 <p>We previously saw that every enum has to store a <em>tag</em> to specify which variant
 of the enum its bits represent. However, if we have a special kind of enum:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-enum Foo {
+<pre><code class="language-rust ignore">enum Foo {
     A,
     B(ContainsANonNullPtr),
 }
-#}</code></pre></pre>
+</code></pre>
 <p>the null pointer optimization kicks in, which <em>eliminates the space needed for
 the tag</em>. If the variant is A, the whole enum is set to all <code>0</code>'s. Otherwise,
 the variant is B. This works because B can never be all <code>0</code>'s, since it contains
 a non-zero pointer. Slick!</p>
 <p>Can you think of other enums and types that could do this kind of optimization?
 There's actually a lot! This is why Rust leaves enum layout totally unspecified.
-Sadly the null pointer optimization is the only one implemented today -- though
-it's pretty important! It means <code>&amp;</code>, <code>&amp;mut</code>, <code>Box</code>, <code>Rc</code>, <code>Arc</code>, <code>Vec</code>, and
+There are a few more complicated enum layout optimizations that Rust will do for
+us, but the null pointer one is definitely the most important!
+It means <code>&amp;</code>, <code>&amp;mut</code>, <code>Box</code>, <code>Rc</code>, <code>Arc</code>, <code>Vec</code>, and
 several other important types in Rust have no overhead when put in an <code>Option</code>!
-(We'll get to most of these in due time).</p>
+(We'll get to most of these in due time.)</p>
 <p>So how do we avoid the extra junk, uniformly allocate, <em>and</em> get that sweet
 null-pointer optimization? We need to better separate out the idea of having an
 element from allocating another list. To do this, we have to think a little more
@@ -565,7 +562,7 @@ C-like: structs!</p>
 structs let us declare a type that contains <em>many</em> values at once. Let's break
 our List into two types: A List, and a Node.</p>
 <p>As before, a List is either Empty or has an element followed by another List.
-However by representing the &quot;has an element followed by another List&quot; case by an
+By representing the &quot;has an element followed by another List&quot; case by an
 entirely separate type, we can hoist the Box to be in a more optimal position:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -590,12 +587,15 @@ pub enum List {
 demonstrate that our first layout (as suggested by the official Rust
 documentation) was problematic.</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:8:11: 8:18 error: private type in exported type signature
-src/first.rs:8    More(Box&lt;Node&gt;),
-                           ^~~~~~~
-error: aborting due to previous error
-Could not compile `lists`.
+warning: private type `first::Node` in public interface (error E0446)
+ --&gt; src/first.rs:8:10
+  |
+8 |     More(Box&lt;Node&gt;),
+  |          ^^^^^^^^^
+  |
+  = note: #[warn(private_in_public)] on by default
+  = warning: this was previously accepted by the compiler but
+    is being phased out; it will become a hard error in a future release!
 </code></pre>
 <p>:(</p>
 <p>Rust is mad at us again. We marked the <code>List</code> as public (because we want people
@@ -624,22 +624,38 @@ struct Node {
 <p>Because <code>List</code> is a struct with a single field, its size is the same as that
 field. Yay zero-cost abstractions!</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:2:2: 2:15 warning: struct field is never used: `head`, #[warn(dead_code)] on by default
-src/first.rs:2    head: Link,
-                  ^~~~~~~~~~~~~
-src/first.rs:6:2: 6:7 warning: variant is never used: `Empty`, #[warn(dead_code)] on by default
-src/first.rs:6    Empty,
-                  ^~~~~
-src/first.rs:7:2: 7:20 warning: variant is never used: `More`, #[warn(dead_code)] on by default
-src/first.rs:7    More(Box&lt;Node&gt;),
-                  ^~~~~~~~~~~~~~~~~~
-src/first.rs:11:2: 11:9 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/first.rs:11   elem: i32,
-                  ^~~~~~~
-src/first.rs:12:2: 12:15 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/first.rs:12   next: Link,
-                  ^~~~~~~~~~~~~
+warning: field is never used: `head`
+ --&gt; src/first.rs:2:5
+  |
+2 |     head: Link,
+  |     ^^^^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
+
+warning: variant is never constructed: `Empty`
+ --&gt; src/first.rs:6:5
+  |
+6 |     Empty,
+  |     ^^^^^
+
+warning: variant is never constructed: `More`
+ --&gt; src/first.rs:7:5
+  |
+7 |     More(Box&lt;Node&gt;),
+  |     ^^^^^^^^^^^^^^^
+
+warning: field is never used: `elem`
+  --&gt; src/first.rs:11:5
+   |
+11 |     elem: i32,
+   |     ^^^^^^^^^
+
+warning: field is never used: `next`
+  --&gt; src/first.rs:12:5
+   |
+12 |     next: Link,
+   |     ^^^^^^^^^^
+
 </code></pre>
 <p>Alright, that compiled! Rust is pretty mad, because as far as it can tell,
 everything we've written is totally useless: we never use <code>head</code>, and no one who
@@ -648,38 +664,29 @@ and Node are useless too. So let's solve that! Let's implement some code for our
 List!</p>
 <a class="header" href="#new" id="new"><h1>New</h1></a>
 <p>To associate actual code with a type, we use <code>impl</code> blocks:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl List {
+<pre><code class="language-rust ignore">impl List {
     // TODO, make code happen
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Now we just need to figure out how to actually write code. In Rust we declare
 a function like so:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn foo(arg1: Type1, arg2: Type2) -&gt; ReturnType {
+<pre><code class="language-rust ignore">fn foo(arg1: Type1, arg2: Type2) -&gt; ReturnType {
     // body
 }
-#}</code></pre></pre>
+</code></pre>
 <p>The first thing we want is a way to <em>construct</em> a list. Since we hide the
 implementation details, we need to provide that as a function. The usual way
 to do that in Rust is to provide a static method, which is just a
 normal function inside an <code>impl</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl List {
+<pre><code class="language-rust ignore">impl List {
     pub fn new() -&gt; Self {
         List { head: Link::Empty }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>A few notes on this:</p>
 <ul>
-<li>Self is an alias for &quot;that type I wrote at top next to <code>impl</code>&quot;. Great for
+<li>Self is an alias for &quot;that type I wrote at the top next to <code>impl</code>&quot;. Great for
 not repeating yourself!</li>
 <li>We create an instance of a struct in much the same way we declare it, except
 instead of providing the types of its fields, we initialize them with values.</li>
@@ -712,8 +719,8 @@ most methods don't want <code>self</code> -- it would be pretty lame if trying t
 a list made it go away!</p>
 <p>A mutable reference represents temporary <em>exclusive access</em> to a value that you
 don't own. You're allowed to do absolutely anything you want to a value you
-have a mutable reference to as long as when your loan expires, wherever you
-loaned it from still sees a valid value. This means you can actually completely
+have a mutable reference to as long you leave it in a valid state when you're
+done (it would be rude to the owner otherwise!). This means you can actually completely
 overwrite the value. A really useful special case of this is <em>swapping</em> a value
 out for another, which we'll be using a lot. The only thing you can't do with an
 <code>&amp;mut</code> is move the value out with no replacement. <code>&amp;mut self</code> is great for
@@ -735,7 +742,7 @@ so we'll want to take <code>&amp;mut self</code>. We also need to take an i32 to
     }
 }
 </code></pre>
-<p>First things first, we need to make a node to store our element in:</p>
+<p>First thing's first, we need to make a node to store our element in:</p>
 <pre><code class="language-rust ignore">    pub fn push(&amp;mut self, elem: i32) {
         let new_node = Node {
             elem: elem,
@@ -744,10 +751,7 @@ so we'll want to take <code>&amp;mut self</code>. We also need to take an i32 to
     }
 </code></pre>
 <p>What goes <code>next</code>? Well, the entire old list! Can we... just do that?</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl List {
+<pre><code class="language-rust ignore">impl List {
     pub fn push(&amp;mut self, elem: i32) {
         let new_node = Node {
             elem: elem,
@@ -755,14 +759,13 @@ impl List {
         };
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:19:10: 19:14 error: cannot move out of borrowed content
-src/first.rs:19           next: self.head,
-                                ^~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/first.rs:19:19
+   |
+19 |             next: self.head,
+   |                   ^^^^^^^^^ cannot move out of borrowed content
 </code></pre>
 <p>Nooooope. Rust is telling us the right thing, but it's certainly not obvious
 what exactly it means, or what to do about it:</p>
@@ -776,10 +779,7 @@ the <em>one</em> thing you can't do with an <code>&amp;mut</code>: It would be s
 and Rust is very polite (it would also be incredibly dangerous, but surely
 <em>that</em> isn't why it cares).</p>
 <p>What if we put something back? Namely, the node that we're creating:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push(&amp;mut self, elem: i32) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: i32) {
     let new_node = Box::new(Node {
         elem: elem,
         next: self.head,
@@ -787,17 +787,16 @@ pub fn push(&amp;mut self, elem: i32) {
 
     self.head = Link::More(new_node);
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:19:10: 19:14 error: cannot move out of borrowed content
-src/first.rs:19           next: self.head,
-                                ^~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/first.rs:19:19
+   |
+19 |             next: self.head,
+   |                   ^^^^^^^^^ cannot move out of borrowed content
 </code></pre>
 <p>No dice. In principle, this is something Rust could actually accept, but it
-won't (for various reasons -- the most serious being exception safety). We need
+won't (for various reasons -- the most serious being <a href="https://doc.rust-lang.org/nightly/nomicon/exception-safety.html">exception safety</a>). We need
 some way to get the head without Rust noticing that it's gone. For advice, we
 turn to infamous Rust Hacker Indiana Jones:</p>
 <p><img src="img/indy.gif" alt="Indy Prepares to mem::replace" /></p>
@@ -805,16 +804,10 @@ turn to infamous Rust Hacker Indiana Jones:</p>
 function lets us steal a value out of a borrow by <em>replacing</em> it with another
 value. Let's just pull in <code>std::mem</code> at the top of the file, so that <code>mem</code> is in
 local scope:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use std::mem;
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">use std::mem;
+</code></pre>
 <p>and use it appropriately:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push(&amp;mut self, elem: i32) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: i32) {
     let new_node = Box::new(Node {
         elem: elem,
         next: mem::replace(&amp;mut self.head, Link::Empty),
@@ -822,7 +815,7 @@ pub fn push(&amp;mut self, elem: i32) {
 
     self.head = Link::More(new_node);
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Here we <code>replace</code> self.head temporarily with Link::Empty before replacing it
 with the new head of the list. I'm not gonna lie: this is a pretty unfortunate
 thing to have to do. Sadly, we must (for now).</p>
@@ -830,17 +823,14 @@ thing to have to do. Sadly, we must (for now).</p>
 Right now the easiest way to do that is probably to write <code>pop</code>, and make sure
 that it produces the right results.</p>
 <a class="header" href="#pop" id="pop"><h1>Pop</h1></a>
-<p>Like <code>push</code>, <code>pop</code> wants to mutate the list. However, unlike <code>push</code> we actually
-want to return something. However <code>pop</code> also has to deal with a tricky corner
+<p>Like <code>push</code>, <code>pop</code> wants to mutate the list. Unlike <code>push</code>, we actually
+want to return something. But <code>pop</code> also has to deal with a tricky corner
 case: what if the list is empty? To represent this case, we use the trusty
 <code>Option</code> type:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
-    //TODO
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    // TODO
 }
-#}</code></pre></pre>
+</code></pre>
 <p><code>Option&lt;T&gt;</code> is an enum that represents a value that may exist. It can either be
 <code>Some(T)</code> or <code>None</code>. We could make our own enum for this like we did for
 Link, but we want our users to be able to understand what the heck our return
@@ -867,22 +857,22 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:27:2: 36:3 error: not all control paths return a value [E0269]
-src/first.rs:27   pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
-src/first.rs:28       match self.head {
-src/first.rs:29           Link::Empty =&gt; {
-src/first.rs:30               // TODO
-src/first.rs:31           }
-src/first.rs:32           Link::More(node) =&gt; {
-              ...
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0308]: mismatched types
+  --&gt; src/first.rs:27:30
+   |
+27 |     pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+   |            ---               ^^^^^^^^^^^ expected enum `std::option::Option`, found ()
+   |            |
+   |            this function's body doesn't return
+   |
+   = note: expected type `std::option::Option&lt;i32&gt;`
+              found type `()`
 </code></pre>
 <p>Whoops, <code>pop</code> has to return a value, and we're not doing that yet. We <em>could</em>
 return <code>None</code>, but in this case it's probably a better idea to return
 <code>unimplemented!()</code>, to indicate that we aren't done implementing the function.
-<code>unimplemented!()</code> is a macro (<code>!</code> indicates a macro) that panics (basically
-just crashes in a controlled manner) the program when we get to it.</p>
+<code>unimplemented!()</code> is a macro (<code>!</code> indicates a macro) that panics the program
+when we get to it (~crashes it in a controlled manner).</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
@@ -908,36 +898,33 @@ lets us express really simple things a bit more concisely. You can always
 explicitly return early with <code>return</code> like any other C-like language.</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:28:9: 28:13 error: cannot move out of borrowed content
-src/first.rs:28       match self.head {
-                            ^~~~
-src/first.rs:32:15: 32:19 note: attempting to move value to here
-src/first.rs:32           Link::More(node) =&gt; {
-                                     ^~~~
-src/first.rs:32:15: 32:19 help: to prevent the move, use `ref node` or `ref mut node` to capture value by reference
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/first.rs:28:15
+   |
+28 |         match self.head {
+   |               ^^^^^^^^^
+   |               |
+   |               cannot move out of borrowed content
+   |               help: consider borrowing here: `&amp;self.head`
+...
+32 |             Link::More(node) =&gt; {
+   |                        ---- data moved here
+   |
+note: move occurs because `node` has type `std::boxed::Box&lt;first::Node&gt;`, which does not implement the `Copy` trait
+  --&gt; src/first.rs:32:24
+   |
+32 |             Link::More(node) =&gt; {
+   |                        ^^^^
 </code></pre>
 <p>Come on Rust, get off our back! As always, Rust is hella mad at us. Thankfully,
-this time it's also giving us the full scoop!</p>
-<pre><code class="language-text">src/first.rs:17:9: 17:13 error: cannot move out of borrowed content
-src/first.rs:17       match self.head {
-                            ^~~~
-src/first.rs:21:15: 21:19 note: attempting to move value to here
-src/first.rs:21           Link::More(node) =&gt; {
-                                     ^~~~
+this time it's also giving us the full scoop! By default, a pattern match will
+try to move its contents into the new branch, but we can't do this because we
+don't own self by-value here.</p>
+<pre><code class="language-text">help: consider borrowing here: `&amp;self.head`
 </code></pre>
-<p>Pattern matches by default move the value they match on, so that's why Rust's
-mad.</p>
-<pre><code class="language-text">help: to prevent the move, use `ref node` or `ref mut node` to capture value by reference
-</code></pre>
-<p>to avoid that, we use the <code>ref</code> keyword to indicate that we want to bind the
-<code>node</code> subpattern by reference instead. Let's do that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
-    match self.head {
+<p>Rust says we should add a reference to our <code>match</code> to fix that. 🤷‍♀️ Let's try it:</p>
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    match &amp;self.head {
         Link::Empty =&gt; {
             // TODO
         }
@@ -947,18 +934,30 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     };
     unimplemented!()
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:13:2: 13:9 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/first.rs:13   elem: i32,
-                  ^~~~~~~
-src/first.rs:14:2: 14:15 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/first.rs:14   next: Link&lt;T&gt;,
-                  ^~~~~~~~~~~~~
-src/first.rs:32:15: 32:23 warning: unused variable: `node`, #[warn(unused_variables)] on by default
-src/first.rs:32           Link::More(ref node) =&gt; {
-                                     ^~~~~~~~
+warning: unused variable: `node`
+  --&gt; src/first.rs:32:24
+   |
+32 |             Link::More(node) =&gt; {
+   |                        ^^^^ help: consider prefixing with an underscore: `_node`
+   |
+   = note: #[warn(unused_variables)] on by default
+
+warning: field is never used: `elem`
+  --&gt; src/first.rs:13:5
+   |
+13 |     elem: i32,
+   |     ^^^^^^^^^
+   |
+   = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `next`
+  --&gt; src/first.rs:14:5
+   |
+14 |     next: Link,
+   |     ^^^^^^^^^^
 </code></pre>
 <p>Hooray, compiling again! Now let's figure out that logic. We want to make an
 Option, so let's make a variable for that. In the Empty case we need to return
@@ -982,25 +981,17 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
 }
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/first.rs:39:29: 39:33 error: cannot move out of borrowed content
-src/first.rs:39                 self.head = node.next;
-                                            ^~~~
-src/first.rs:39:17: 39:38 error: cannot assign to `self.head` because it is borrowed
-src/first.rs:39                 self.head = node.next;
-                                ^~~~~~~~~~~~~~~~~~~~~
-src/first.rs:37:24: 37:32 note: borrow of `self.head` occurs here
-src/first.rs:37             Link::More(ref node) =&gt; {
-                                       ^~~~~~~~
-error: aborting due to 2 previous errors
-Could not compile `lists`.
+   Compiling lists v0.1.0 (/Users/ABeingessner/dev/temp/lists)
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/first.rs:35:29
+   |
+35 |                 self.head = node.next;
+   |                             ^^^^^^^^^ cannot move out of borrowed content
+
 </code></pre>
 <p><em>head</em></p>
 <p><em>desk</em></p>
-<p>Now we have two <em>different</em> errors. First, we're trying to move out of <code>node</code>
-when all we have is a shared reference to it. Second, we're trying to mutate
-<code>self.head</code> while we've already borrowed it to get the reference to <code>node</code>!</p>
-<p>This is a tangled mess.</p>
+<p>We're trying to move out of <code>node</code> when all we have is a shared reference to it.</p>
 <p>We should probably step back and think about what we're trying to do. We want
 to:</p>
 <ul>
@@ -1010,20 +1001,18 @@ to:</p>
 <ul>
 <li>remove the head of the list</li>
 <li>remove its <code>elem</code></li>
-<li>replace the lists head with its <code>next</code></li>
+<li>replace the list's head with its <code>next</code></li>
 <li>return <code>Some(elem)</code></li>
 </ul>
 </li>
 </ul>
 <p>The key insight is we want to <em>remove</em> things, which means we want to get the
 head of the list <em>by value</em>. We certainly can't do that through the shared
-reference we get through <code>ref node</code>. We also &quot;only&quot; have a mutable reference,
-so the only way we can move stuff is to <em>replace it</em>. Looks like we're doing
-the Empty dance again! Let's try that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+reference we get through <code>&amp;self.head</code>. We also &quot;only&quot; have a mutable reference
+to <code>self</code>, so the only way we can move stuff is to <em>replace it</em>. Looks like we're doing
+the Empty dance again!</p>
+<p>Let's try that:</p>
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     let result;
     match mem::replace(&amp;mut self.head, Link::Empty) {
         Link::Empty =&gt; {
@@ -1036,24 +1025,22 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     };
     result
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+   Finished dev [unoptimized + debuginfo] target(s) in 0.22s
 </code></pre>
 <p>O M G</p>
 <p>It compiled without <em>any</em> warnings!!!!!</p>
 <p>Actually I'm going to apply my own personal lint here: we made this <code>result</code>
 value to return, but actually we didn't need to do that at all! Just as a
-function evaluated to its last expression, every block also evaluates to
+function evaluates to its last expression, every block also evaluates to
 its last expression. Normally we supress this behaviour with semi-colons,
 which instead makes the block evaluate to the empty tuple, <code>()</code>. This is
 actually the value that functions which don't declare a return value -- like
 <code>push</code> -- return.</p>
 <p>So instead, we can write <code>pop</code> as:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     match mem::replace(&amp;mut self.head, Link::Empty) {
         Link::Empty =&gt; None,
         Link::More(node) =&gt; {
@@ -1062,79 +1049,15 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Which is a bit more concise and idiomatic. Note that the Link::Empty branch
 completely lost its braces, because we only have one expression to
 evaluate. Just a nice shorthand for simple cases.</p>
-<pre><code class="language-text">&gt; cargo build
+<pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/first.rs:36:22: 36:31 error: use of moved value: `node` [E0382]
-src/first.rs:36                 Some(node.elem)
-                                     ^~~~~~~~~
-src/first.rs:35:29: 35:38 note: `node` moved here (through moving `node.next`) because it has type `first::Link`, which is non-copyable
-src/first.rs:35                 self.head = node.next;
-                                            ^~~~~~~~~
-error: aborting due to previous error
+   Finished dev [unoptimized + debuginfo] target(s) in 0.22s
 </code></pre>
-<p>WHAT. COME ON.</p>
-<p>Why the heck did our code stop working?!</p>
-<p>It turns out we accidentally got lucky with the previous code. We have just had
-our first run in with the magic of Copy. When we introduced <a href="first-ownership.html">ownership</a> we
-said that when you move stuff, you can't use it anymore. For some types, this
-makes perfect sense. Our good friend Box manages an allocation on the heap for
-us, and we certainly don't want two pieces of code to think that they need to
-free its memory.</p>
-<p>However for other types this is <em>butts</em>. Integers have no
-ownership semantics; they're just meaningless numbers! This is why integers are
-marked as Copy. Copy types are known to be perfectly copyable by a bitwise copy.
-As such, they have a super power: when moved, the old value <em>is</em> still usable.
-As a consequence, you can even move a Copy type out of a reference without
-replacement!</p>
-<p>All numeric primitives in rust (i32, u64, bool, f32, char, etc...) are Copy.
-Also, shared references are Copy, which is super useful! You can also declare
-any user-defined type to be Copy as well, as long as all its components are
-Copy.</p>
-<p>Anyway, back to the code: what went wrong? In our first iteration, we were
-actually <em>copying</em> the i32 <code>elem</code> when we assigned to result, so the node was
-left unscathed for the next operation. Now we're <em>moving</em> the <code>next</code> value
-(which isn't Copy), and that consumes the whole Box before we can get to <code>elem</code>.</p>
-<p>Now, we could just rearrange again to get <code>elem</code> first, but we're only using
-i32 as a placeholder for <em>some</em> data. Later we'll want to work with non-Copy
-data, so we should figure out how to handle this now.</p>
-<p>The <em>right</em> answer is to pull the <em>whole</em> node out of the Box, so that we can
-tear it apart in peace. We do that by explicitly dereferencing it:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
-    match mem::replace(&amp;mut self.head, Link::Empty) {
-        Link::Empty =&gt; None,
-        Link::More(boxed_node) =&gt; {
-            let node = *boxed_node;
-            self.head = node.next;
-            Some(node.elem)
-        }
-    }
-}
-#}</code></pre></pre>
-<p>After that, Rust understands an on-the-stack value well enough to let you take
-it apart piece-by-piece.</p>
-<pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-</code></pre>
-<p>Nice.</p>
-<p>Box is actually really special in Rust, because it's sufficiently built into the
-language that the compiler lets you do some stuff that nothing else can do. We
-actually have been doing one such thing this whole time: <code>DerefMove</code>. Whenever
-you have a pointer type you can dereference it with <code>*</code> or <code>.</code> to get at its
-contents. Usually you can get a <code>Deref</code> or maybe even a <code>DerefMut</code>,
-corresponding to a shared or mutable reference respectively.</p>
-<p>However because Box totally owns its contents, you can actually <em>move out of</em>
-a dereference. This is total magic, because there's no way for any other type
-to opt into this. There's tons of other cool tricks the compiler knows how to do
-with Box because it <em>just is</em> Box, but they were all feature-gated at 1.0
-pending further design. Ideally Box will be totally user definable in the
-future.</p>
+<p>Nice, still works!</p>
 <a class="header" href="#testing" id="testing"><h1>Testing</h1></a>
 <p>Alright, so we've got <code>push</code> and <code>pop</code> written, now we can actually test out
 our stack! Rust and cargo support testing as a first-class feature, so this
@@ -1145,10 +1068,7 @@ Rust community. However we usually make a new namespace for the tests, to
 avoid conflicting with the &quot;real&quot; code. Just as we used <code>mod</code> to specify that
 <code>first.rs</code> should be included in <code>lib.rs</code>, we can use <code>mod</code> to basically
 create a whole new file <em>inline</em>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// in first.rs
+<pre><code class="language-rust ignore">// in first.rs
 
 mod test {
     #[test]
@@ -1156,31 +1076,29 @@ mod test {
         // TODO
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And we invoke it with <code>cargo test</code>.</p>
 <pre><code class="language-text">&gt; cargo test
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-     Running target/debug/lists-5c71138492ad4b4a
+   Compiling lists v0.1.0 (/Users/ABeingessner/dev/temp/lists)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.00s
+     Running /Users/ABeingessner/dev/lists/target/debug/deps/lists-86544f1d97438f1f
 
 running 1 test
 test first::test::basics ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
    Doc-tests lists
 
 running 0 tests
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 </code></pre>
 <p>Yay our do-nothing test passed! Let's make it not-do-nothing. We'll do that
 with the <code>assert_eq!</code> macro. This isn't some special testing magic. All it
 does is compare the two things you give it, and panic the program if they don't
 match. Yep, you indicate failure to the test harness by freaking out!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-mod test {
+<pre><code class="language-rust ignore">mod test {
     #[test]
     fn basics() {
         let mut list = List::new();
@@ -1210,51 +1128,54 @@ mod test {
         assert_eq!(list.pop(), None);
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/first.rs:47:24: 47:33 error: failed to resolve. Use of undeclared type or module `List` [E0433]
-src/first.rs:47         let mut list = List::new();
-                                       ^~~~~~~~~
-src/first.rs:47:24: 47:33 error: unresolved name `List::new` [E0425]
-src/first.rs:47         let mut list = List::new();
-                                       ^~~~~~~~~
-error: aborting due to 2 previous errors
+error[E0433]: failed to resolve: use of undeclared type or module `List`
+  --&gt; src/first.rs:43:24
+   |
+43 |         let mut list = List::new();
+   |                        ^^^^ use of undeclared type or module `List`
+
+
 </code></pre>
 <p>Oops! Because we made a new module, we need to pull in List explicitly to use
 it.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-mod test {
+<pre><code class="language-rust ignore">mod test {
     use super::List;
     // everything else the same
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/first.rs:45:9: 45:20 warning: unused import, #[warn(unused_imports)] on by default
-src/first.rs:45     use super::List;
-                        ^~~~~~~~~~~
-     Running target/debug/lists-5c71138492ad4b4a
+warning: unused import: `super::List`
+  --&gt; src/first.rs:45:9
+   |
+45 |     use super::List;
+   |         ^^^^^^^^^^^
+   |
+   = note: #[warn(unused_imports)] on by default
+
+    Finished dev [unoptimized + debuginfo] target(s) in 0.43s
+     Running /Users/ABeingessner/dev/lists/target/debug/deps/lists-86544f1d97438f1f
 
 running 1 test
 test first::test::basics ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
    Doc-tests lists
 
 running 0 tests
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 </code></pre>
 <p>Yay!</p>
 <p>What's up with that warning though...? We clearly use List in our test!</p>
 <p>...but only when testing! To appease the compiler (and to be friendly to our
 consumers), we should indicate that the whole <code>test</code> module should only be
 compiled if we're running tests.</p>
-<pre><code>#[cfg(test)]
+<pre><code class="language-rust ignore">#[cfg(test)]
 mod test {
     use super::List;
     // everything else the same
@@ -1269,7 +1190,7 @@ Like C++, Rust uses destructors to automatically clean up resources when they're
 done with. A type has a destructor if it implements a <em>trait</em> called Drop.
 Traits are Rust's fancy term for interfaces. The Drop trait has the following
 interface:</p>
-<pre><code>pub trait Drop {
+<pre><code class="language-rust ignore">pub trait Drop {
     fn drop(&amp;mut self);
 }
 </code></pre>
@@ -1291,10 +1212,7 @@ recursive code, and recursive code can blow the stack!</p>
 language would ensure that such code wouldn't blow the stack&quot;. This is, in fact,
 incorrect! To see why, let's try to write what the compiler has to do, by
 manually implementing Drop for our List as the compiler would:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Drop for List {
+<pre><code class="language-rust ignore">impl Drop for List {
     fn drop(&amp;mut self) {
         // NOTE: you can't actually explicitly call `drop` in real Rust code;
         // we're pretending to be the compiler!
@@ -1325,7 +1243,7 @@ impl Drop for Node {
         self.next.drop();
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>We <em>can't</em> drop the contents of the Box <em>after</em> deallocating, so there's no
 way to drop in a tail-recursive manner! Instead we're going to have to manually
 write an iterative drop for <code>List</code> that hoists nodes out of their boxes.</p>
@@ -1400,7 +1318,6 @@ impl List {
         match mem::replace(&amp;mut self.head, Link::Empty) {
             Link::Empty =&gt; None,
             Link::More(node) =&gt; {
-                let node = *node;
                 self.head = node.next;
                 Some(node.elem)
             }
@@ -1411,6 +1328,7 @@ impl List {
 impl Drop for List {
     fn drop(&amp;mut self) {
         let mut cur_link = mem::replace(&amp;mut self.head, Link::Empty);
+
         while let Link::More(mut boxed_node) = cur_link {
             cur_link = mem::replace(&amp;mut boxed_node.next, Link::Empty);
         }
@@ -1454,7 +1372,7 @@ mod test {
 <p>Geez. 80 lines, and half of it was tests! Well, I did say this first one was
 going to take a while!</p>
 <a class="header" href="#an-ok-singly-linked-stack" id="an-ok-singly-linked-stack"><h1>An Ok Singly-Linked Stack</h1></a>
-<p>In the previous chapter we wrote up basically a minimum viable singly-linked
+<p>In the previous chapter we wrote up a minimum viable singly-linked
 stack. However there's a few design decisions that make it kind of sucky.
 Let's make it less sucky. In doing so, we will:</p>
 <ul>
@@ -1529,7 +1447,6 @@ impl List {
         match mem::replace(&amp;mut self.head, None) {
             None =&gt; None,
             Some(node) =&gt; {
-                let node = *node;
                 self.head = node.next;
                 Some(node.elem)
             }
@@ -1581,7 +1498,6 @@ impl List {
         match self.head.take() {
             None =&gt; None,
             Some(node) =&gt; {
-                let node = *node;
                 self.head = node.next;
                 Some(node.elem)
             }
@@ -1600,24 +1516,20 @@ impl Drop for List {
 #}</code></pre></pre>
 <p>Second, <code>match option { None =&gt; None, Some(x) =&gt; Some(y) }</code> is such an
 incredibly common idiom that it was called <code>map</code>. <code>map</code> takes a function to
-execute on <code>x</code> in the <code>Some(x)</code> to produce the <code>y</code> in <code>Some(y)</code>. We could
+execute on the <code>x</code> in the <code>Some(x)</code> to produce the <code>y</code> in <code>Some(y)</code>. We could
 write a proper <code>fn</code> and pass it to <code>map</code>, but we'd much rather write what to
 do <em>inline</em>.</p>
 <p>The way to do this is with a <em>closure</em>. Closures are anonymous functions with
 an extra super-power: they can refer to local variables <em>outside</em> the closure!
 This makes them super useful for doing all sorts of conditional logic. The
 only place we do a <code>match</code> is in <code>pop</code>, so let's just rewrite that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     self.head.take().map(|node| {
-        let node = *node;
         self.head = node.next;
         node.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Ah, much better. Let's make sure we didn't break anything:</p>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
@@ -1661,18 +1573,20 @@ generic. Of course, we can't <em>just</em> do this, or else the compiler's going
 to be Super Mad.</p>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:12:6: 12:10 error: wrong number of type arguments: expected 1, found 0 [E0243]
-src/second.rs:12 impl List {
-                      ^~~~
-src/second.rs:12:6: 12:10 help: run `rustc --explain E0243` to see a detailed explanation
-src/second.rs:35:15: 35:19 error: wrong number of type arguments: expected 1, found 0 [E0243]
-src/second.rs:35 impl Drop for List {
-                               ^~~~
-src/second.rs:35:15: 35:19 help: run `rustc --explain E0243` to see a detailed explanation
-error: aborting due to 2 previous errors
+error[E0107]: wrong number of type arguments: expected 1, found 0
+  --&gt; src/second.rs:14:6
+   |
+14 | impl List {
+   |      ^^^^ expected 1 type argument
+
+error[E0107]: wrong number of type arguments: expected 1, found 0
+  --&gt; src/second.rs:36:15
+   |
+36 | impl Drop for List {
+   |               ^^^^ expected 1 type argument
+
 </code></pre>
-<p>The compiler is even telling us about some fancy error code, but honestly the
-problem is pretty clear, we're talking about this <code>List</code> thing but that's not
+<p>The problem is pretty clear: we're talking about this <code>List</code> thing but that's not
 real anymore. Like Option and Box, we now always have to talk about
 <code>List&lt;Something&gt;</code>.</p>
 <p>But what's the Something we use in all these impls? Just like List, we want our
@@ -1697,7 +1611,6 @@ impl&lt;T&gt; List&lt;T&gt; {
 
     pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
         self.head.take().map(|node| {
-            let node = *node;
             self.head = node.next;
             node.elem
         })
@@ -1749,7 +1662,7 @@ from a function that expects a <code>List&lt;T&gt;</code>.</p>
 <p>One thing we didn't even bother to implement last time was peeking. Let's go
 ahead and do that. All we need to do is return a reference to the element in
 the head of the list, if it exists. Sounds easy, let's try:</p>
-<pre><code>pub fn peek(&amp;self) -&gt; Option&lt;&amp;T&gt; {
+<pre><code class="language-rust ignore">pub fn peek(&amp;self) -&gt; Option&lt;&amp;T&gt; {
     self.head.map(|node| {
         &amp;node.elem
     })
@@ -1757,74 +1670,57 @@ the head of the list, if it exists. Sounds easy, let's try:</p>
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:45:9: 45:18 error: cannot move out of type `second::List&lt;T&gt;`, which defines the `Drop` trait
-src/second.rs:45         self.head.map(|node| {
-                         ^~~~~~~~~
-src/second.rs:46:14: 46:23 error: `node.elem` does not live long enough
-src/second.rs:46             &amp;node.elem
-                              ^~~~~~~~~
-note: in expansion of closure expansion
-src/second.rs:45:23: 47:10 note: expansion site
-src/second.rs:44:38: 48:6 note: reference must be valid for the anonymous lifetime #1 defined on the block at 44:37...
-src/second.rs:44     pub fn peek(&amp;self) -&gt; Option&lt;&amp;T&gt; {
-src/second.rs:45         self.head.map(|node| {
-src/second.rs:46             &amp;node.elem
-src/second.rs:47         })
-src/second.rs:48     }
-src/second.rs:45:30: 47:10 note: ...but borrowed value is only valid for the scope of parameters for function at 45:29
-src/second.rs:45         self.head.map(|node| {
-src/second.rs:46             &amp;node.elem
-src/second.rs:47         })
-error: aborting due to 2 previous errors
+error[E0515]: cannot return reference to local data `node.elem`
+  --&gt; src/second.rs:37:13
+   |
+37 |             &amp;node.elem
+   |             ^^^^^^^^^^ returns a reference to data owned by the current function
+
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/second.rs:36:9
+   |
+36 |         self.head.map(|node| {
+   |         ^^^^^^^^^ cannot move out of borrowed content
+
+
 </code></pre>
 <p><em>Sigh</em>. What now, Rust?</p>
 <p>Map takes <code>self</code> by value, which would move the Option out of the thing it's in.
 Previously this was fine because we had just <code>take</code>n it out, but now we actually
 want to leave it where it was. The <em>correct</em> way to handle this is with the
 <code>as_ref</code> method on Option, which has the following definition:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; Option&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; Option&lt;T&gt; {
     pub fn as_ref(&amp;self) -&gt; Option&lt;&amp;T&gt;;
 }
-#}</code></pre></pre>
+</code></pre>
 <p>It demotes the Option<T> to an Option to a reference to its internals. We could
 do this ourselves with an explicit match but <em>ugh no</em>. It does mean that we
 need to do an extra dereference to cut through the extra indirection, but
 thankfully the <code>.</code> operator handles that for us.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn peek(&amp;self) -&gt; Option&lt;&amp;T&gt; {
+<pre><code class="language-rust ignore">pub fn peek(&amp;self) -&gt; Option&lt;&amp;T&gt; {
     self.head.as_ref().map(|node| {
         &amp;node.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.32s
 </code></pre>
 <p>Nailed it.</p>
 <p>We can also make a <em>mutable</em> version of this method using <code>as_mut</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn peek_mut(&amp;mut self) -&gt; Option&lt;&amp;mut T&gt; {
+<pre><code class="language-rust ignore">pub fn peek_mut(&amp;mut self) -&gt; Option&lt;&amp;mut T&gt; {
     self.head.as_mut().map(|node| {
         &amp;mut node.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">lists::cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 </code></pre>
 <p>EZ</p>
 <p>Don't forget to test it:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+<pre><code class="language-rust ignore">#[test]
 fn peek() {
     let mut list = List::new();
     assert_eq!(list.peek(), None);
@@ -1834,8 +1730,8 @@ fn peek() {
     assert_eq!(list.peek(), Some(&amp;3));
     assert_eq!(list.peek_mut(), Some(&amp;mut 3));
 }
-#}</code></pre></pre>
-<pre><code>cargo test
+</code></pre>
+<pre><code class="language-text">cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
 
@@ -1853,10 +1749,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>That's nice, but we didn't really test to see if we could mutate that <code>peek_mut</code> return value, did we?  If a reference is mutable but nobody mutates it, have we really tested the mutability?  Let's try using <code>map</code> on this <code>Option&lt;&amp;mut T&gt;</code> to put a profound value in:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+<pre><code class="language-rust ignore">#[test]
 fn peek() {
     let mut list = List::new();
     assert_eq!(list.peek(), None);
@@ -1866,28 +1759,28 @@ fn peek() {
     assert_eq!(list.peek(), Some(&amp;3));
     assert_eq!(list.peek_mut(), Some(&amp;mut 3));
     list.peek_mut().map(|&amp;mut value| {
-        value = 42 });
+        value = 42
+    });
 
     assert_eq!(list.peek(), Some(&amp;42));
     assert_eq!(list.pop(), Some(42));
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:158:13: 158:23 error: re-assignment of immutable variable `value` [E0384]
-src/second.rs:158             value = 42 });
-                              ^~~~~~~~~~
-src/second.rs:158:13: 158:23 help: run `rustc --explain E0384` to see a detailed explanation
-src/second.rs:157:35: 157:40 note: prior assignment occurs here
-src/second.rs:157         list.peek_mut().map(|&amp;mut value| {
-                                                    ^~~~~
-error: aborting due to previous error
+error[E0384]: cannot assign twice to immutable variable `value`
+   --&gt; src/second.rs:100:13
+    |
+99  |         list.peek_mut().map(|&amp;mut value| {
+    |                                   -----
+    |                                   |
+    |                                   first assignment to `value`
+    |                                   help: make this binding mutable: `mut value`
+100 |             value = 42
+    |             ^^^^^^^^^^ cannot assign twice to immutable variable          ^~~~~
 </code></pre>
-<p>The compiler is complaining that <code>value</code> is immutable, but we pretty clearly wrote <code>&amp;mut value</code>; what gives?  It turns out that writing the argument of the closure that way doesn't specify that <code>value</code> is a mutable reference but instead creates a pattern that will be matched against the argument to the closure; <code>|&amp;mut value|</code> means &quot;the argument is a mutable reference, but just stick the immutable value into <code>value</code>, please.&quot;  If we just use <code>|value|</code>, the type of <code>value</code> will be <code>&amp;mut i32</code> and we can actually mutate the head:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-    #[test]
+<p>The compiler is complaining that <code>value</code> is immutable, but we pretty clearly wrote <code>&amp;mut value</code>; what gives? It turns out that writing the argument of the closure that way doesn't specify that <code>value</code> is a mutable reference. Instead, it creates a pattern that will be matched against the argument to the closure; <code>|&amp;mut value|</code> means &quot;the argument is a mutable reference, but just copy the value it points to into <code>value</code>, please.&quot;  If we just use <code>|value|</code>, the type of <code>value</code> will be <code>&amp;mut i32</code> and we can actually mutate the head:</p>
+<pre><code class="language-rust ignore">    #[test]
     fn peek() {
         let mut list = List::new();
         assert_eq!(list.peek(), None);
@@ -1898,12 +1791,13 @@ error: aborting due to previous error
         assert_eq!(list.peek_mut(), Some(&amp;mut 3));
 
         list.peek_mut().map(|value| {
-            *value = 42 });
+            *value = 42
+        });
 
         assert_eq!(list.peek(), Some(&amp;42));
         assert_eq!(list.pop(), Some(42));
     }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -1925,24 +1819,21 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 <a class="header" href="#intoiter" id="intoiter"><h1>IntoIter</h1></a>
 <p>Collections are iterated in Rust using the <em>Iterator</em> trait. It's a bit more
 complicated than <code>Drop</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub trait Iterator {
+<pre><code class="language-rust ignore">pub trait Iterator {
     type Item;
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
 }
-#}</code></pre></pre>
+</code></pre>
 <p>The new kid on the block here is <code>type Item</code>. This is declaring that every
 implementation of Iterator has an <em>associated type</em> called Item. In this case,
-this is the type of this that it can spit out when you call <code>next</code>.</p>
+this is the type that it can spit out when you call <code>next</code>.</p>
 <p>The reason Iterator yields <code>Option&lt;Self::Item&gt;</code> is because the interface
 coalesces the <code>has_next</code> and <code>get_next</code> concepts. When you have the next value,
 you yield
 <code>Some(value)</code>, and when you don't you yield <code>None</code>. This makes the
 API generally more ergonomic and safe to use and implement, while avoiding
 redundant checks and logic between <code>has_next</code> and <code>get_next</code>. Nice!</p>
-<p>Sadly, Rust has nothing like a <code>yield</code> statement, so we're going to have to
+<p>Sadly, Rust has nothing like a <code>yield</code> statement (yet), so we're going to have to
 implement the logic ourselves. Also, there's actually 3 different kinds of
 iterator each collection should endeavour to implement:</p>
 <ul>
@@ -1953,10 +1844,7 @@ iterator each collection should endeavour to implement:</p>
 <p>We actually already have all the tools to implement
 IntoIter using List's interface: just call <code>pop</code> over and over. As such, we'll
 just implement IntoIter as a newtype wrapper around List:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// Tuple structs are an alternative form of struct,
+<pre><code class="language-rust ignore">// Tuple structs are an alternative form of struct,
 // useful for trivial wrappers around other types.
 pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
 
@@ -1973,12 +1861,9 @@ impl&lt;T&gt; Iterator for IntoIter&lt;T&gt; {
         self.0.pop()
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And let's write a test:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+<pre><code class="language-rust ignore">#[test]
 fn into_iter() {
     let mut list = List::new();
     list.push(1); list.push(2); list.push(3);
@@ -1989,7 +1874,7 @@ fn into_iter() {
     assert_eq!(iter.next(), Some(1));
     assert_eq!(iter.next(), None);
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -2026,15 +1911,16 @@ pub struct Iter&lt;T&gt; {
 
 impl&lt;T&gt; List&lt;T&gt; {
     pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
-        Iter { next: self.head.map(|node| &amp;*node) }
+        Iter { next: self.head.map(|node| &amp;node) }
     }
 }
 
 impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
     type Item = &amp;T;
+
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
         self.next.map(|node| {
-            self.next = node.next.map(|node| &amp;*node);
+            self.next = node.next.map(|node| &amp;node);
             &amp;node.elem
         })
     }
@@ -2042,19 +1928,22 @@ impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:62:18: 62:26 error: missing lifetime specifier [E0106]
-src/second.rs:62     next: Option&lt;&amp;Node&lt;T&gt;&gt;,
-                                  ^~~~~~~~
-src/second.rs:62:18: 62:26 help: run `rustc --explain E0106` to see a detailed explanation
-src/second.rs:72:17: 72:19 error: missing lifetime specifier [E0106]
-src/second.rs:72     type Item = &amp;T;
-                                 ^~
-src/second.rs:72:17: 72:19 help: run `rustc --explain E0106` to see a detailed explanation
-error: aborting due to 2 previous errors
+error[E0106]: missing lifetime specifier
+  --&gt; src/second.rs:72:18
+   |
+72 |     next: Option&lt;&amp;Node&lt;T&gt;&gt;,
+   |                  ^ expected lifetime parameter
+
+error[E0106]: missing lifetime specifier
+  --&gt; src/second.rs:82:17
+   |
+82 |     type Item = &amp;T;
+   |                 ^ expected lifetime parameter
 </code></pre>
-<p>Oh god. Lifetimes. I've heard of these things. I hear they're a nightmare. Let's
-try that <code>--explain</code>:</p>
-<pre><code>&gt; rustc --explain E0106
+<p>Oh god. Lifetimes. I've heard of these things. I hear they're a nightmare.</p>
+<p>Let's try something new: see that <code>error[E0106]</code> thing? That's a compiler error
+code. We can ask rustc to explain those with, well, <code>--explain</code>:</p>
+<pre><code class="language-text">&gt; rustc --explain E0106
 This error indicates that a lifetime is missing from a type. If it is an error
 inside a function signature, the problem may be with failing to adhere to the
 lifetime elision rules (see below).
@@ -2072,7 +1961,8 @@ type MyStr&lt;'a&gt; = &amp;'a str; //correct
 ...
 
 </code></pre>
-<p>That uh... that didn't really clarify much. But it looks like we should add
+<p>That uh... that didn't really clarify much (these docs assume we understand
+Rust better than we currently do). But it looks like we should add
 those <code>'a</code> things to our struct? Let's try that.</p>
 <pre><code>pub struct Iter&lt;'a, T&gt; {
     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
@@ -2080,25 +1970,29 @@ those <code>'a</code> things to our struct? Let's try that.</p>
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:71:22: 71:29 error: wrong number of lifetime parameters: expected 1, found 0 [E0107]
-src/second.rs:71 impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
-                                      ^~~~~~~
-src/second.rs:71:22: 71:29 help: run `rustc --explain E0107` to see a detailed explanation
-src/second.rs:72:17: 72:19 error: missing lifetime specifier [E0106]
-src/second.rs:72     type Item = &amp;T;
-                                 ^~
-src/second.rs:72:17: 72:19 help: run `rustc --explain E0106` to see a detailed explanation
-error: aborting due to 2 previous errors
+error[E0106]: missing lifetime specifier
+  --&gt; src/second.rs:83:22
+   |
+83 | impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
+   |                      ^^^^^^^ expected lifetime parameter
 
+error[E0106]: missing lifetime specifier
+  --&gt; src/second.rs:84:17
+   |
+84 |     type Item = &amp;T;
+   |                 ^ expected lifetime parameter
+
+error: aborting due to 2 previous errors
 </code></pre>
-<p>Alright I'm starting to see a pattern here... let's just go whole-hog here:</p>
-<pre><code>pub struct Iter&lt;'a, T&gt; {
+<p>Alright I'm starting to see a pattern here... let's just add these little guys
+to everything we can:</p>
+<pre><code class="language-rust ignore">pub struct Iter&lt;'a, T&gt; {
     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
 }
 
 impl&lt;'a, T&gt; List&lt;T&gt; {
     pub fn iter(&amp;'a self) -&gt; Iter&lt;'a, T&gt; {
-        Iter { next: self.head.map(|node| &amp;'a *node) }
+        Iter { next: self.head.map(|node| &amp;'a node) }
     }
 }
 
@@ -2106,7 +2000,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     type Item = &amp;'a T;
     fn next(&amp;'a mut self) -&gt; Option&lt;Self::Item&gt; {
         self.next.map(|node| {
-            self.next = node.next.map(|node| &amp;'a *node);
+            self.next = node.next.map(|node| &amp;'a node);
             &amp;'a node.elem
         })
     }
@@ -2114,10 +2008,23 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:67:34: 67:35 error: expected `:`, found `*`
-src/second.rs:67         self.head.map(|node| &amp;'a **node)
-                                                  ^
-Could not compile `lists`.
+error: expected `:`, found `node`
+  --&gt; src/second.rs:77:47
+   |
+77 |         Iter { next: self.head.map(|node| &amp;'a node) }
+   |         ---- while parsing this struct        ^^^^ expected `:`
+
+error: expected `:`, found `node`
+  --&gt; src/second.rs:85:50
+   |
+85 |             self.next = node.next.map(|node| &amp;'a node);
+   |                                                  ^^^^ expected `:`
+
+error[E0063]: missing field `next` in initializer of `second::Iter&lt;'_, _&gt;`
+  --&gt; src/second.rs:77:9
+   |
+77 |         Iter { next: self.head.map(|node| &amp;'a node) }
+   |         ^^^^ missing `next`
 </code></pre>
 <p>Oh god. We broke Rust.</p>
 <p>Maybe we should actually figure out what the heck this <code>'a</code> lifetime stuff
@@ -2139,17 +2046,17 @@ roughly seperated into two classes of error:</p>
 <p>Lifetimes solve both of these problems, and 99% of the time, they do this in
 a totally transparent way.</p>
 <p>So what's a lifetime?</p>
-<p>Quite simply, a lifetime is the name of a scope somewhere in a program.
+<p>Quite simply, a lifetime is the name of a region (~block/scope) of code somewhere in a program.
 That's it. When a reference is tagged with a lifetime, we're saying that it
-has to be valid for that <em>entire</em> scope. Different things place requirements on
+has to be valid for that <em>entire</em> region. Different things place requirements on
 how long a reference must and can be valid for. The entire lifetime system is in
-turn just a constraint-solving system that tries to minimize the scope of every
+turn just a constraint-solving system that tries to minimize the region of every
 reference. If it sucessfully finds a set of lifetimes that satisfies all the
 constraints, your program compiles! Otherwise you get an error back saying that
 something didn't live long enough.</p>
 <p>Within a function body you generally can't talk about lifetimes, and wouldn't
 want to <em>anyway</em>. The compiler has full information and can infer all the
-contraints and find the minimum lifetimes. However at the type and API-level,
+contraints to find the minimum lifetimes. However at the type and API-level,
 the compiler <em>doesn't</em> have all the information. It requires you to tell it
 about the relationship between different lifetimes so it can figure out what
 you're doing.</p>
@@ -2176,17 +2083,15 @@ fn foo&lt;'a, 'b, 'c&gt;(&amp;'a self, &amp;'b B, &amp;'c C) -&gt; &amp;'a D;
 </code></pre>
 <p>So what does <code>fn foo&lt;'a&gt;(&amp;'a A) -&gt; &amp;'a B</code> <em>mean</em>? In practical terms, all it
 means is that the input must live at least as long as the output. So if you keep
-the output around for a long time, this will <em>drag</em> the scope that the <code>&amp;A</code> must
-be valid for to be larger and larger.</p>
+the output around for a long time, this will expand the region that the input must
+be valid for. Once you stop using the output, the compiler will know its ok for
+the input to become invalid too.</p>
 <p>With this system set up, Rust can ensure nothing is used after free, and nothing
 is mutated while outstanding references exist. It just makes sure the
 constraints all work out!</p>
 <p>Alright. So. Iter.</p>
 <p>Let's roll back to the no lifetimes state:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Iter&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct Iter&lt;T&gt; {
     next: Option&lt;&amp;Node&lt;T&gt;&gt;,
 }
 
@@ -2205,9 +2110,9 @@ impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
         })
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>We need to add lifetimes only in function and type signatures:</p>
-<pre><code>// Iter is generic over *some* lifetime, it doesn't care
+<pre><code class="language-rust ignore">// Iter is generic over *some* lifetime, it doesn't care
 pub struct Iter&lt;'a, T&gt; {
     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
 }
@@ -2222,7 +2127,7 @@ impl&lt;T&gt; List&lt;T&gt; {
     }
 }
 
-// *Do* have a lifetime here, because Iter does have an associated lifetime
+// We *do* have a lifetime here, because Iter has one that we need to define
 impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     // Need it here too, this is a type declaration
     type Item = &amp;'a T;
@@ -2238,93 +2143,120 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
 }
 </code></pre>
 <p>Alright, I think we got it this time y'all.</p>
-<pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:62:1: 64:2 error: the parameter type `T` may not live long enough [E0309]
-src/second.rs:62 pub struct Iter&lt;'a, T&gt; {
-src/second.rs:63     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
-src/second.rs:64 }
-src/second.rs:62:1: 64:2 help: run `rustc --explain E0309` to see a detailed explanation
-src/second.rs:62:1: 64:2 help: consider adding an explicit lifetime bound `T: 'a`...
-src/second.rs:62:1: 64:2 note: ...so that the reference type `&amp;'a second::Node&lt;T&gt;` does not outlive the data it points at
-src/second.rs:62 pub struct Iter&lt;'a, T&gt; {
-src/second.rs:63     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
-src/second.rs:64 }
-error: aborting due to previous error
-</code></pre>
-<p>(╯°□°)╯︵ ┻━┻</p>
-<pre><code class="language-text">rustc --explain E0309
-Types in type definitions have lifetimes associated with them that represent
-how long the data stored within them is guaranteed to be live. This lifetime
-must be as long as the data needs to be alive, and missing the constraint that
-denotes this will cause this error.
-
-// This won't compile because T is not constrained, meaning the data
-// stored in it is not guaranteed to last as long as the reference
-struct Foo&lt;'a, T&gt; {
-    foo: &amp;'a T
-}
-
-// This will compile, because it has the constraint on the type parameter
-struct Foo&lt;'a, T: 'a&gt; {
-    foo: &amp;'a T
-}
-</code></pre>
-<p>This is dumb. I think it's dumb. You have to do it.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Iter&lt;'a, T: 'a&gt; {
-    next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
-}
-#}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:67:22: 67:31 error: cannot move out of type `second::List&lt;T&gt;`, which defines the `Drop` trait
-src/second.rs:67         Iter { next: self.head.map(|node| &amp;*node) }
-                                      ^~~~~~~~~
-src/second.rs:67:44: 67:49 error: `*node` does not live long enough
-src/second.rs:67         Iter { next: self.head.map(|node| &amp;*node) }
-                                                            ^~~~~
-note: in expansion of closure expansion
-src/second.rs:67:36: 67:49 note: expansion site
-src/second.rs:66:42: 68:6 note: reference must be valid for the lifetime 'a as defined on the block at 66:41...
-src/second.rs:66     pub fn iter&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;'a, T&gt; {
-src/second.rs:67         Iter { next: self.head.map(|node| &amp;*node) }
-src/second.rs:68     }
-src/second.rs:67:43: 67:49 note: ...but borrowed value is only valid for the scope of parameters for function at 67:42
-src/second.rs:67         Iter { next: self.head.map(|node| &amp;*node) }
-                                                           ^~~~~~
-src/second.rs:76:25: 76:29 error: cannot move out of borrowed content
-src/second.rs:76             self.next = node.next.map(|node| &amp;*node);
-                                         ^~~~
-note: in expansion of closure expansion
-src/second.rs:75:23: 78:10 note: expansion site
-src/second.rs:76:47: 76:52 error: `*node` does not live long enough
-src/second.rs:76             self.next = node.next.map(|node| &amp;*node);
-                                                               ^~~~~
-note: in expansion of closure expansion
-src/second.rs:76:39: 76:52 note: expansion site
-note: in expansion of closure expansion
-src/second.rs:75:23: 78:10 note: expansion site
-src/second.rs:74:46: 79:6 note: reference must be valid for the lifetime 'a as defined on the block at 74:45...
-src/second.rs:74     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
-src/second.rs:75         self.next.map(|node| {
-src/second.rs:76             self.next = node.next.map(|node| &amp;*node);
-src/second.rs:77             &amp;node.elem
-src/second.rs:78         })
-src/second.rs:79     }
-src/second.rs:76:46: 76:52 note: ...but borrowed value is only valid for the scope of parameters for function at 76:45
-src/second.rs:76             self.next = node.next.map(|node| &amp;*node);
-                                                              ^~~~~~
-error: aborting due to 4 previous errors
+error[E0308]: mismatched types
+  --&gt; src/second.rs:77:22
+   |
+77 |         Iter { next: self.head.map(|node| &amp;node) }
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected struct `second::Node`, found struct `std::boxed::Box`
+   |
+   = note: expected type `std::option::Option&lt;&amp;second::Node&lt;T&gt;&gt;`
+              found type `std::option::Option&lt;&amp;std::boxed::Box&lt;second::Node&lt;T&gt;&gt;&gt;`
+
+error[E0308]: mismatched types
+  --&gt; src/second.rs:85:25
+   |
+85 |             self.next = node.next.map(|node| &amp;node);
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected struct `second::Node`, found struct `std::boxed::Box`
+   |
+   = note: expected type `std::option::Option&lt;&amp;'a second::Node&lt;T&gt;&gt;`
+              found type `std::option::Option&lt;&amp;std::boxed::Box&lt;second::Node&lt;T&gt;&gt;&gt;`
+</code></pre>
+<p>(╯°□°)╯︵ ┻━┻</p>
+<p>OK. SO. We fixed our lifetime errors but now we're getting some new type errors.</p>
+<p>We want to be storing <code>&amp;Node</code>'s, but we're getting <code>&amp;Box&lt;Node&gt;</code>s. Ok, that's easy
+enough, we just need to dereference the Box before we take our reference:</p>
+<pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
+    pub fn iter&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;'a, T&gt; {
+        Iter { next: self.head.map(|node| &amp;*node) }
+    }
+}
+
+impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
+    type Item = &amp;'a T;
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        self.next.map(|node| {
+            self.next = node.next.map(|node| &amp;*node);
+            &amp;node.elem
+        })
+    }
+}
+</code></pre>
+<pre><code class="language-text">cargo build
+   Compiling lists v0.1.0 (/Users/ABeingessner/dev/temp/lists)
+error[E0515]: cannot return reference to local data `*node`
+  --&gt; src/second.rs:77:43
+   |
+77 |         Iter { next: self.head.map(|node| &amp;*node) }
+   |                                           ^^^^^^ returns a reference to data owned by the current function
+
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/second.rs:77:22
+   |
+77 |         Iter { next: self.head.map(|node| &amp;*node) }
+   |                      ^^^^^^^^^ cannot move out of borrowed content
+
+error[E0515]: cannot return reference to local data `*node`
+  --&gt; src/second.rs:85:46
+   |
+85 |             self.next = node.next.map(|node| &amp;*node);
+   |                                              ^^^^^^ returns a reference to data owned by the current function
+
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/second.rs:85:25
+   |
+85 |             self.next = node.next.map(|node| &amp;*node);
+   |                         ^^^^^^^^^ cannot move out of borrowed content
 </code></pre>
 <p>(ﾉಥ益ಥ）ﾉ﻿ ┻━┻</p>
-<p>We forgot <code>as_ref</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Iter&lt;'a, T:'a&gt; {
+<p>We forgot <code>as_ref</code>, so we're moving the box into <code>map</code>, which means it would
+be dropped, which means our references would be dangling:</p>
+<pre><code class="language-rust ignore">pub struct Iter&lt;'a, T&gt; {
+    next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
+}
+
+impl&lt;T&gt; List&lt;T&gt; {
+    pub fn iter&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;'a, T&gt; {
+        Iter { next: self.head.as_ref().map(|node| &amp;*node) }
+    }
+}
+
+impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
+    type Item = &amp;'a T;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        self.next.map(|node| {
+            self.next = node.next.as_ref().map(|node| &amp;*node);
+            &amp;node.elem
+        })
+    }
+}
+</code></pre>
+<pre><code class="language-text">cargo build
+   Compiling lists v0.1.0 (/Users/ABeingessner/dev/temp/lists)
+error[E0308]: mismatched types
+  --&gt; src/second.rs:77:22
+   |
+77 |         Iter { next: self.head.as_ref().map(|node| &amp;*node) }
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected struct `second::Node`, found struct `std::boxed::Box`
+   |
+   = note: expected type `std::option::Option&lt;&amp;second::Node&lt;T&gt;&gt;`
+              found type `std::option::Option&lt;&amp;std::boxed::Box&lt;second::Node&lt;T&gt;&gt;&gt;`
+
+error[E0308]: mismatched types
+  --&gt; src/second.rs:85:25
+   |
+85 |             self.next = node.next.as_ref().map(|node| &amp;*node);
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected struct `second::Node`, found struct `std::boxed::Box`
+   |
+   = note: expected type `std::option::Option&lt;&amp;'a second::Node&lt;T&gt;&gt;`
+              found type `std::option::Option&lt;&amp;std::boxed::Box&lt;second::Node&lt;T&gt;&gt;&gt;`
+
+</code></pre>
+<p>😭</p>
+<p><code>as_ref</code> added another layer of indirection we need to remove:</p>
+<pre><code class="language-rust ignore">pub struct Iter&lt;'a, T&gt; {
     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
 }
 
@@ -2344,11 +2276,32 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
         })
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">lists::cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 </code></pre>
-<p>┬─┬﻿ ノ( ゜-゜ノ)</p>
+<p>🎉 🎉 🎉</p>
+<p>You may be thinking &quot;wow that <code>&amp;**</code> thing is really janky&quot;, and you're not wrong.
+Normally Rust is very good at doing this kind of conversion implicitly, through
+a process called <em>deref coercion</em>, where basically it can insert *'s
+throughout your code to make it type-check. It can do this because we have the
+borrow checker to ensure we never mess up pointers!</p>
+<p>But in this case the closure in conjunction with the fact that we
+have an <code>Option&lt;&amp;T&gt;</code> instead of <code>&amp;T</code> is a bit too complicated for it to work
+out, so we need to do this for it. Thankfully this is pretty rare, in my experience.</p>
+<p>Just for completeness' sake, we <em>could</em> give it a <em>different</em> hint with the <em>turbofish</em>:</p>
+<pre><code class="language-rust ignore">    self.next = node.next.as_ref().map::&lt;&amp;Node&lt;T&gt;, _&gt;(|node| &amp;node);
+</code></pre>
+<p>See, map is a generic function:</p>
+<pre><code class="language-rust ignore">pub fn map&lt;U, F&gt;(self, f: F) -&gt; Option&lt;U&gt;
+</code></pre>
+<p>The turbofish, <code>::&lt;&gt;</code>, lets us tell the compiler what we think the types of those
+generics should be. In this case <code>::&lt;&amp;Node&lt;T&gt;, _&gt;</code> says &quot;it should return a
+<code>&amp;Node&lt;T&gt;</code>, and I don't know/care about that other type&quot;.</p>
+<p>This in turn lets the compiler know that <code>&amp;node</code> should have deref coercion
+applied to it, so we don't need to manually apply all those *'s!</p>
+<p>But in this case I don't think it's really an improvement, this was just a
+thinly veiled excuse to show off deref coercion and the sometimes-useful turbofish. 😅</p>
 <p>Let's write a test to be sure we didn't no-op it or anything:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -2384,7 +2337,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Heck yeah.</p>
-<p>Finally, it should be noted that we actually apply lifetime elision here:</p>
+<p>Finally, it should be noted that we <em>can</em> actually apply lifetime elision here:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
@@ -2405,63 +2358,58 @@ impl&lt;T&gt; List&lt;T&gt; {
 }
 #}</code></pre></pre>
 <p>Yay less lifetimes!</p>
+<p>Or, if you're not comfortable &quot;hiding&quot; that a struct contains a lifetime,
+you can use the Rust 2018 &quot;explicitly elided lifetime&quot; syntax,  <code>'_</code>:</p>
+<pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
+    pub fn iter(&amp;self) -&gt; Iter&lt;'_, T&gt; {
+        Iter { next: self.head.as_ref().map(|node| &amp;**node) }
+    }
+}
+</code></pre>
 <a class="header" href="#itermut" id="itermut"><h1>IterMut</h1></a>
-<p>I'm gonna be honest, IterMut is crazy. Which in itself seems like a crazy
+<p>I'm gonna be honest, IterMut is WILD. Which in itself seems like a wild
 thing to say; surely it's identical to Iter!</p>
-<p>Semantically, yes. However the nature of shared and mutable references means
+<p>Semantically, yes, but the nature of shared and mutable references means
 that Iter is &quot;trivial&quot; while IterMut is Legit Wizard Magic.</p>
 <p>The key insight comes from our implementation of Iterator for Iter:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
+<pre><code class="language-rust ignore">impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     type Item = &amp;'a T;
 
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; { /* stuff */ }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Which can be desugarred to:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
+<pre><code class="language-rust ignore">impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     type Item = &amp;'a T;
 
     fn next&lt;'b&gt;(&amp;'b mut self) -&gt; Option&lt;&amp;'a T&gt; { /* stuff */ }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>The signature of <code>next</code> establishes <em>no</em> constraint between the lifetime
 of the input and the output! Why do we care? It means we can call <code>next</code>
 over and over unconditionally!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let mut list = List::new();
+<pre><code class="language-rust ignore">let mut list = List::new();
 list.push(1); list.push(2); list.push(3);
 
 let mut iter = list.iter();
 let x = iter.next().unwrap();
 let y = iter.next().unwrap();
 let z = iter.next().unwrap();
-#}</code></pre></pre>
+</code></pre>
 <p>Cool!</p>
 <p>This is <em>definitely fine</em> for shared references because the whole point is that
 you can have tons of them at once. However mutable references <em>can't</em> coexist.
 The whole point is that they're exclusive.</p>
-<p>The end result is that it's notably harder to write an IterMut using safe
+<p>The end result is that it's notably harder to write IterMut using safe
 code (and we haven't gotten into what that even means yet...). Surprisingly,
-IterMut can actually be implemented for many structures completely safely!
-Borrow checking magic!</p>
+IterMut can actually be implemented for many structures completely safely!</p>
 <p>We'll start by just taking the Iter code and changing everything to be mutable:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct IterMut&lt;'a, T: 'a&gt; {
+<pre><code class="language-rust ignore">pub struct IterMut&lt;'a, T&gt; {
     next: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;,
 }
 
 impl&lt;T&gt; List&lt;T&gt; {
-    pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;T&gt; {
+    pub fn iter_mut(&amp;self) -&gt; IterMut&lt;'_, T&gt; {
         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
     }
 }
@@ -2476,66 +2424,65 @@ impl&lt;'a, T&gt; Iterator for IterMut&lt;'a, T&gt; {
         })
     }
 }
-#}</code></pre></pre>
-<pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:96:25: 96:34 error: cannot borrow immutable field `self.head` as mutable
-src/second.rs:96         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
-                                         ^~~~~~~~~
-src/second.rs:104:9: 104:13 error: cannot move out of borrowed content
-src/second.rs:104         self.next.map(|node| {
-                          ^~~~
-error: aborting due to previous error
 </code></pre>
-<p>Oops! I actually accidentally made an error when writing the
-<code>iter</code> impl, but Copy saved the day. <code>&amp;</code> is Copy, as we saw before. But
-that also means <code>Option&lt;&amp;&gt;</code> is <em>also</em> Copy. So when we did <code>self.next.map</code> it
+<pre><code class="language-text">&gt; cargo build
+error[E0596]: cannot borrow `self.head` as mutable, as it is behind a `&amp;` reference
+  --&gt; src/second.rs:95:25
+   |
+94 |     pub fn iter_mut(&amp;self) -&gt; IterMut&lt;'_, T&gt; {
+   |                     ----- help: consider changing this to be a mutable reference: `&amp;mut self`
+95 |         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
+   |                         ^^^^^^^^^ `self` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+
+error[E0507]: cannot move out of borrowed content
+   --&gt; src/second.rs:103:9
+    |
+103 |         self.next.map(|node| {
+    |         ^^^^^^^^^ cannot move out of borrowed content
+</code></pre>
+<p>Ok looks like we've got two different errors here. The first one looks really clear
+though, it even tells us how to fix it! You can't upgrade a shared reference to a mutable
+one, so <code>iter_mut</code> needs to take <code>&amp;mut self</code>. Just a silly copy-paste error.</p>
+<pre><code class="language-rust ignore">pub fn iter_mut(&amp;self) -&gt; IterMut&lt;'_, T&gt; {
+    IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
+}
+</code></pre>
+<p>What about the other one?</p>
+<p>Oops! I actually accidentally made an error when writing the <code>iter</code> impl in
+the previous section, and we were just getting lucky that it worked!</p>
+<p>We have just had our first run in with the magic of Copy. When we introduced [ownership][] we
+said that when you move stuff, you can't use it anymore. For some types, this
+makes perfect sense. Our good friend Box manages an allocation on the heap for
+us, and we certainly don't want two pieces of code to think that they need to
+free its memory.</p>
+<p>However for other types this is <em>garbage</em>. Integers have no
+ownership semantics; they're just meaningless numbers! This is why integers are
+marked as Copy. Copy types are known to be perfectly copyable by a bitwise copy.
+As such, they have a super power: when moved, the old value <em>is</em> still usable.
+As a consequence, you can even move a Copy type out of a reference without
+replacement!</p>
+<p>All numeric primitives in rust (i32, u64, bool, f32, char, etc...) are Copy.
+You can also declare any user-defined type to be Copy as well, as long as
+all its components are Copy.</p>
+<p>Critically to why this code was working, shared references are also Copy!
+Because <code>&amp;</code> is copy, <code>Option&lt;&amp;&gt;</code> is <em>also</em> Copy. So when we did <code>self.next.map</code> it
 was fine because the Option was just copied. Now we can't do that, because
 <code>&amp;mut</code> isn't Copy (if you copied an &amp;mut, you'd have two &amp;mut's to the same
-location in memory, which is verboten). Instead, we should properly <code>take</code>
+location in memory, which is forbidden). Instead, we should properly <code>take</code>
 the Option to get it.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+<pre><code class="language-rust ignore">fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
     self.next.take().map(|node| {
         self.next = node.next.as_mut().map(|node| &amp;mut **node);
         &amp;mut node.elem
     })
 }
-#}</code></pre></pre>
-<pre><code class="language-text">&gt; cargo build
-src/second.rs:65:25: 65:34 error: cannot borrow immutable field `self.head` as mutable
-src/second.rs:65         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
-                                         ^~~~~~~~~
-error: aborting due to previous error
 </code></pre>
-<p>Uh... what? Looks we messed up mutability somewhere in <code>iter_mut</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn iter_mut(&amp;self) -&gt; IterMut&lt;T&gt; {
-    IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
-}
-#}</code></pre></pre>
-<p>Classic copy-paste error. <code>self</code> is a shared reference! We can't
-get mutable references out of that!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;T&gt; {
-    IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
-}
-#}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 </code></pre>
 <p>Uh... wow. Holy shit! IterMut Just Works!</p>
 <p>Let's test this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+<pre><code class="language-rust ignore">#[test]
 fn iter_mut() {
     let mut list = List::new();
     list.push(1); list.push(2); list.push(3);
@@ -2545,7 +2492,7 @@ fn iter_mut() {
     assert_eq!(iter.next(), Some(&amp;mut 2));
     assert_eq!(iter.next(), Some(&amp;mut 1));
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -2574,7 +2521,7 @@ stupid that gets in the way! Let's be clear here:</p>
 <p>We have just implemented a piece of code that takes a singly-linked list, and
 returns a mutable reference to every single element in the list at most once.
 And it's statically verified to do that. And it's totally safe. And we didn't
-have to do anything crazy.</p>
+have to do anything wild.</p>
 <p>That's kind of a big deal, if you ask me. There are a couple reasons why
 this works:</p>
 <ul>
@@ -2586,10 +2533,12 @@ definitely disjoint.</li>
 </ul>
 <p>It turns out that you can apply this basic logic to get a safe IterMut for an
 array or a tree as well! You can even make the iterator DoubleEnded, so that
-you can consume the iterator from the front <em>and</em> the back at once! Wild!</p>
+you can consume the iterator from the front <em>and</em> the back at once! Woah!</p>
 <a class="header" href="#final-code" id="final-code"><h1>Final Code</h1></a>
 <p>Alright, that's it for the second list; here's the final code!</p>
 <pre><pre class="playpen"><code class="language-rust"># fn main() {}
+
+use std::mem;
 
 pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
@@ -2601,18 +2550,6 @@ struct Node&lt;T&gt; {
     elem: T,
     next: Link&lt;T&gt;,
 }
-
-pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
-
-pub struct Iter&lt;'a, T:'a&gt; {
-    next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
-}
-
-pub struct IterMut&lt;'a, T: 'a&gt; {
-    next: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;,
-}
-
-
 
 impl&lt;T&gt; List&lt;T&gt; {
     pub fn new() -&gt; Self {
@@ -2630,7 +2567,6 @@ impl&lt;T&gt; List&lt;T&gt; {
 
     pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
         self.head.take().map(|node| {
-            let node = *node;
             self.head = node.next;
             node.elem
         })
@@ -2652,40 +2588,50 @@ impl&lt;T&gt; List&lt;T&gt; {
         IntoIter(self)
     }
 
-    pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
+    pub fn iter(&amp;self) -&gt; Iter&lt;'_, T&gt; {
         Iter { next: self.head.as_ref().map(|node| &amp;**node) }
     }
 
-    pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;T&gt; {
+    pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;'_, T&gt; {
         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
     }
 }
 
 impl&lt;T&gt; Drop for List&lt;T&gt; {
     fn drop(&amp;mut self) {
-        let mut cur_link = self.head.take();
+        let mut cur_link = mem::replace(&amp;mut self.head, None);
         while let Some(mut boxed_node) = cur_link {
             cur_link = boxed_node.next.take();
         }
     }
 }
 
+pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
+
 impl&lt;T&gt; Iterator for IntoIter&lt;T&gt; {
     type Item = T;
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        // access fields of a tuple struct numerically
         self.0.pop()
     }
 }
 
+pub struct Iter&lt;'a, T&gt; {
+    next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
+}
+
 impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     type Item = &amp;'a T;
-
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
         self.next.map(|node| {
-            self.next = node.next.as_ref().map(|node| &amp;**node);
+            self.next = node.next.as_ref().map::&lt;&amp;Node&lt;T&gt;, _&gt;(|node| &amp;node);
             &amp;node.elem
         })
     }
+}
+
+pub struct IterMut&lt;'a, T&gt; {
+    next: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;,
 }
 
 impl&lt;'a, T&gt; Iterator for IterMut&lt;'a, T&gt; {
@@ -2698,7 +2644,6 @@ impl&lt;'a, T&gt; Iterator for IterMut&lt;'a, T&gt; {
         })
     }
 }
-
 
 #[cfg(test)]
 mod test {
@@ -2742,6 +2687,13 @@ mod test {
 
         assert_eq!(list.peek(), Some(&amp;3));
         assert_eq!(list.peek_mut(), Some(&amp;mut 3));
+
+        list.peek_mut().map(|value| {
+            *value = 42
+        });
+
+        assert_eq!(list.peek(), Some(&amp;42));
+        assert_eq!(list.pop(), Some(42));
     }
 
     #[test]
@@ -2753,6 +2705,7 @@ mod test {
         assert_eq!(iter.next(), Some(3));
         assert_eq!(iter.next(), Some(2));
         assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), None);
     }
 
     #[test]
@@ -2808,9 +2761,13 @@ list2 = tail(list1) = B -&gt; C -&gt; D
 list3 = push(list2, X) = X -&gt; B -&gt; C -&gt; D
 </code></pre>
 <p>But at the end we want the memory to look like this:</p>
-<pre><code class="language-text">list1 -&gt; A ---v
+<pre><code class="language-text">list1 -&gt; A ---+
+              |
+              v
 list2 ------&gt; B -&gt; C -&gt; D
-list3 -&gt; X ---^
+              ^
+              |
+list3 -&gt; X ---+
 </code></pre>
 <p>This just can't work with Boxes, because ownership of <code>B</code> is <em>shared</em>. Who
 should free it? If I drop list2, does it free B? With boxes we certainly would
@@ -2821,15 +2778,15 @@ be freed only after everyone stops looking at it. Hooray!</p>
 <p>Rust doesn't have anything like the garbage collectors these languages have.
 They have <em>tracing</em> GC, which will dig through all the memory that's sitting
 around at runtime and figure out what's garbage automatically. Instead, all
-Rust has today is <em>reference counting</em>. Reference counting is basically a
-poor-man's GC. For many workloads, it has significantly less throughput
+Rust has today is <em>reference counting</em>. Reference counting can be thought of
+as a very simple GC. For many workloads, it has significantly less throughput
 than a tracing collector, and it completely falls over if you manage to
-build cycles. Thankfully, for our usecase we'll never run into cycles
+build cycles. But hey, it's all we've got! Thankfully, for our usecase we'll never run into cycles
 (feel free to try to prove this to yourself -- I sure won't).</p>
-<p>So how do we do reference counted garbage collection? <code>Rc</code>! Rc is just like
+<p>So how do we do reference-counted garbage collection? <code>Rc</code>! Rc is just like
 Box, but we can duplicate it, and its memory will <em>only</em> be freed when <em>all</em>
 the Rc's derived from it are dropped. Unforuntately, this flexibility comes at
-a serious cost: we can only Deref an Rc. No DerefMut or DerefMove. This means
+a serious cost: we can only take a shared reference to its internals. This means
 we can't ever really get data out of one of our lists, nor can we mutate them.</p>
 <p>So what's our layout gonna look like? Well, previously we had:</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -2865,10 +2822,15 @@ struct Node&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/third.rs:5:23: 5:34 error: use of undeclared type name `Rc` [E0412]
-src/third.rs:5 type Link&lt;T&gt; = Option&lt;Rc&lt;Node&lt;T&gt;&gt;&gt;;
-                                     ^~~~~~~~~~~
-error: aborting due to previous error
+error[E0412]: cannot find type `Rc` in this scope
+ --&gt; src/third.rs:5:23
+  |
+5 | type Link&lt;T&gt; = Option&lt;Rc&lt;Node&lt;T&gt;&gt;&gt;;
+  |                       ^^ not found in this scope
+help: possible candidate is found in another module, you can import it into scope
+  |
+1 | use std::rc::Rc;
+  |
 </code></pre>
 <p>Oh dang, sick burn. Unlike everything we used for our mutable lists, Rc is so
 lame that it's not even implicitly imported into every single Rust program.
@@ -2880,18 +2842,28 @@ use std::rc::Rc;
 #}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/third.rs:4:5: 4:18 warning: struct field is never used: `head`, #[warn(dead_code)] on by default
-src/third.rs:4     head: Link&lt;T&gt;,
-                   ^~~~~~~~~~~~~
-src/third.rs:10:5: 10:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/third.rs:10     elem: T,
-                    ^~~~~~~
-src/third.rs:11:5: 11:18 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/third.rs:11     next: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
+warning: field is never used: `head`
+ --&gt; src/third.rs:4:5
+  |
+4 |     head: Link&lt;T&gt;,
+  |     ^^^^^^^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `elem`
+  --&gt; src/third.rs:10:5
+   |
+10 |     elem: T,
+   |     ^^^^^^^
+
+warning: field is never used: `next`
+  --&gt; src/third.rs:11:5
+   |
+11 |     next: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
 </code></pre>
-<p>Seems legit. Rust continues to be a complete joke to write. I bet we can just
-find-and-replace Box with Rc and call it a day.</p>
+<p>Seems legit. Rust continues to be a <em>completely</em> trivial to write. I bet we can just
+find-and-replace Box with Rc and call it a day!</p>
 <p>...</p>
 <p>No. No we can't.</p>
 <a class="header" href="#basics" id="basics"><h1>Basics</h1></a>
@@ -2931,12 +2903,19 @@ pub fn append(&amp;self, elem: T) -&gt; List&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/third.rs:10:5: 10:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/third.rs:10     elem: T,
-                    ^~~~~~~
-src/third.rs:11:5: 11:18 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/third.rs:11     next: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
+warning: field is never used: `elem`
+  --&gt; src/third.rs:10:5
+   |
+10 |     elem: T,
+   |     ^^^^^^^
+   |
+   = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `next`
+  --&gt; src/third.rs:11:5
+   |
+11 |     next: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
 </code></pre>
 <p>Wow, Rust is really hard-nosed about actually using fields. It can tell no
 consumer can ever actually observe the use of these fields! Still, we seem good
@@ -2953,15 +2932,14 @@ pub fn tail(&amp;self) -&gt; List&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/third.rs:28:22: 28:61 error: mismatched types:
- expected `core::option::Option&lt;alloc::rc::Rc&lt;third::Node&lt;_&gt;&gt;&gt;`,
-    found `core::option::Option&lt;core::option::Option&lt;alloc::rc::Rc&lt;third::Node&lt;T&gt;&gt;&gt;&gt;`
-(expected struct `alloc::rc::Rc`,
-    found enum `core::option::Option`) [E0308]
-src/third.rs:28         List { head: self.head.as_ref().map(|node| node.next.clone()) }
-                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src/third.rs:28:22: 28:61 help: run `rustc --explain E0308` to see a detailed explanation
-error: aborting due to previous error
+error[E0308]: mismatched types
+  --&gt; src/third.rs:27:22
+   |
+27 |         List { head: self.head.as_ref().map(|node| node.next.clone()) }
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected struct `std::rc::Rc`, found enum `std::option::Option`
+   |
+   = note: expected type `std::option::Option&lt;std::rc::Rc&lt;_&gt;&gt;`
+              found type `std::option::Option&lt;std::option::Option&lt;std::rc::Rc&lt;_&gt;&gt;&gt;`
 </code></pre>
 <p>Hrm, we messed up. <code>map</code> expects us to return a Y, but here we're returning an
 <code>Option&lt;Y&gt;</code>. Thankfully, this is another common Option pattern, and we can just
@@ -3042,16 +3020,16 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Perfect!</p>
-<p>Iter is identical to the mutable list case:</p>
+<p>Iter is also identical to how it was for our mutable list:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-pub struct Iter&lt;'a, T:'a&gt; {
+pub struct Iter&lt;'a, T&gt; {
     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
 }
 
 impl&lt;T&gt; List&lt;T&gt; {
-    pub fn iter&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;'a, T&gt; {
+    pub fn iter(&amp;self) -&gt; Iter&lt;'_, T&gt; {
         Iter { next: self.head.as_ref().map(|node| &amp;**node) }
     }
 }
@@ -3111,10 +3089,7 @@ Admittedly, this isn't as bad of a problem for the immutable list: if we ever
 hit another node that's the head of another list <em>somewhere</em>, we won't
 recursively drop it. However it's still a thing we should care about, and
 how to deal with isn't as clear. Here's how we solved it before:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; Drop for List&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; Drop for List&lt;T&gt; {
     fn drop(&amp;mut self) {
         let mut cur_link = self.head.take();
         while let Some(mut boxed_node) = cur_link {
@@ -3122,54 +3097,17 @@ impl&lt;T&gt; Drop for List&lt;T&gt; {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>The problem is the body of the loop:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-cur_link = boxed_node.next.take();
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">cur_link = boxed_node.next.take();
+</code></pre>
 <p>This is mutating the Node inside the Box, but we can't do that with Rc; it only
-gives us shared access. There's two ways to handle this.</p>
-<p>The first way is that we can keep grabbing the tail of the list and dropping the
-previous one to decrement its count. This will prevent the old list from
-recursively dropping the rest of the list because we hold an outstanding
-reference to it. This has the unfortunate problem that we traverse the <em>entire</em>
-list whenever we drop it. In particular this means building a list of length
-n in place takes O(n<sup>2</sup>) as we traverse a lists of length <code>n-1</code>,
-<code>n-2</code>, .., <code>1</code> to guard against overflow (this is really really really
-really bad).</p>
-<p>The second way is if we could identify that we're the last list that knows
-about this node, we could in <em>principle</em> actually move the Node out of the Rc.
-Then we could also know when to stop: whenever we <em>can't</em> hoist out the Node.
-For reference, the function is called <code>try_unwrap</code>.</p>
-<p>Rc actually lets you do this... Honestly, I'd rather
-risk blowing the stack sometimes than iterate every list whenever it gets
-dropped. Still if you'd rather not blow the stack, here's the first
-(O(n)) solution:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; Drop for List&lt;T&gt; {
-    fn drop(&amp;mut self) {
-        // Steal the list's head
-        let mut cur_list = self.head.take();
-        while let Some(node) = cur_list {
-            // Clone the current node's next node.
-            cur_list = node.next.clone();
-            // Node dropped here. If the old node had
-            // refcount 1, then it will be dropped and freed, but it won't
-            // be able to fully recurse and drop its child, because we
-            // hold another Rc to it.
-        }
-    }
-}
-#}</code></pre></pre>
-<p>and here's the second (amortized O(1)) solution:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; Drop for List&lt;T&gt; {
+gives us shared access, because any number of other Rc's could be pointing at it.</p>
+<p>But if we know that we're the last list that knows about this node, it
+<em>would</em> actually be fine to move the Node out of the Rc. Then we could also
+know when to stop: whenever we <em>can't</em> hoist out the Node.</p>
+<p>And look at that, Rc has a method that does exactly this: <code>try_unwrap</code>:</p>
+<pre><code class="language-rust ignore">impl&lt;T&gt; Drop for List&lt;T&gt; {
     fn drop(&amp;mut self) {
         let mut head = self.head.take();
         while let Some(node) = head {
@@ -3181,12 +3119,31 @@ impl&lt;T&gt; Drop for List&lt;T&gt; {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
+<pre><code class="language-text">src::cargo test
+   Compiling lists v0.1.0 (/Users/ABeingessner/dev/too-many-lists/lists)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.10s
+     Running /Users/ABeingessner/dev/too-many-lists/lists/target/debug/deps/lists-86544f1d97438f1f
+
+running 8 tests
+test first::test::basics ... ok
+test second::test::basics ... ok
+test second::test::into_iter ... ok
+test second::test::iter ... ok
+test second::test::iter_mut ... ok
+test second::test::peek ... ok
+test third::test::basics ... ok
+test third::test::iter ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+</code></pre>
+<p>Great!
+Nice.</p>
 <a class="header" href="#arc" id="arc"><h1>Arc</h1></a>
 <p>One reason to use an immutable linked list is to share data across threads.
 After all, shared mutable state is the root of all evil, and one way to solve
 that is to kill the <em>mutable</em> part forever.</p>
-<p>Except our list isn't thread safe at all. In order to be thread-safe, we need
+<p>Except our list isn't thread-safe at all. In order to be thread-safe, we need
 to fiddle with reference counts <em>atomically</em>. Otherwise, two threads could
 try to increment the reference count, <em>and only one would happen</em>. Then the
 list could get freed too soon!</p>
@@ -3219,7 +3176,7 @@ threads is to put them behind a shared reference, which makes them immutable!</p
 <em>interior mutability</em>. So far we've only really interacted with <em>inherited
 mutability</em> (AKA external mutability): the mutability of a value is inherited
 from the mutability of its container. That is, you can't just randomly mutate
-some field of a non-mutable type because you feel like it.</p>
+some field of a non-mutable value because you feel like it.</p>
 <p>Interior mutability types violate this: they let you mutate through a shared
 reference. There are two major classes of interior mutability: cells, which
 only work in a single-threaded context; and locks, which work in a
@@ -3229,8 +3186,8 @@ use them. There's also atomics, which are primitives that act like a lock.</p>
 interior mutability for their <em>reference count</em>. Worse, this reference count
 is shared between every instance! Rc just uses a cell, which means it's not
 thread safe. Arc uses an atomic, which means it <em>is</em> thread safe. Of course,
-you can't magically make a type thread safe by putting it in Arc. Arc only can
-derive thread-safety like any other types.</p>
+you can't magically make a type thread safe by putting it in Arc. Arc can only
+derive thread-safety like any other type.</p>
 <p>I really really really don't want to get into the finer details of atomic
 memory models or non-derived Send implementations. Needless to say, as you get
 deeper into Rust's thread-safety story, stuff gets more complicated. As a
@@ -3255,13 +3212,6 @@ struct Node&lt;T&gt; {
     next: Link&lt;T&gt;,
 }
 
-pub struct Iter&lt;'a, T:'a&gt; {
-    next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
-}
-
-
-
-
 impl&lt;T&gt; List&lt;T&gt; {
     pub fn new() -&gt; Self {
         List { head: None }
@@ -3279,12 +3229,29 @@ impl&lt;T&gt; List&lt;T&gt; {
     }
 
     pub fn head(&amp;self) -&gt; Option&lt;&amp;T&gt; {
-        self.head.as_ref().map(|node| &amp;node.elem)
+        self.head.as_ref().map(|node| &amp;node.elem )
     }
 
-    pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
+    pub fn iter(&amp;self) -&gt; Iter&lt;'_, T&gt; {
         Iter { next: self.head.as_ref().map(|node| &amp;**node) }
     }
+}
+
+impl&lt;T&gt; Drop for List&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        let mut head = self.head.take();
+        while let Some(node) = head {
+            if let Ok(mut node) = Rc::try_unwrap(node) {
+                head = node.next.take();
+            } else {
+                break;
+            }
+        }
+    }
+}
+
+pub struct Iter&lt;'a, T&gt; {
+    next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
 }
 
 impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
@@ -3297,8 +3264,6 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
         })
     }
 }
-
-
 
 #[cfg(test)]
 mod test {
@@ -3324,7 +3289,6 @@ mod test {
         // Make sure empty tail works
         let list = list.tail();
         assert_eq!(list.head(), None);
-
     }
 
     #[test]
@@ -3355,22 +3319,20 @@ pub mod fourth;
 </code></pre>
 <p>This will be another clean-room operation, though as usual we'll probably find
 some logic that applies verbatim again.</p>
+<p>Disclaimer: this chapter is basically a demonstration that this is a very bad idea.</p>
 <a class="header" href="#layout-1" id="layout-1"><h1>Layout</h1></a>
 <p>The key to our design is the <code>RefCell</code> type. The heart of
 RefCell is a pair of methods:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn borrow&lt;'a&gt;(&amp;'a self) -&gt; Ref&lt;'a, T&gt;
-fn borrow_mut&lt;'a&gt;(&amp;'a self) -&gt; RefMut&lt;'a, T&gt;
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">fn borrow(&amp;self) -&gt; Ref&lt;'_, T&gt;;
+fn borrow_mut(&amp;self) -&gt; RefMut&lt;'_, T&gt;;
+</code></pre>
 <p>The rules for <code>borrow</code> and <code>borrow_mut</code> are exactly those of <code>&amp;</code> and <code>&amp;mut</code>:
 you can call <code>borrow</code> as many times as you want, but <code>borrow_mut</code> requires
 exclusivity.</p>
 <p>Rather than enforcing this statically, RefCell enforces them at runtime.
 If you break the rules, RefCell will just panic and crash the program.
 Why does it return these Ref and RefMut things? Well, they basically behave
-like <code>Rc</code>s but for borrowing. They keep the RefCell borrowed until they go out
+like <code>Rc</code>s but for borrowing. They also keep the RefCell borrowed until they go out
 of scope. We'll get to that later.</p>
 <p>Now with Rc and RefCell we can become... an incredibly verbose pervasively
 mutable garbage collected language that can't collect cycles! Y-yaaaaay...</p>
@@ -3400,27 +3362,37 @@ struct Node&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:5:5: 5:18 warning: struct field is never used: `head`, #[warn(dead_code)] on by default
-src/fourth.rs:5     head: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
-src/fourth.rs:6:5: 6:18 warning: struct field is never used: `tail`, #[warn(dead_code)] on by default
-src/fourth.rs:6     tail: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
-src/fourth.rs:11:1: 15:2 warning: struct is never used: `Node`, #[warn(dead_code)] on by default
-src/fourth.rs:11 struct Node&lt;T&gt; {
-src/fourth.rs:12     elem: T,
-src/fourth.rs:13     next: Link&lt;T&gt;,
-src/fourth.rs:14     prev: Link&lt;T&gt;,
-src/fourth.rs:15 }
-src/fourth.rs:12:5: 12:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fourth.rs:12     elem: T,
-                     ^~~~~~~
-src/fourth.rs:13:5: 13:18 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/fourth.rs:13     next: Link&lt;T&gt;,
-                     ^~~~~~~~~~~~~
-src/fourth.rs:14:5: 14:18 warning: struct field is never used: `prev`, #[warn(dead_code)] on by default
-src/fourth.rs:14     prev: Link&lt;T&gt;,
-                     ^~~~~~~~~~~~~
+warning: field is never used: `head`
+ --&gt; src/fourth.rs:5:5
+  |
+5 |     head: Link&lt;T&gt;,
+  |     ^^^^^^^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `tail`
+ --&gt; src/fourth.rs:6:5
+  |
+6 |     tail: Link&lt;T&gt;,
+  |     ^^^^^^^^^^^^^
+
+warning: field is never used: `elem`
+  --&gt; src/fourth.rs:12:5
+   |
+12 |     elem: T,
+   |     ^^^^^^^
+
+warning: field is never used: `next`
+  --&gt; src/fourth.rs:13:5
+   |
+13 |     next: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
+
+warning: field is never used: `prev`
+  --&gt; src/fourth.rs:14:5
+   |
+14 |     prev: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
 </code></pre>
 <p>Hey, it built! Lots of dead code warnings, but it built! Let's try to use it.</p>
 <a class="header" href="#building-up" id="building-up"><h1>Building Up</h1></a>
@@ -3490,14 +3462,17 @@ pub fn push_front(&amp;mut self, elem: T) {
 #}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:37:17: 37:30 error: attempted access of field `prev` on type `alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`, but no field with that name was found
-src/fourth.rs:37                 old_head.prev = Some(new_head.clone());
-                                 ^~~~~~~~~~~~~
-src/fourth.rs:38:17: 38:30 error: attempted access of field `next` on type `alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`, but no field with that name was found
-src/fourth.rs:38                 new_head.next = Some(old_head);
-                                 ^~~~~~~~~~~~~
-error: aborting due to 2 previous errors
-Could not compile `lists`.
+error[E0609]: no field `prev` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
+  --&gt; src/fourth.rs:39:26
+   |
+39 |                 old_head.prev = Some(new_head.clone()); // +1 new_head
+   |                          ^^^^ unknown field
+
+error[E0609]: no field `next` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
+  --&gt; src/fourth.rs:40:26
+   |
+40 |                 new_head.next = Some(old_head);         // +1 old_head
+   |                          ^^^^ unknown field
 </code></pre>
 <p>Alright. Compiler error. Good start. Good start.</p>
 <p>Why can't we access the <code>prev</code> and <code>next</code> fields on our nodes? It worked before
@@ -3590,18 +3565,19 @@ pub fn push_front(&amp;mut self, elem: T) {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:12:5: 12:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fourth.rs:12     elem: T,
-                     ^~~~~~~
+warning: field is never used: `elem`
+  --&gt; src/fourth.rs:12:5
+   |
+12 |     elem: T,
+   |     ^^^^^^^
+   |
+   = note: #[warn(dead_code)] on by default
 </code></pre>
 <p>Hey, it built! Docs win again.</p>
 <a class="header" href="#breaking-down" id="breaking-down"><h1>Breaking Down</h1></a>
 <p><code>pop_front</code> should be the same basic logic as <code>push_front</code>, but backwards. Let's
 try:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
+<pre><code class="language-rust ignore">pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
     // need to take the old head, ensuring it's -2
     self.head.take().map(|old_head| {                         // -1 old
         match old_head.borrow_mut().next.take() {
@@ -3620,22 +3596,17 @@ pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
         old_head.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:63:13: 63:26 error: attempted access of field `elem` on type `alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`, but no field with that name was found
-src/fourth.rs:63             old_head.elem
-                             ^~~~~~~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:49:30: 64:10 note: expansion site
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0609]: no field `elem` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
+  --&gt; src/fourth.rs:64:22
+   |
+64 |             old_head.elem
+   |                      ^^^^ unknown field
 </code></pre>
 <p>ACK. <em>RefCells</em>. Gotta <code>borrow_mut</code> again I guess...</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
+<pre><code class="language-rust ignore">pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
     self.head.take().map(|old_head| {
         match old_head.borrow_mut().next.take() {
             Some(new_head) =&gt; {
@@ -3649,16 +3620,14 @@ pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
         old_head.borrow_mut().elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:58:13: 58:34 error: cannot move out of borrowed content
-src/fourth.rs:58             old_head.borrow_mut().elem
-                             ^~~~~~~~~~~~~~~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:48:30: 59:10 note: expansion site
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/fourth.rs:64:13
+   |
+64 |             old_head.borrow_mut().elem
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot move out of borrowed content
 </code></pre>
 <p><em>sigh</em></p>
 <blockquote>
@@ -3673,78 +3642,49 @@ an <code>&amp;mut Node&lt;T&gt;</code>, but we can't move out of that!</p>
 <p>Consumes the RefCell, returning the wrapped value.</p>
 </blockquote>
 <p>That looks promising!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-old_head.into_inner().elem
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">old_head.into_inner().elem
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:58:13: 58:21 error: cannot move out of borrowed content
-src/fourth.rs:58             old_head.into_inner().elem
-                             ^~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:48:30: 59:10 note: expansion site
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0507]: cannot move out of an `Rc`
+  --&gt; src/fourth.rs:64:13
+   |
+64 |             old_head.into_inner().elem
+   |             ^^^^^^^^ cannot move out of an `Rc`
 </code></pre>
-<p>Uh... what? Nothing changed! Dang compiler!</p>
-<p>It's actually telling us the right thing, but it's not giving us quite enough
-information to figure it out. So I'm just going to cut the chase: where
-previously we were trying to move a <code>T</code> out of the <code>&amp;mut Node&lt;T&gt;</code>, now we're
-trying to move a <code>RefCell&lt;T&gt;</code> out of an <code>&amp;RefCell&lt;T&gt;</code>. We've just pushed the
-problem up the ownership chain.</p>
-<p>As we saw in the previous chapter, <code>Rc&lt;T&gt;</code> only lets us get shared references
+<p>Ah dang. <code>into_inner</code> wants to move out the RefCell, but we can't, because it's
+in an <code>Rc</code>. As we saw in the previous chapter, <code>Rc&lt;T&gt;</code> only lets us get shared references
 into its internals. That makes sense, because that's <em>the whole point</em> of
 reference counted pointers: they're shared!</p>
 <p>This was a problem for us when we wanted to implement Drop for our reference
-counted list, because we needed to gain ownership of the nodes to drop them
-one at a time.</p>
-<p>Now we can use <code>Rc::try_unwrap</code>, which moves out the contents of an Rc out
-if its refcount is 1.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-Rc::try_unwrap(old_head).unwrap().into_inner().elem
-#}</code></pre></pre>
+counted list, and the solution is the same: <code>Rc::try_unwrap</code>, which moves out
+the contents of an Rc if its refcount is 1.</p>
+<pre><code class="language-rust ignore">Rc::try_unwrap(old_head).unwrap().into_inner().elem
+</code></pre>
 <p><code>Rc::try_unwrap</code> returns a <code>Result&lt;T, Rc&lt;T&gt;&gt;</code>. Results are basically a
 generalized <code>Option</code>, where the <code>None</code> case has data associated with it. In
 this case, the <code>Rc</code> you tried to unwrap. Since we don't care about the case
 where it fails (if we wrote our program correctly, it <em>has</em> to succeed), we
 just call <code>unwrap</code> on it.</p>
-<p><code>unwrap</code> is a function on Results and Options that basically says &quot;get the
-the value out, or panic the program&quot;. Panics are A Whole Thing, so I'll simplify
-things by just saying a panics crash your program in a controlled manner,
-effectively making every function instantly return. Notably, it makes sure to
-call all the destructors that happen to be laying around on the way out. So your
-memory will get freed (meh? OS does that anyway, right?) and your Connections
-and Files will get properly saved/closed (yay!).</p>
-<p>This is a bit of a lie, there's cases where you can stop a panic. In particular
-at a thread boundary if you're into that whole &quot;parallelism&quot; thing. That whole
-freeing your memory thing is less lame there, <em>I guess</em>.</p>
 <p>Anyway, let's see what compiler error we get next (let's face it, there's going
 to be one).</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:58:38: 58:46 error: no method named `unwrap` found for type `core::result::Result&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;, alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;&gt;` in the current scope
-src/fourth.rs:58             Rc::try_unwrap(old_head).unwrap().into_inner().elem
-                                                      ^~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:48:30: 59:10 note: expansion site
-src/fourth.rs:58:38: 58:46 note: the method `unwrap` exists but the following trait bounds were not satisfied: `alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt; : core::fmt::Debug`
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0599]: no method named `unwrap` found for type `std::result::Result&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;, std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;&gt;` in the current scope
+  --&gt; src/fourth.rs:64:38
+   |
+64 |             Rc::try_unwrap(old_head).unwrap().into_inner().elem
+   |                                      ^^^^^^
+   |
+   = note: the method `unwrap` exists but the following trait bounds were not satisfied:
+           `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt; : std::fmt::Debug`
 </code></pre>
-<p>UGH. This is dumb. Rust is dumb. <code>unwrap</code> on Result requires that you can
-debug-print the error case. <code>RefCell&lt;T&gt;</code> only implements <code>Debug</code> if <code>T</code> does.
-<code>Node</code> doesn't implement Debug. We could just implement Debug for Node but I'm
-not in the mood. Let's just work around this by turning the <code>Result</code> into an
-<code>Option</code> with the <code>ok</code> method:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-Rc::try_unwrap(old_head).ok().unwrap().into_inner().elem
-#}</code></pre></pre>
+<p>UGH. <code>unwrap</code> on Result requires that you can debug-print the error case.
+<code>RefCell&lt;T&gt;</code> only implements <code>Debug</code> if <code>T</code> does. <code>Node</code> doesn't implement Debug.</p>
+<p>Rather than doing that, let's just work around it by converting the Result to
+an Option with <code>ok</code>:</p>
+<pre><code class="language-rust ignore">Rc::try_unwrap(old_head).ok().unwrap().into_inner().elem
+</code></pre>
 <p>PLEASE.</p>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
@@ -3825,15 +3765,12 @@ contains exactly one node we're good to go. But ideally a list should work right
 if it contains multiple elements. Maybe that's just me.</p>
 <p>As we saw, removing elements was a bit painful. So the easiest thing for us to
 do is just <code>pop</code> until we get None:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; Drop for List&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; Drop for List&lt;T&gt; {
     fn drop(&amp;mut self) {
         while self.pop_front().is_some() {}
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 </code></pre>
@@ -3849,45 +3786,32 @@ bit emotional there. Compile-time correctness is a hell of a drug.</p>
 That was always really easy before. Gotta still be easy, right?</p>
 <p>Right?</p>
 <p>In fact, I think I can just copy-paste it!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
+<pre><code class="language-rust ignore">pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
     self.head.as_ref().map(|node| {
         &amp;node.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Wait. Not this time.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
+<pre><code class="language-rust ignore">pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
     self.head.as_ref().map(|node| {
+        // BORROW!!!!
         &amp;node.borrow().elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>HAH.</p>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:64:14: 64:27 error: borrowed value does not live long enough
-src/fourth.rs:64             &amp;node.borrow().elem
-                              ^~~~~~~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:63:32: 65:10 note: expansion site
-src/fourth.rs:62:44: 66:6 note: reference must be valid for the anonymous lifetime #1 defined on the block at 62:43...
-src/fourth.rs:62     pub fn peek_front(&amp;self) -&gt; Option&lt;&amp;T&gt; {
-src/fourth.rs:63         self.head.as_ref().map(|node| {
-src/fourth.rs:64             &amp;node.borrow().elem
-src/fourth.rs:65         })
-src/fourth.rs:66     }
-src/fourth.rs:63:39: 65:10 note: ...but borrowed value is only valid for the block at 63:38
-src/fourth.rs:63         self.head.as_ref().map(|node| {
-src/fourth.rs:64             &amp;node.borrow().elem
-src/fourth.rs:65         })
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0515]: cannot return value referencing temporary value
+  --&gt; src/fourth.rs:66:13
+   |
+66 |             &amp;node.borrow().elem
+   |             ^   ----------^^^^^
+   |             |   |
+   |             |   temporary value created here
+   |             |
+   |             returns a value referencing data owned by the current function
 </code></pre>
 <p>Ok I'm just burning my computer.</p>
 <p>This is exactly the same logic as our singly linked stack. Why are things
@@ -3908,14 +3832,14 @@ fn borrow_mut&lt;'a&gt;(&amp;'a self) -&gt; RefMut&lt;'a, T&gt;
 <p>Rather than enforcing this statically, RefCell enforces them at runtime.
 If you break the rules, RefCell will just panic and crash the program.
 Why does it return these Ref and RefMut things? Well, they basically behave
-like <code>Rc</code>s but for borrowing. They keep the RefCell borrowed until they go out
-of scope. We'll get to that later.</p>
+like <code>Rc</code>s but for borrowing. Also they keep the RefCell borrowed until they go out
+of scope. <strong>We'll get to that later.</strong></p>
 </blockquote>
 <p>It's later.</p>
 <p><code>Ref</code> and <code>RefMut</code> implement <code>Deref</code> and <code>DerefMut</code> respectively. So for most
 intents and purposes they behave <em>exactly</em> like <code>&amp;T</code> and <code>&amp;mut T</code>. However,
 because of how those traits work, the reference that's returned is connected
-to the lifetime of the Ref, and not actual RefCell. This means that the Ref
+to the lifetime of the Ref, and not the actual RefCell. This means that the Ref
 has to be sitting around as long as we keep the reference around.</p>
 <p>This is in fact necessary for correctness. When a Ref gets dropped, it tells
 the RefCell that it's not borrowed anymore. So if we <em>did</em> manage to hold onto our
@@ -3940,31 +3864,36 @@ pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:62:40: 62:46 error: use of undeclared type name `Ref` [E0412]
-src/fourth.rs:62     pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
-                                                        ^~~~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0412]: cannot find type `Ref` in this scope
+  --&gt; src/fourth.rs:63:40
+   |
+63 |     pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
+   |                                        ^^^ not found in this scope
+help: possible candidates are found in other modules, you can import them into scope
+   |
+1  | use core::cell::Ref;
+   |
+1  | use std::cell::Ref;
+   |
 </code></pre>
 <p>Blurp. Gotta import some stuff.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-use std::cell::{Ref, RefMut, RefCell};
+use std::cell::{Ref, RefCell};
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:63:9: 65:11 error: mismatched types:
- expected `core::option::Option&lt;core::cell::Ref&lt;'_, T&gt;&gt;`,
-    found `core::option::Option&lt;core::cell::Ref&lt;'_, fourth::Node&lt;T&gt;&gt;&gt;`
-(expected type parameter,
-    found struct `fourth::Node`) [E0308]
-src/fourth.rs:63         self.head.as_ref().map(|node| {
-src/fourth.rs:64             node.borrow()
-src/fourth.rs:65         })
-src/fourth.rs:63:9: 65:11 help: run `rustc --explain E0308` to see a detailed explanation
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0308]: mismatched types
+  --&gt; src/fourth.rs:64:9
+   |
+64 | /         self.head.as_ref().map(|node| {
+65 | |             node.borrow()
+66 | |         })
+   | |__________^ expected type parameter, found struct `fourth::Node`
+   |
+   = note: expected type `std::option::Option&lt;std::cell::Ref&lt;'_, T&gt;&gt;`
+              found type `std::option::Option&lt;std::cell::Ref&lt;'_, fourth::Node&lt;T&gt;&gt;&gt;`
 </code></pre>
 <p>Hmm... that's right. We have a <code>Ref&lt;Node&lt;T&gt;&gt;</code>, but we want a <code>Ref&lt;T&gt;</code>. We could
 abandon all hope of encapsulation and just return that. We could also make
@@ -3986,7 +3915,7 @@ map&lt;U, F&gt;(orig: Ref&lt;'b, T&gt;, f: F) -&gt; Ref&lt;'b, U&gt;
 <p>Yes: just like you can map over an Option, you can map over a Ref.</p>
 <p>I'm sure someone somewhere is really excited because <em>monads</em> or whatever but
 I don't care about any of that. Also I don't think it's a proper monad since
-there's no None-like case. But I digress.</p>
+there's no None-like case, but I digress.</p>
 <p>It's cool and that's all that matters to me. <em>I need this</em>.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -3998,10 +3927,6 @@ pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
 }
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:1:22: 1:28 warning: unused import, #[warn(unused_imports)] on by default
-src/fourth.rs:1 use std::cell::{Ref, RefMut, RefCell};
-                                     ^~~~~~
 </code></pre>
 <p>Awww yissss</p>
 <p>Let's make sure this is working by munging up the test from our stack. We need
@@ -4020,9 +3945,6 @@ fn peek() {
 #}</code></pre></pre>
 <pre><code>&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:1:22: 1:28 warning: unused import, #[warn(unused_imports)] on by default
-src/fourth.rs:1 use std::cell::{Ref, RefMut, RefCell};
-                                     ^~~~~~
      Running target/debug/lists-5c71138492ad4b4a
 
 running 10 tests
@@ -4054,10 +3976,7 @@ next &lt;-&gt; prev
 front -&gt; back
 </code></pre>
 <p>Oh, also we need to add <code>_mut</code> variants for peeking.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push_back(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push_back(&amp;mut self, elem: T) {
     let new_tail = Node::new(elem);
     match self.tail.take() {
         Some(old_tail) =&gt; {
@@ -4104,9 +4023,9 @@ pub fn peek_front_mut(&amp;mut self) -&gt; Option&lt;RefMut&lt;T&gt;&gt; {
         RefMut::map(node.borrow_mut(), |node| &amp;mut node.elem)
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And massively flesh out our tests:</p>
-<pre><code>#[test]
+<pre><code class="language-rust ignore">#[test]
 fn basics() {
     let mut list = List::new();
 
@@ -4209,10 +4128,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 <a class="header" href="#intoiter-1" id="intoiter-1"><h2>IntoIter</h2></a>
 <p>IntoIter, as always, is going to be the easiest. Just wrap the stack and
 call <code>pop</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
+<pre><code class="language-rust ignore">pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
 
 impl&lt;T&gt; List&lt;T&gt; {
     pub fn into_iter(self) -&gt; IntoIter&lt;T&gt; {
@@ -4226,7 +4142,7 @@ impl&lt;T&gt; Iterator for IntoIter&lt;T&gt; {
         self.0.pop_front()
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>But we have an interesting new development. Where previously there was only
 ever one &quot;natural&quot; iteration order for our lists, a Deque is inherently
 bi-directional. What's so special about front-to-back? What if someone wants
@@ -4245,20 +4161,14 @@ up the iterator to make a new one that yields the elements in reverse order.
 The semantics of this are fairly straight-forward: calls to <code>next</code> on the
 reversed iterator are just calls to <code>next_back</code>.</p>
 <p>Anyway, because we're already a deque providing this API is pretty easy:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; DoubleEndedIterator for IntoIter&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; DoubleEndedIterator for IntoIter&lt;T&gt; {
     fn next_back(&amp;mut self) -&gt; Option&lt;T&gt; {
         self.0.pop_back()
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And let's test it out:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+<pre><code class="language-rust ignore">#[test]
 fn into_iter() {
     let mut list = List::new();
     list.push_front(1); list.push_front(2); list.push_front(3);
@@ -4270,7 +4180,7 @@ fn into_iter() {
     assert_eq!(iter.next_back(), None);
     assert_eq!(iter.next(), None);
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -4301,27 +4211,21 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 <p>Iter will be a bit less forgiving. We'll have to deal with those awful <code>Ref</code>
 things again! Because of Refs, we can't store <code>&amp;Node</code>s like we did before.
 Instead, let's try to store <code>Ref&lt;Node&gt;</code>s:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Iter&lt;'a, T: 'a&gt;(Option&lt;Ref&lt;'a, Node&lt;T&gt;&gt;&gt;);
+<pre><code class="language-rust ignore">pub struct Iter&lt;'a, T&gt;(Option&lt;Ref&lt;'a, Node&lt;T&gt;&gt;&gt;);
 
 impl&lt;T&gt; List&lt;T&gt; {
     pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
         Iter(self.head.as_ref().map(|head| head.borrow()))
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 </code></pre>
 <p>So far so good. Implementing <code>next</code> is going to be a bit hairy, but I think
 it's the same basic logic as the old stack IterMut but with extra RefCell
 madness:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
+<pre><code class="language-rust ignore">impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     type Item = Ref&lt;'a, T&gt;;
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
         self.0.take().map(|node_ref| {
@@ -4330,87 +4234,110 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
         })
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:154:22: 154:30 error: `node_ref` does not live long enough
-src/fourth.rs:154             self.0 = node_ref.next.as_ref().map(|head| head.borrow());
-                                       ^~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:153:27: 156:10 note: expansion site
-src/fourth.rs:152:46: 157:6 note: reference must be valid for the lifetime 'a as defined on the block at 152:45...
-src/fourth.rs:152     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
-src/fourth.rs:153         self.0.take().map(|node_ref| {
-src/fourth.rs:154             self.0 = node_ref.next.as_ref().map(|head| head.borrow());
-src/fourth.rs:155             Ref::map(node_ref, |node| &amp;node.elem)
-src/fourth.rs:156         })
-src/fourth.rs:157     }
-src/fourth.rs:153:38: 156:10 note: ...but borrowed value is only valid for the scope of parameters for function at 153:37
-src/fourth.rs:153         self.0.take().map(|node_ref| {
-src/fourth.rs:154             self.0 = node_ref.next.as_ref().map(|head| head.borrow());
-src/fourth.rs:155             Ref::map(node_ref, |node| &amp;node.elem)
-src/fourth.rs:156         })
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0521]: borrowed data escapes outside of closure
+   --&gt; src/fourth.rs:155:13
+    |
+153 |     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+    |             --------- `self` is declared here, outside of the closure body
+154 |         self.0.take().map(|node_ref| {
+155 |             self.0 = node_ref.next.as_ref().map(|head| head.borrow());
+    |             ^^^^^^   -------- borrow is only valid in the closure body
+    |             |
+    |             reference to `node_ref` escapes the closure body here
+
+error[E0505]: cannot move out of `node_ref` because it is borrowed
+   --&gt; src/fourth.rs:156:22
+    |
+153 |     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+    |             --------- lifetime `'1` appears in the type of `self`
+154 |         self.0.take().map(|node_ref| {
+155 |             self.0 = node_ref.next.as_ref().map(|head| head.borrow());
+    |             ------   -------- borrow of `node_ref` occurs here
+    |             |
+    |             assignment requires that `node_ref` is borrowed for `'1`
+156 |             Ref::map(node_ref, |node| &amp;node.elem)
+    |                      ^^^^^^^^ move out of `node_ref` occurs here
 </code></pre>
 <p>Shoot.</p>
 <p><code>node_ref</code> doesn't live long enough. Unlike normal references, Rust doesn't let
 us just split Refs up like that. The Ref we get out of <code>head.borrow()</code> is only
 allowed to live as long as <code>node_ref</code>, but we end up trashing that in our
 <code>Ref::map</code> call.</p>
-<p>I don't think there's anything we can do here. It's a dead end. Let's try
-getting out of the RefCells. What if we store an <code>&amp;RefCell&lt;Node&gt;</code>?</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Iter&lt;'a, T: 'a&gt;(Option&lt;&amp;'a RefCell&lt;Node&lt;T&gt;&gt;&gt;);
-
-impl&lt;T&gt; List&lt;T&gt; {
-    pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
-        Iter(self.head.as_ref().map(|head| &amp;** head))
-    }
-}
-
-impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
-    type Item = Ref&lt;'a, T&gt;;
-    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
-        self.0.take().map(|node| {
-            self.0 = node.borrow().next.as_ref().map(|head| &amp;**head);
-            Ref::map(node.borrow(), |node| &amp;node.elem)
-        })
-    }
-}
-#}</code></pre></pre>
-<pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:154:22: 154:35 error: borrowed value does not live long enough
-src/fourth.rs:154             self.0 = node.borrow().next.as_ref().map(|head| &amp;**head);
-                                       ^~~~~~~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:153:27: 156:10 note: expansion site
-src/fourth.rs:152:46: 157:6 note: reference must be valid for the lifetime 'a as defined on the block at 152:45...
-src/fourth.rs:152     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
-src/fourth.rs:153         self.0.take().map(|node| {
-src/fourth.rs:154             self.0 = node.borrow().next.as_ref().map(|head| &amp;**head);
-src/fourth.rs:155             Ref::map(node.borrow(), |node| &amp;node.elem)
-src/fourth.rs:156         })
-src/fourth.rs:157     }
-src/fourth.rs:154:13: 154:70 note: ...but borrowed value is only valid for the statement at 154:12
-src/fourth.rs:154             self.0 = node.borrow().next.as_ref().map(|head| &amp;**head);
-                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:153:27: 156:10 note: expansion site
-src/fourth.rs:154:13: 154:70 help: consider using a `let` binding to increase its lifetime
-src/fourth.rs:154             self.0 = node.borrow().next.as_ref().map(|head| &amp;**head);
-                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-note: in expansion of closure expansion
-src/fourth.rs:153:27: 156:10 note: expansion site
-error: aborting due to previous error
-Could not compile `lists`.
+<p>Coincidentally, as of the moment I am writing this, the function we want was
+actually stabilized 2 days ago. That means it will be a few months before it
+hits the stable release. So let's continue along with the latest nightly build:</p>
+<pre><code class="language-rust ignore">pub fn map_split&lt;U, V, F&gt;(orig: Ref&lt;'b, T&gt;, f: F) -&gt; (Ref&lt;'b, U&gt;, Ref&lt;'b, V&gt;) where
+    F: FnOnce(&amp;T) -&gt; (&amp;U, &amp;V),
+    U: ?Sized,
+    V: ?Sized,
 </code></pre>
-<p>Hmm... no this is the same problem again. The <code>borrow</code> makes a Ref that we can't
-keep alive long enough.</p>
-<p>Hang on, though. We've got <code>Rc</code>s. Who said we even needed to store references?
+<p>Woof. Let's give it a try...</p>
+<pre><code class="language-rust ignore">fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+    self.0.take().map(|node_ref| {
+        let (next, elem) = Ref::map_split(node_ref, |node| {
+            (&amp;node.next, &amp;node.elem)
+        });
+
+        self.0 = next.as_ref().map(|head| head);
+
+        elem
+    })
+}
+</code></pre>
+<pre><code class="language-text">cargo build
+   Compiling lists v0.1.0 (/Users/ABeingessner/dev/temp/lists)
+error[E0521]: borrowed data escapes outside of closure
+   --&gt; src/fourth.rs:159:13
+    |
+153 |     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+    |             --------- `self` is declared here, outside of the closure body
+...
+159 |             self.0 = next.as_ref().map(|head| head.borrow());
+    |             ^^^^^^   ---- borrow is only valid in the closure body
+    |             |
+    |             reference to `next` escapes the closure body here
+</code></pre>
+<p>Ergh. We need to <code>Ref::Map</code> again to get our lifetimes right. But <code>Ref::Map</code>
+returns a <code>Ref</code> and we need an <code>Option&lt;Ref&gt;</code>, but we need to go through the
+Ref to map over our Option...</p>
+<p><strong>stares into distance for a long time</strong></p>
+<p>??????</p>
+<pre><code class="language-rust ignore">fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+    self.0.take().map(|node_ref| {
+        let (next, elem) = Ref::map_split(node_ref, |node| {
+            (&amp;node.next, &amp;node.elem)
+        });
+
+        self.0 = if next.is_some() {
+            Some(Ref::map(next, |next| &amp;**next.as_ref().unwrap()))
+        } else {
+            None
+        };
+
+        elem
+    })
+}
+</code></pre>
+<pre><code class="language-text">error[E0308]: mismatched types
+   --&gt; src/fourth.rs:162:22
+    |
+162 |                 Some(Ref::map(next, |next| &amp;**next.as_ref().unwrap()))
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected struct `fourth::Node`, found struct `std::cell::RefCell`
+    |
+    = note: expected type `std::cell::Ref&lt;'_, fourth::Node&lt;_&gt;&gt;`
+               found type `std::cell::Ref&lt;'_, std::cell::RefCell&lt;fourth::Node&lt;_&gt;&gt;&gt;`
+</code></pre>
+<p>Oh. Right. There's multiple RefCells. The deeper we walk into the list, the more
+nested we become under each RefCell. We would need to maintain, like, a stack of
+Refs to represent all the outstanding loans we're holding, because if we stop
+looking at an element we need to decrement the borrow-count on every RefCell that
+comes before it.................</p>
+<p>I don't think there's anything we can do here. It's a dead end. Let's try
+getting out of the RefCells.</p>
+<p>What about our <code>Rc</code>s. Who said we even needed to store references?
 Why can't we just Clone the whole Rc to get a nice owning handle into the middle
 of the list?</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -4438,9 +4365,9 @@ that lets you do that.</p>
 <p>But wait, even if we do <em>that</em> then we've got an even bigger problem: the
 dreaded spectre of iterator invalidation. Previously we've been totally immune
 to iterator invalidation, because the Iter borrowed the list, leaving it totally
-immutable. However now that our Iter is full of Rcs, it doesn't borrow the list
+immutable. However if our Iter was yielding Rcs, they wouldn't borrow the list
 at all! That means people can start calling <code>push</code> and <code>pop</code> on the list while
-they have an Iter!</p>
+they hold pointers into it!</p>
 <p>Oh lord, what will that do?!</p>
 <p>Well, pushing is actually fine. We've got a view into some sub-range of the
 list, and the list will just grow beyond our sights. No biggie.</p>
@@ -4454,7 +4381,7 @@ the list and mutate it at the same time <em>and it will just work</em> until the
 try to remove the nodes that we're pointing at. And even then we don't get
 dangling pointers or anything, the program will deterministically panic!</p>
 <p>But having to deal with iterator invalidation on top of mapping Rcs just
-seems... lame. <code>Rc&lt;RefCell&gt;</code> has really truly finally failed us. Interestingly,
+seems... bad. <code>Rc&lt;RefCell&gt;</code> has really truly finally failed us. Interestingly,
 we've experienced an inversion of the persistent stack case. Where the
 persistent stack struggled to ever reclaim ownership of the data but could get
 references all day every day, our list had no problem gaining ownership, but
@@ -4469,11 +4396,11 @@ never makes it out to consumers of the API. Interior mutability is great for
 writing safe <em>applications</em>. Not so much safe <em>libraries</em>.</p>
 <p>Anyway, that's me giving up on Iter and IterMut. We could do them, but <em>ugh</em>.</p>
 <a class="header" href="#final-code-2" id="final-code-2"><h1>Final Code</h1></a>
-<p>Alright, so that's implementing a 100% safe doubly linked list in Rust. It
-relies on some unstable standard library features, and had massive
-implementation leak issues particularly surrounding acquiring internal
-references.</p>
-<p>It also was riddled with tons of &quot;unnecessary&quot; runtime checks for
+<p>Alright, so that's implementing a 100% safe doubly linked list in Rust. It was
+a nightmare to implement, leaks implementation details, and doesn't support several
+fundamental operations.</p>
+<p>But, it exists.</p>
+<p>Oh, I guess it's also riddled with tons of &quot;unnecessary&quot; runtime checks for
 correctness between <code>Rc</code> and <code>RefCell</code>. I put unnecessary in quotes because
 they're actually necessary to guarantee the whole <em>actually being safe</em> thing.
 We encountered a few places where those checks actually <em>were</em> necessary.
@@ -4485,8 +4412,8 @@ getting back all the control by making our implementation <em>unsafe</em>.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-use std::cell::{Ref, RefMut, RefCell};
 use std::rc::Rc;
+use std::cell::{Ref, RefMut, RefCell};
 
 pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
@@ -4501,7 +4428,6 @@ struct Node&lt;T&gt; {
     prev: Link&lt;T&gt;,
 }
 
-pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
 
 impl&lt;T&gt; Node&lt;T&gt; {
     fn new(elem: T) -&gt; Rc&lt;RefCell&lt;Self&gt;&gt; {
@@ -4548,21 +4474,6 @@ impl&lt;T&gt; List&lt;T&gt; {
         }
     }
 
-    pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
-        self.head.take().map(|old_head| {
-            match old_head.borrow_mut().next.take() {
-                Some(new_head) =&gt; {
-                    new_head.borrow_mut().prev.take();
-                    self.head = Some(new_head);
-                }
-                None =&gt; {
-                    self.tail.take();
-                }
-            }
-            Rc::try_unwrap(old_head).ok().unwrap().into_inner().elem
-        })
-    }
-
     pub fn pop_back(&amp;mut self) -&gt; Option&lt;T&gt; {
         self.tail.take().map(|old_tail| {
             match old_tail.borrow_mut().prev.take() {
@@ -4578,15 +4489,24 @@ impl&lt;T&gt; List&lt;T&gt; {
         })
     }
 
-    pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
-        self.head.as_ref().map(|node| {
-            Ref::map(node.borrow(), |node| &amp;node.elem)
+    pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
+        self.head.take().map(|old_head| {
+            match old_head.borrow_mut().next.take() {
+                Some(new_head) =&gt; {
+                    new_head.borrow_mut().prev.take();
+                    self.head = Some(new_head);
+                }
+                None =&gt; {
+                    self.tail.take();
+                }
+            }
+            Rc::try_unwrap(old_head).ok().unwrap().into_inner().elem
         })
     }
 
-    pub fn peek_front_mut(&amp;mut self) -&gt; Option&lt;RefMut&lt;T&gt;&gt; {
+    pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
         self.head.as_ref().map(|node| {
-            RefMut::map(node.borrow_mut(), |node| &amp;mut node.elem)
+            Ref::map(node.borrow(), |node| &amp;node.elem)
         })
     }
 
@@ -4602,6 +4522,12 @@ impl&lt;T&gt; List&lt;T&gt; {
         })
     }
 
+    pub fn peek_front_mut(&amp;mut self) -&gt; Option&lt;RefMut&lt;T&gt;&gt; {
+        self.head.as_ref().map(|node| {
+            RefMut::map(node.borrow_mut(), |node| &amp;mut node.elem)
+        })
+    }
+
     pub fn into_iter(self) -&gt; IntoIter&lt;T&gt; {
         IntoIter(self)
     }
@@ -4613,8 +4539,11 @@ impl&lt;T&gt; Drop for List&lt;T&gt; {
     }
 }
 
+pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
+
 impl&lt;T&gt; Iterator for IntoIter&lt;T&gt; {
     type Item = T;
+
     fn next(&amp;mut self) -&gt; Option&lt;T&gt; {
         self.0.pop_front()
     }
@@ -4777,16 +4706,16 @@ flipped pop:
 operations walk over the <em>entire</em> list. Some would argue that such a queue
 implementation is indeed a queue because it exposes the right interface. However
 I believe that performance guarantees are part of the interface. I don't care
-about precise asymptotic bounds, but rather &quot;fast&quot; and &quot;slow&quot;. Queues guarantee
+about precise asymptotic bounds, just &quot;fast&quot; vs &quot;slow&quot;. Queues guarantee
 that push and pop are fast, and walking over the whole list is definitely <em>not</em>
 fast.</p>
 <p>One key observation is that we're wasting a ton of work doing <em>the same thing</em>
 over and over. Can we memoize this work? Why, yes! We can store a pointer to
 the end of the list, and just jump straight to there!</p>
 <p>It turns out that only one inversion of <code>push</code> and <code>pop</code> works with this.
-Because our list is singly-linked, we can't effeciently walk <em>backwards</em> in
-the list. To invert <code>pop</code> we would have to move the &quot;tail&quot; pointer backwards.
-But if we instead invert <code>push</code> we only have to move the &quot;head&quot; pointer
+To invert <code>pop</code> we would have to move the &quot;tail&quot; pointer backwards, but
+because our list is singly-linked, we can't do that effeciently.
+If we instead invert <code>push</code> we only have to move the &quot;head&quot; pointer
 forwards, which is easy.</p>
 <p>Let's try that:</p>
 <pre><pre class="playpen"><code class="language-rust">use std::mem;
@@ -4841,20 +4770,17 @@ writing this code that I'm not showing. You can only see me leave off a <code>mu
 plenty of <em>other</em> error messages!</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:33:38: 33:46 error: use of moved value: `new_tail` [E0382]
-src/fifth.rs:33                 old_tail.next = Some(new_tail);
-                                                     ^~~~~~~~
-src/fifth.rs:28:58: 28:66 note: `new_tail` moved here because it has type `Box&lt;fifth::Node&lt;T&gt;&gt;`, which is non-copyable
-src/fifth.rs:28         let old_tail = mem::replace(&amp;mut self.tail, Some(new_tail));
-                                                                         ^~~~~~~~
-src/fifth.rs:37:34: 37:42 error: use of moved value: `new_tail` [E0382]
-src/fifth.rs:37                 self.head = Some(new_tail);
-                                                 ^~~~~~~~
-src/fifth.rs:28:58: 28:66 note: `new_tail` moved here because it has type `Box&lt;fifth::Node&lt;T&gt;&gt;`, which is non-copyable
-src/fifth.rs:28         let old_tail = mem::replace(&amp;mut self.tail, Some(new_tail));
-                                                                         ^~~~~~~~
-error: aborting due to 2 previous errors
-Could not compile `lists`.
+error[E0382]: use of moved value: `new_tail`
+  --&gt; src/fifth.rs:38:38
+   |
+26 |         let new_tail = Box::new(Node {
+   |             -------- move occurs because `new_tail` has type `std::boxed::Box&lt;fifth::Node&lt;T&gt;&gt;`, which does not implement the `Copy` trait
+...
+33 |         let old_tail = mem::replace(&amp;mut self.tail, Some(new_tail));
+   |                                                          -------- value moved here
+...
+38 |                 old_tail.next = Some(new_tail);
+   |                                      ^^^^^^^^ value used here after move
 </code></pre>
 <p>Shoot!</p>
 <blockquote>
@@ -4914,18 +4840,17 @@ using some of that implicit return goodness to extract the tail reference from
 wherever we stuff the actual Box.</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:3:18: 3:30 error: missing lifetime specifier [E0106]
-src/fifth.rs:3     tail: Option&lt;&amp;mut Node&lt;T&gt;&gt;, // NEW!
-                                ^~~~~~~~~~~~
-src/fifth.rs:3:18: 3:30 help: run `rustc --explain E0106` to see a detailed explanation
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0106]: missing lifetime specifier
+ --&gt; src/fifth.rs:3:18
+  |
+3 |     tail: Option&lt;&amp;mut Node&lt;T&gt;&gt;, // NEW!
+  |                  ^ expected lifetime parameter
 </code></pre>
 <p>Oh right, we need to give references in types lifetimes. Hmm... what's the
 lifetime of this reference? Well, this seems like IterMut, right? Let's try
 what we did for IterMut, and just add a generic <code>'a</code>:</p>
 <pre><pre class="playpen"><code class="language-rust"># fn main() {}
-pub struct List&lt;'a, T: 'a&gt; {
+pub struct List&lt;'a, T&gt; {
     head: Link&lt;T&gt;,
     tail: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;, // NEW!
 }
@@ -4969,36 +4894,61 @@ impl&lt;'a, T&gt; List&lt;'a, T&gt; {
 </code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:35:27: 35:35 error: cannot infer an appropriate lifetime for autoref due to conflicting requirements
-src/fifth.rs:35                 self.head.as_mut().map(|node| &amp;mut **node)
-                                          ^~~~~~~~
-src/fifth.rs:18:5: 40:6 help: consider using an explicit lifetime parameter as shown: fn push(&amp;'a mut self, elem: T)
-src/fifth.rs:18     pub fn push(&amp;mut self, elem: T) {
-src/fifth.rs:19         let new_tail = Box::new(Node {
-src/fifth.rs:20             elem: elem,
-src/fifth.rs:21             // When you push onto the tail, your next is always None
-src/fifth.rs:22             next: None,
-src/fifth.rs:23         });
-                ...
-error: aborting due to previous error
+error[E0495]: cannot infer an appropriate lifetime for autoref due to conflicting requirements
+  --&gt; src/fifth.rs:35:27
+   |
+35 |                 self.head.as_mut().map(|node| &amp;mut **node)
+   |                           ^^^^^^
+   |
+note: first, the lifetime cannot outlive the anonymous lifetime #1 defined on the method body at 18:5...
+  --&gt; src/fifth.rs:18:5
+   |
+18 | /     pub fn push(&amp;mut self, elem: T) {
+19 | |         let new_tail = Box::new(Node {
+20 | |             elem: elem,
+21 | |             // When you push onto the tail, your next is always None
+...  |
+39 | |         self.tail = new_tail;
+40 | |     }
+   | |_____^
+note: ...so that reference does not outlive borrowed content
+  --&gt; src/fifth.rs:35:17
+   |
+35 |                 self.head.as_mut().map(|node| &amp;mut **node)
+   |                 ^^^^^^^^^
+note: but, the lifetime must be valid for the lifetime 'a as defined on the impl at 13:6...
+  --&gt; src/fifth.rs:13:6
+   |
+13 | impl&lt;'a, T&gt; List&lt;'a, T&gt; {
+   |      ^^
+   = note: ...so that the expression is assignable:
+           expected std::option::Option&lt;&amp;'a mut fifth::Node&lt;T&gt;&gt;
+              found std::option::Option&lt;&amp;mut fifth::Node&lt;T&gt;&gt;
+
+
 </code></pre>
-<p>Oh lord. When the compiler starts telling us to just start adding lifetimes in
-random places, it's a red flag that the compiler is deeply confused. But uh...
-ok let's try that I guess?</p>
+<p>Woah, that's a really detailed error message. That's a bit concerning, because it
+suggests we're doing something really messed up. Here's an interesting part:</p>
+<blockquote>
+<p>the lifetime must be valid for the lifetime <code>'a</code> as defined on the impl</p>
+</blockquote>
+<p>We're borrowing from <code>self</code>, but the compiler wants us to last as long as <code>'a</code>,
+what if we tell it <code>self</code> <em>does</em> last that long..?</p>
 <pre><code class="language-rust ignore">    pub fn push(&amp;'a mut self, elem: T) {
 </code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:9:5: 9:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fifth.rs:9     elem: T,
-                   ^~~~~~~
+warning: field is never used: `elem`
+ --&gt; src/fifth.rs:9:5
+  |
+9 |     elem: T,
+  |     ^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
 </code></pre>
 <p>Oh, hey, that worked! Great!</p>
 <p>Let's just do <code>pop</code> too:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;'a mut self) -&gt; Option&lt;T&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;'a mut self) -&gt; Option&lt;T&gt; {
     // Grab the list's current head
     self.head.take().map(|head| {
         let head = *head;
@@ -5012,9 +4962,9 @@ pub fn pop(&amp;'a mut self) -&gt; Option&lt;T&gt; {
         head.elem
     })
 }
-#}</code></pre></pre>
-<p>Let's try to just write a quick test for that:</p>
-<pre><code>mod test {
+</code></pre>
+<p>And write a quick test for that:</p>
+<pre><code class="language-rust ignore">mod test {
     use super::List;
     #[test]
     fn basics() {
@@ -5048,52 +4998,61 @@ pub fn pop(&amp;'a mut self) -&gt; Option&lt;T&gt; {
 </code></pre>
 <pre><code class="language-text">cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:68:9: 68:13 error: cannot borrow `list` as mutable more than once at a time
-src/fifth.rs:68         list.push(2);
-                        ^~~~
-src/fifth.rs:66:9: 66:13 note: previous borrow of `list` occurs here; the mutable borrow prevents subsequent moves, borrows, or modification of `list` until the borrow ends
-src/fifth.rs:66         list.push(1);
-                        ^~~~
-src/fifth.rs:70:6: 70:6 note: previous borrow ends here
-src/fifth.rs:59     fn basics() {
+error[E0499]: cannot borrow `list` as mutable more than once at a time
+  --&gt; src/fifth.rs:68:9
+   |
+65 |         assert_eq!(list.pop(), None);
+   |                    ---- first mutable borrow occurs here
 ...
-src/fifth.rs:70     }
-                    ^
+68 |         list.push(1);
+   |         ^^^^
+   |         |
+   |         second mutable borrow occurs here
+   |         first borrow later used here
 
-
-**NOT SHOWN: LITERALLY A THOUSAND LINES OF BORROW CHECK ERRORS**
-
-
-src/fifth.rs:84:20: 84:24 error: cannot borrow `list` as mutable more than once at a time
-src/fifth.rs:84         assert_eq!(list.pop(), None);
-                                   ^~~~
-&lt;std macros&gt;:1:1: 9:39 note: in expansion of assert_eq!
-src/fifth.rs:84:9: 84:38 note: expansion site
-src/fifth.rs:83:20: 83:24 note: previous borrow of `list` occurs here; the mutable borrow prevents subsequent moves, borrows, or modification of `list` until the borrow ends
-src/fifth.rs:83         assert_eq!(list.pop(), Some(1));
-                                   ^~~~
-&lt;std macros&gt;:1:1: 9:39 note: in expansion of assert_eq!
-src/fifth.rs:83:9: 83:41 note: expansion site
-src/fifth.rs:85:6: 85:6 note: previous borrow ends here
-src/fifth.rs:59     fn basics() {
+error[E0499]: cannot borrow `list` as mutable more than once at a time
+  --&gt; src/fifth.rs:69:9
+   |
+65 |         assert_eq!(list.pop(), None);
+   |                    ---- first mutable borrow occurs here
 ...
-src/fifth.rs:85     }
-                    ^
-error: aborting due to 66 previous errors
+69 |         list.push(2);
+   |         ^^^^
+   |         |
+   |         second mutable borrow occurs here
+   |         first borrow later used here
+
+error[E0499]: cannot borrow `list` as mutable more than once at a time
+  --&gt; src/fifth.rs:70:9
+   |
+65 |         assert_eq!(list.pop(), None);
+   |                    ---- first mutable borrow occurs here
+...
+70 |         list.push(3);
+   |         ^^^^
+   |         |
+   |         second mutable borrow occurs here
+   |         first borrow later used here
+
+
+....
+
+** WAY MORE LINES OF ERRORS **
+
+....
+
+error: aborting due to 11 previous errors
 </code></pre>
 <p>🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀🙀</p>
-<p>OH MY GEEZ WHAT.</p>
-<p>66 borrow check errors.</p>
 <p>Oh my goodness.</p>
-<p><a href="https://github.com/rust-lang/rust/issues/27485">I'm pretty sure we just hit this bug in the compiler</a>.</p>
-<p>But the compiler's not wrong for vomiting all over us. We just committed a
+<p>The compiler's not wrong for vomiting all over us. We just committed a
 cardinal Rust sin: we stored a reference to ourselves <em>inside ourselves</em>.
 Somehow, we managed to convince Rust that this totally made sense in our
 <code>push</code> and <code>pop</code> implementations (I was legitimately shocked we did). I believe
 the reason is that Rust can't yet tell that the reference is into ourselves
 from just <code>push</code> and <code>pop</code> -- or rather, Rust doesn't really have that notion
-at all. Reference-into-yourself falls over as an emergent behaviour.</p>
-<p>However as soon as we tried to <em>use</em> our list, everything quickly fell apart.
+at all. Reference-into-yourself failing to work is just an emergent behaviour.</p>
+<p>As soon as we tried to <em>use</em> our list, everything quickly fell apart.
 When we call <code>push</code> or <code>pop</code>, we promptly store a reference to ourselves in
 ourselves and become <em>trapped</em>. We are literally borrowing ourselves.</p>
 <p>Our <code>pop</code> implementation hints at why this could be really dangerous:</p>
@@ -5111,8 +5070,7 @@ have a dangling pointer which Rust was supposed to protect us from!</p>
 <p>Please. No.</p>
 <p>No instead we're going to go off the rails and use <em>raw pointers</em>.
 Our layout is going to look like this:</p>
-<pre><pre class="playpen"><code class="language-rust"># fn main() {}
-pub struct List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
     tail: *mut Node&lt;T&gt;, // DANGER DANGER
 }
@@ -5123,7 +5081,7 @@ struct Node&lt;T&gt; {
     elem: T,
     next: Link&lt;T&gt;,
 }
-</code></pre></pre>
+</code></pre>
 <p>And that's that. None of this wimpy reference-counted-dynamic-borrow-checking
 nonsense! Real. Hard. Unchecked. Pointers.</p>
 <p>Let's be C everyone. Let's be C all day.</p>
@@ -5167,27 +5125,23 @@ you're gonna have a bad time.</p>
 <a class="header" href="#basics-1" id="basics-1"><h1>Basics</h1></a>
 <p>Alright, back to basics. How do we construct our list?</p>
 <p>Before we just did:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
     pub fn new() -&gt; Self {
         List { head: None, tail: None }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>But we're not using Option for the <code>tail</code> anymore:</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:15:34: 15:38 error: mismatched types:
- expected `*mut fifth::Node&lt;_&gt;`,
-    found `core::option::Option&lt;_&gt;`
-(expected *-ptr,
-    found enum `core::option::Option`) [E0308]
-src/fifth.rs:15         List { head: None, tail: None }
-                                                 ^~~~
-src/fifth.rs:15:34: 15:38 help: run `rustc --explain E0308` to see a detailed explanation
-error: aborting due to previous error
+error[E0308]: mismatched types
+  --&gt; src/fifth.rs:15:34
+   |
+15 |         List { head: None, tail: None }
+   |                                  ^^^^ expected *-ptr, found enum `std::option::Option`
+   |
+   = note: expected type `*mut fifth::Node&lt;T&gt;`
+              found type `std::option::Option&lt;_&gt;`
 </code></pre>
 <p>We <em>could</em> use an Option, but unlike Box, <code>*mut</code> <em>is</em> nullable. This means it
 can't benefit from the null pointer optimization. Instead, we'll be using <code>null</code>
@@ -5195,10 +5149,7 @@ to represent None.</p>
 <p>So how do we get a null pointer? There's a few ways, but I prefer to use
 <code>std::ptr::null_mut()</code>. If you want, you can also use <code>0 as *mut _</code>, but that
 just seems so <em>messy</em>.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use std::ptr;
+<pre><code class="language-rust ignore">use std::ptr;
 
 // defns...
 
@@ -5207,23 +5158,36 @@ impl&lt;T&gt; List&lt;T&gt; {
         List { head: None, tail: ptr::null_mut() }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:4:5: 4:18 warning: struct field is never used: `head`, #[warn(dead_code)] on by default
-src/fifth.rs:4     head: Link&lt;T&gt;,
-                   ^~~~~~~~~~~~~
-src/fifth.rs:5:5: 5:23 warning: struct field is never used: `tail`, #[warn(dead_code)] on by default
-src/fifth.rs:5     tail: *mut Node&lt;T&gt;,
-                   ^~~~~~~~~~~~~~~~~~
-src/fifth.rs:11:5: 11:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fifth.rs:11     elem: T,
-                    ^~~~~~~
-src/fifth.rs:12:5: 12:18 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/fifth.rs:12     next: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
+warning: field is never used: `head`
+ --&gt; src/fifth.rs:4:5
+  |
+4 |     head: Link&lt;T&gt;,
+  |     ^^^^^^^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `tail`
+ --&gt; src/fifth.rs:5:5
+  |
+5 |     tail: *mut Node&lt;T&gt;,
+  |     ^^^^^^^^^^^^^^^^^^
+
+warning: field is never used: `elem`
+  --&gt; src/fifth.rs:11:5
+   |
+11 |     elem: T,
+   |     ^^^^^^^
+
+warning: field is never used: `head`
+  --&gt; src/fifth.rs:12:5
+   |
+12 |     head: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
 </code></pre>
-<p><em>shush</em> compiler, I will use them soon.</p>
+<p><em>shush</em> compiler, we will use them soon.</p>
 <p>Alright, let's move on to writing <code>push</code> again. This time, instead of grabbing
 an <code>Option&lt;&amp;mut Node&lt;T&gt;&gt;</code> after we insert, we're just going to grab a
 <code>*mut Node&lt;T&gt;</code> to the insides of the Box right away. We know we can soundly do
@@ -5232,17 +5196,11 @@ Box around. Of course, this isn't <em>safe</em>, because if we just drop the Box
 have a pointer to freed memory.</p>
 <p>How do we make a raw pointer from a normal pointer? Coercions! If a variable
 is declared to be a raw pointer, a normal reference will coerce into it:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let raw_tail: *mut _ = &amp;mut *new_tail;
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">let raw_tail: *mut _ = &amp;mut *new_tail;
+</code></pre>
 <p>We have all the info we need. We can translate our code into, approximately,
 the previous reference version:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: T) {
     let mut new_tail = Box::new(Node {
         elem: elem,
         next: None,
@@ -5261,14 +5219,16 @@ pub fn push(&amp;mut self, elem: T) {
 
     self.tail = raw_tail;
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:32:13: 32:27 error: attempted access of field `next` on type `*mut fifth::Node&lt;T&gt;`, but no field with that name was found
-src/fifth.rs:32             self.tail.next = Some(new_tail);
-                            ^~~~~~~~~~~~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
+  --&gt; src/fifth.rs:31:23
+   |
+31 |             self.tail.next = Some(new_tail);
+   |             ----------^^^^
+   |             |
+   |             help: `self.tail` is a raw pointer; try dereferencing it: `(*self.tail).next`
 </code></pre>
 <p>Huh? We have a pointer to a Node, why can't we get the <code>next</code> field?</p>
 <p>Rust is kinda a jerk when you use raw pointers. To access the contents of a
@@ -5281,11 +5241,13 @@ operation. So let's do that:</p>
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:31:14: 31:28 error: attempted access of field `next` on type `*mut fifth::Node&lt;T&gt;`, but no field with that name was found
-src/fifth.rs:31             *self.tail.next = Some(new_tail);
-                             ^~~~~~~~~~~~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
+  --&gt; src/fifth.rs:31:23
+   |
+31 |             *self.tail.next = Some(new_tail);
+   |             -----------^^^^
+   |             |
+   |             help: `self.tail` is a raw pointer; try dereferencing it: `(*self.tail).next`
 </code></pre>
 <p>Uuuugh operator precedence.</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -5295,12 +5257,13 @@ Could not compile `lists`.
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:31:14: 31:24 error: dereference of raw pointer requires unsafe function or block [E0133]
-src/fifth.rs:31             (*self.tail).next = Some(new_tail);
-                             ^~~~~~~~~~
-src/fifth.rs:31:14: 31:24 help: run `rustc --explain E0133` to see a detailed explanation
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+  --&gt; src/fifth.rs:31:13
+   |
+31 |             (*self.tail).next = Some(new_tail);
+   |             ^^^^^^^^^^^^^^^^^ dereference of raw pointer
+   |
+   = note: raw pointers may be NULL, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
 </code></pre>
 <p>THIS SHOULDN'T BE THIS HARD.</p>
 <p>Remember how I said Unsafe Rust is like an FFI language for Safe Rust? Well, the
@@ -5336,10 +5299,13 @@ pub fn push(&amp;mut self, elem: T) {
 }
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:11:5: 11:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fifth.rs:11     elem: T,
-                    ^~~~~~~
+warning: field is never used: `elem`
+  --&gt; src/fifth.rs:11:5
+   |
+11 |     elem: T,
+   |     ^^^^^^^
+   |
+   = note: #[warn(dead_code)] on by default
 </code></pre>
 <p>Yay!</p>
 <p>It's kind've interesting that that's the <em>only</em> place we've had to write an
@@ -5367,15 +5333,12 @@ written in order to make sure that invariants are upheld for the unsafe code.</p
 struct fields are totally private, so no one else can mess with our state in
 arbitrary ways. As long as no combination of the APIs we expose causes bad stuff
 to happen, as far as an outside observer is concerned, all of our code is safe!
-And really, this is no different from the FFI case. No one needs care
+And really, this is no different from the FFI case. No one needs to care
 if some python math library shells out to C as long as it exposes a safe
 interface.</p>
 <p>Anyway, let's move on to <code>pop</code>, which is pretty much verbatim the reference
 version:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
     self.head.take().map(|head| {
         let head = *head;
         self.head = head.next;
@@ -5387,15 +5350,12 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
         head.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Again we see another case where safety is stateful. If we fail to null out the
 tail pointer in <em>this</em> function, we'll see no problems at all. However
 subsequent calls to <code>push</code> will start writing to the dangling tail!</p>
 <p>Let's test it out:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[cfg(test)]
+<pre><code class="language-rust ignore">#[cfg(test)]
 mod test {
     use super::List;
     #[test]
@@ -5436,31 +5396,29 @@ mod test {
         assert_eq!(list.pop(), None);
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>This is just the stack test, but with the expected <code>pop</code> results flipped around.
-I also added some extra steps and the end to make sure that tail-pointer
+I also added some extra steps at the end to make sure that tail-pointer
 corruption case in <code>pop</code> doesn't occur.</p>
 <pre><code class="language-text">cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
 
-running 8 tests
-test first::test::basics ... ok
-test second::test::basics ... ok
+running 12 tests
 test fifth::test::basics ... ok
-test second::test::iter ... ok
-test third::test::iter ... ok
-test second::test::iter_mut ... ok
+test first::test::basics ... ok
+test fourth::test::basics ... ok
+test fourth::test::peek ... ok
+test second::test::basics ... ok
+test fourth::test::into_iter ... ok
 test second::test::into_iter ... ok
+test second::test::iter ... ok
+test second::test::iter_mut ... ok
+test second::test::peek ... ok
 test third::test::basics ... ok
+test third::test::iter ... ok
 
 test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured
-
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Gold Star!</p>
 <a class="header" href="#extra-junk" id="extra-junk"><h1>Extra Junk</h1></a>
@@ -5469,18 +5427,15 @@ as the stack case. Only operations that change the length of the list need
 to actually worry about the tail pointer.</p>
 <p>So let's just steal all that from our second list (be sure to reverse the
 expected test output):</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// ...
+<pre><code class="language-rust ignore">// ...
 
 pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
 
-pub struct Iter&lt;'a, T:'a&gt; {
+pub struct Iter&lt;'a, T&gt; {
     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
 }
 
-pub struct IterMut&lt;'a, T: 'a&gt; {
+pub struct IterMut&lt;'a, T&gt; {
     next: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;,
 }
 
@@ -5506,11 +5461,11 @@ impl&lt;T&gt; List&lt;T&gt; {
         IntoIter(self)
     }
 
-    pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
+    pub fn iter(&amp;self) -&gt; Iter&lt;'_, T&gt; {
         Iter { next: self.head.as_ref().map(|node| &amp;**node) }
     }
 
-    pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;T&gt; {
+    pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;'_, T&gt; {
         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
     }
 }
@@ -5598,32 +5553,29 @@ mod test {
     }
 }
 
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
 
-running 11 tests
-test fifth::test::basics ... ok
-test fifth::test::iter_mut ... ok
+running 15 tests
 test fifth::test::into_iter ... ok
-test first::test::basics ... ok
+test fifth::test::basics ... ok
 test fifth::test::iter ... ok
+test fifth::test::iter_mut ... ok
+test first::test::basics ... ok
+test fourth::test::basics ... ok
+test fourth::test::into_iter ... ok
+test fourth::test::peek ... ok
+test second::test::basics ... ok
+test second::test::into_iter ... ok
 test second::test::iter ... ok
 test second::test::iter_mut ... ok
-test second::test::into_iter ... ok
-test second::test::basics ... ok
+test second::test::peek ... ok
 test third::test::basics ... ok
 test third::test::iter ... ok
 
 test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured
-
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
-
 </code></pre>
 <p>Shout-outs to copy-paste programming.</p>
 <p>At first I thought we'd have to mess around with IntoIter, but we still
@@ -5648,21 +5600,6 @@ struct Node&lt;T&gt; {
     next: Link&lt;T&gt;,
 }
 
-pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
-
-pub struct Iter&lt;'a, T:'a&gt; {
-    next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
-}
-
-pub struct IterMut&lt;'a, T: 'a&gt; {
-    next: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;,
-}
-
-
-
-
-
-
 impl&lt;T&gt; List&lt;T&gt; {
     pub fn new() -&gt; Self {
         List { head: None, tail: ptr::null_mut() }
@@ -5676,11 +5613,14 @@ impl&lt;T&gt; List&lt;T&gt; {
 
         let raw_tail: *mut _ = &amp;mut *new_tail;
 
+        // .is_null checks for null, equivalent to checking for None
         if !self.tail.is_null() {
             unsafe {
+                // If the old tail existed, update it to point to the new tail
                 (*self.tail).next = Some(new_tail);
             }
         } else {
+            // Otherwise, update the head to point to it
             self.head = Some(new_tail);
         }
 
@@ -5716,13 +5656,23 @@ impl&lt;T&gt; List&lt;T&gt; {
         IntoIter(self)
     }
 
-    pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
+    pub fn iter(&amp;self) -&gt; Iter&lt;'_, T&gt; {
         Iter { next: self.head.as_ref().map(|node| &amp;**node) }
     }
 
-    pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;T&gt; {
+    pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;'_, T&gt; {
         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
     }
+}
+
+pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
+
+pub struct Iter&lt;'a, T&gt; {
+    next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
+}
+
+pub struct IterMut&lt;'a, T&gt; {
+    next: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;,
 }
 
 impl&lt;T&gt; Drop for List&lt;T&gt; {
@@ -5762,8 +5712,6 @@ impl&lt;'a, T&gt; Iterator for IterMut&lt;'a, T&gt; {
         })
     }
 }
-
-
 
 #[cfg(test)]
 mod test {
@@ -5844,7 +5792,9 @@ mod test {
 }
 </code></pre></pre>
 <a class="header" href="#an-ok-unsafe-doubly-linked-deque" id="an-ok-unsafe-doubly-linked-deque"><h1>An Ok Unsafe Doubly-Linked Deque</h1></a>
-<p>Coming Soon!</p>
+<p>Nope, still haven't written this one! It's really just not that much more instructive.</p>
+<p>Read <a href="https://doc.rust-lang.org/nightly/nomicon/">The Rustonomicon</a> and the source for [<code>std::collections::LinkedList</code>][linked-list] if you
+really want more!</p>
 <a class="header" href="#a-bunch-of-silly-lists" id="a-bunch-of-silly-lists"><h1>A Bunch of Silly Lists</h1></a>
 <p>Alright. That's it. We made all the lists.</p>
 <p>ahahahaha</p>
@@ -5865,30 +5815,24 @@ with this because we brought in our preconceived notions of what a linked
 list <em>is</em>. Namely, we assumed that all the links go in the same direction.</p>
 <p>Instead, we can smash our list into two halves: one going to the left,
 and one going to the right:</p>
-<pre><code>// lib.rs
+<pre><code class="language-rust ignore">// lib.rs
 // ...
 pub mod silly1;     // NEW!
 </code></pre>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// silly1.rs
+<pre><code class="language-rust ignore">// silly1.rs
 use second::List as Stack;
 
 struct List&lt;T&gt; {
     left: Stack&lt;T&gt;,
     right: Stack&lt;T&gt;,
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Now, rather than having a mere safe stack, we have a general purpose list.
 We can grow the list leftwards or rightwards by pushing onto either stack.
 We can also &quot;walk&quot; along the list by popping values off one end and onto the
 other. To avoid needless allocations, we're going to copy the source of
 our safe Stack to get access to its private details:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Stack&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct Stack&lt;T&gt; {
     head: Link&lt;T&gt;,
 }
 
@@ -5942,9 +5886,9 @@ impl&lt;T&gt; Drop for Stack&lt;T&gt; {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And just rework <code>push</code> and <code>pop</code> a bit:</p>
-<pre><code>pub fn push(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: T) {
     let new_node = Box::new(Node {
         elem: elem,
         next: None,
@@ -5972,10 +5916,7 @@ fn pop_node(&amp;mut self) -&gt; Option&lt;Box&lt;Node&lt;T&gt;&gt;&gt; {
 }
 </code></pre>
 <p>Now we can make our List:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct List&lt;T&gt; {
+<pre><code class="language-rust ignore">pub struct List&lt;T&gt; {
     left: Stack&lt;T&gt;,
     right: Stack&lt;T&gt;,
 }
@@ -5985,12 +5926,9 @@ impl&lt;T&gt; List&lt;T&gt; {
         List { left: Stack::new(), right: Stack::new() }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And we can do the usual stuff:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push_left(&amp;mut self, elem: T) { self.left.push(elem) }
+<pre><code class="language-rust ignore">pub fn push_left(&amp;mut self, elem: T) { self.left.push(elem) }
 pub fn push_right(&amp;mut self, elem: T) { self.right.push(elem) }
 pub fn pop_left(&amp;mut self) -&gt; Option&lt;T&gt; { self.left.pop() }
 pub fn pop_right(&amp;mut self) -&gt; Option&lt;T&gt; { self.right.pop() }
@@ -5998,12 +5936,9 @@ pub fn peek_left(&amp;self) -&gt; Option&lt;&amp;T&gt; { self.left.peek() }
 pub fn peek_right(&amp;self) -&gt; Option&lt;&amp;T&gt; { self.right.peek() }
 pub fn peek_left_mut(&amp;mut self) -&gt; Option&lt;&amp;mut T&gt; { self.left.peek_mut() }
 pub fn peek_right_mut(&amp;mut self) -&gt; Option&lt;&amp;mut T&gt; { self.right.peek_mut() }
-#}</code></pre></pre>
+</code></pre>
 <p>But most interestingly, we can walk around!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn go_left(&amp;mut self) -&gt; bool {
+<pre><code class="language-rust ignore">pub fn go_left(&amp;mut self) -&gt; bool {
     self.left.pop_node().map(|node| {
         self.right.push_node(node);
     }).is_some()
@@ -6014,13 +5949,10 @@ pub fn go_right(&amp;mut self) -&gt; bool {
         self.left.push_node(node);
     }).is_some()
 }
-#}</code></pre></pre>
+</code></pre>
 <p>We return booleans here as just a convenience to indicate whether we actually
 managed to move. Now let's test this baby out:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[cfg(test)]
+<pre><code class="language-rust ignore">#[cfg(test)]
 mod test {
     use super::List;
 
@@ -6054,7 +5986,7 @@ mod test {
 
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -6078,12 +6010,6 @@ test second::test::peek ... ok
 test silly1::test::walk_aboot ... ok
 
 test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured
-
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>This is an extreme example of a <em>finger</em> data structure, where we maintain
 some kind of finger into the structure, and as a consequence can support

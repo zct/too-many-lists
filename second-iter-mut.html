@@ -137,62 +137,49 @@
                 <div id="content" class="content">
                     <main>
                         <a class="header" href="#itermut" id="itermut"><h1>IterMut</h1></a>
-<p>I'm gonna be honest, IterMut is crazy. Which in itself seems like a crazy
+<p>I'm gonna be honest, IterMut is WILD. Which in itself seems like a wild
 thing to say; surely it's identical to Iter!</p>
-<p>Semantically, yes. However the nature of shared and mutable references means
+<p>Semantically, yes, but the nature of shared and mutable references means
 that Iter is &quot;trivial&quot; while IterMut is Legit Wizard Magic.</p>
 <p>The key insight comes from our implementation of Iterator for Iter:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
+<pre><code class="language-rust ignore">impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     type Item = &amp;'a T;
 
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; { /* stuff */ }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Which can be desugarred to:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
+<pre><code class="language-rust ignore">impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     type Item = &amp;'a T;
 
     fn next&lt;'b&gt;(&amp;'b mut self) -&gt; Option&lt;&amp;'a T&gt; { /* stuff */ }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>The signature of <code>next</code> establishes <em>no</em> constraint between the lifetime
 of the input and the output! Why do we care? It means we can call <code>next</code>
 over and over unconditionally!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let mut list = List::new();
+<pre><code class="language-rust ignore">let mut list = List::new();
 list.push(1); list.push(2); list.push(3);
 
 let mut iter = list.iter();
 let x = iter.next().unwrap();
 let y = iter.next().unwrap();
 let z = iter.next().unwrap();
-#}</code></pre></pre>
+</code></pre>
 <p>Cool!</p>
 <p>This is <em>definitely fine</em> for shared references because the whole point is that
 you can have tons of them at once. However mutable references <em>can't</em> coexist.
 The whole point is that they're exclusive.</p>
-<p>The end result is that it's notably harder to write an IterMut using safe
+<p>The end result is that it's notably harder to write IterMut using safe
 code (and we haven't gotten into what that even means yet...). Surprisingly,
-IterMut can actually be implemented for many structures completely safely!
-Borrow checking magic!</p>
+IterMut can actually be implemented for many structures completely safely!</p>
 <p>We'll start by just taking the Iter code and changing everything to be mutable:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct IterMut&lt;'a, T: 'a&gt; {
+<pre><code class="language-rust ignore">pub struct IterMut&lt;'a, T&gt; {
     next: Option&lt;&amp;'a mut Node&lt;T&gt;&gt;,
 }
 
 impl&lt;T&gt; List&lt;T&gt; {
-    pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;T&gt; {
+    pub fn iter_mut(&amp;self) -&gt; IterMut&lt;'_, T&gt; {
         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
     }
 }
@@ -207,66 +194,65 @@ impl&lt;'a, T&gt; Iterator for IterMut&lt;'a, T&gt; {
         })
     }
 }
-#}</code></pre></pre>
-<pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:96:25: 96:34 error: cannot borrow immutable field `self.head` as mutable
-src/second.rs:96         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
-                                         ^~~~~~~~~
-src/second.rs:104:9: 104:13 error: cannot move out of borrowed content
-src/second.rs:104         self.next.map(|node| {
-                          ^~~~
-error: aborting due to previous error
 </code></pre>
-<p>Oops! I actually accidentally made an error when writing the
-<code>iter</code> impl, but Copy saved the day. <code>&amp;</code> is Copy, as we saw before. But
-that also means <code>Option&lt;&amp;&gt;</code> is <em>also</em> Copy. So when we did <code>self.next.map</code> it
+<pre><code class="language-text">&gt; cargo build
+error[E0596]: cannot borrow `self.head` as mutable, as it is behind a `&amp;` reference
+  --&gt; src/second.rs:95:25
+   |
+94 |     pub fn iter_mut(&amp;self) -&gt; IterMut&lt;'_, T&gt; {
+   |                     ----- help: consider changing this to be a mutable reference: `&amp;mut self`
+95 |         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
+   |                         ^^^^^^^^^ `self` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+
+error[E0507]: cannot move out of borrowed content
+   --&gt; src/second.rs:103:9
+    |
+103 |         self.next.map(|node| {
+    |         ^^^^^^^^^ cannot move out of borrowed content
+</code></pre>
+<p>Ok looks like we've got two different errors here. The first one looks really clear
+though, it even tells us how to fix it! You can't upgrade a shared reference to a mutable
+one, so <code>iter_mut</code> needs to take <code>&amp;mut self</code>. Just a silly copy-paste error.</p>
+<pre><code class="language-rust ignore">pub fn iter_mut(&amp;self) -&gt; IterMut&lt;'_, T&gt; {
+    IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
+}
+</code></pre>
+<p>What about the other one?</p>
+<p>Oops! I actually accidentally made an error when writing the <code>iter</code> impl in
+the previous section, and we were just getting lucky that it worked!</p>
+<p>We have just had our first run in with the magic of Copy. When we introduced [ownership][] we
+said that when you move stuff, you can't use it anymore. For some types, this
+makes perfect sense. Our good friend Box manages an allocation on the heap for
+us, and we certainly don't want two pieces of code to think that they need to
+free its memory.</p>
+<p>However for other types this is <em>garbage</em>. Integers have no
+ownership semantics; they're just meaningless numbers! This is why integers are
+marked as Copy. Copy types are known to be perfectly copyable by a bitwise copy.
+As such, they have a super power: when moved, the old value <em>is</em> still usable.
+As a consequence, you can even move a Copy type out of a reference without
+replacement!</p>
+<p>All numeric primitives in rust (i32, u64, bool, f32, char, etc...) are Copy.
+You can also declare any user-defined type to be Copy as well, as long as
+all its components are Copy.</p>
+<p>Critically to why this code was working, shared references are also Copy!
+Because <code>&amp;</code> is copy, <code>Option&lt;&amp;&gt;</code> is <em>also</em> Copy. So when we did <code>self.next.map</code> it
 was fine because the Option was just copied. Now we can't do that, because
 <code>&amp;mut</code> isn't Copy (if you copied an &amp;mut, you'd have two &amp;mut's to the same
-location in memory, which is verboten). Instead, we should properly <code>take</code>
+location in memory, which is forbidden). Instead, we should properly <code>take</code>
 the Option to get it.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+<pre><code class="language-rust ignore">fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
     self.next.take().map(|node| {
         self.next = node.next.as_mut().map(|node| &amp;mut **node);
         &amp;mut node.elem
     })
 }
-#}</code></pre></pre>
-<pre><code class="language-text">&gt; cargo build
-src/second.rs:65:25: 65:34 error: cannot borrow immutable field `self.head` as mutable
-src/second.rs:65         IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
-                                         ^~~~~~~~~
-error: aborting due to previous error
 </code></pre>
-<p>Uh... what? Looks we messed up mutability somewhere in <code>iter_mut</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn iter_mut(&amp;self) -&gt; IterMut&lt;T&gt; {
-    IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
-}
-#}</code></pre></pre>
-<p>Classic copy-paste error. <code>self</code> is a shared reference! We can't
-get mutable references out of that!</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;T&gt; {
-    IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
-}
-#}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
 </code></pre>
 <p>Uh... wow. Holy shit! IterMut Just Works!</p>
 <p>Let's test this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[test]
+<pre><code class="language-rust ignore">#[test]
 fn iter_mut() {
     let mut list = List::new();
     list.push(1); list.push(2); list.push(3);
@@ -276,7 +262,7 @@ fn iter_mut() {
     assert_eq!(iter.next(), Some(&amp;mut 2));
     assert_eq!(iter.next(), Some(&amp;mut 1));
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
@@ -305,7 +291,7 @@ stupid that gets in the way! Let's be clear here:</p>
 <p>We have just implemented a piece of code that takes a singly-linked list, and
 returns a mutable reference to every single element in the list at most once.
 And it's statically verified to do that. And it's totally safe. And we didn't
-have to do anything crazy.</p>
+have to do anything wild.</p>
 <p>That's kind of a big deal, if you ask me. There are a couple reasons why
 this works:</p>
 <ul>
@@ -317,7 +303,7 @@ definitely disjoint.</li>
 </ul>
 <p>It turns out that you can apply this basic logic to get a safe IterMut for an
 array or a tree as well! You can even make the iterator DoubleEnded, so that
-you can consume the iterator from the front <em>and</em> the back at once! Wild!</p>
+you can consume the iterator from the front <em>and</em> the back at once! Woah!</p>
 
                     </main>
 

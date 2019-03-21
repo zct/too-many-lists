@@ -139,27 +139,23 @@
                         <a class="header" href="#basics" id="basics"><h1>Basics</h1></a>
 <p>Alright, back to basics. How do we construct our list?</p>
 <p>Before we just did:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;T&gt; List&lt;T&gt; {
+<pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
     pub fn new() -&gt; Self {
         List { head: None, tail: None }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>But we're not using Option for the <code>tail</code> anymore:</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:15:34: 15:38 error: mismatched types:
- expected `*mut fifth::Node&lt;_&gt;`,
-    found `core::option::Option&lt;_&gt;`
-(expected *-ptr,
-    found enum `core::option::Option`) [E0308]
-src/fifth.rs:15         List { head: None, tail: None }
-                                                 ^~~~
-src/fifth.rs:15:34: 15:38 help: run `rustc --explain E0308` to see a detailed explanation
-error: aborting due to previous error
+error[E0308]: mismatched types
+  --&gt; src/fifth.rs:15:34
+   |
+15 |         List { head: None, tail: None }
+   |                                  ^^^^ expected *-ptr, found enum `std::option::Option`
+   |
+   = note: expected type `*mut fifth::Node&lt;T&gt;`
+              found type `std::option::Option&lt;_&gt;`
 </code></pre>
 <p>We <em>could</em> use an Option, but unlike Box, <code>*mut</code> <em>is</em> nullable. This means it
 can't benefit from the null pointer optimization. Instead, we'll be using <code>null</code>
@@ -167,10 +163,7 @@ to represent None.</p>
 <p>So how do we get a null pointer? There's a few ways, but I prefer to use
 <code>std::ptr::null_mut()</code>. If you want, you can also use <code>0 as *mut _</code>, but that
 just seems so <em>messy</em>.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use std::ptr;
+<pre><code class="language-rust ignore">use std::ptr;
 
 // defns...
 
@@ -179,23 +172,36 @@ impl&lt;T&gt; List&lt;T&gt; {
         List { head: None, tail: ptr::null_mut() }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:4:5: 4:18 warning: struct field is never used: `head`, #[warn(dead_code)] on by default
-src/fifth.rs:4     head: Link&lt;T&gt;,
-                   ^~~~~~~~~~~~~
-src/fifth.rs:5:5: 5:23 warning: struct field is never used: `tail`, #[warn(dead_code)] on by default
-src/fifth.rs:5     tail: *mut Node&lt;T&gt;,
-                   ^~~~~~~~~~~~~~~~~~
-src/fifth.rs:11:5: 11:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fifth.rs:11     elem: T,
-                    ^~~~~~~
-src/fifth.rs:12:5: 12:18 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/fifth.rs:12     next: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
+warning: field is never used: `head`
+ --&gt; src/fifth.rs:4:5
+  |
+4 |     head: Link&lt;T&gt;,
+  |     ^^^^^^^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `tail`
+ --&gt; src/fifth.rs:5:5
+  |
+5 |     tail: *mut Node&lt;T&gt;,
+  |     ^^^^^^^^^^^^^^^^^^
+
+warning: field is never used: `elem`
+  --&gt; src/fifth.rs:11:5
+   |
+11 |     elem: T,
+   |     ^^^^^^^
+
+warning: field is never used: `head`
+  --&gt; src/fifth.rs:12:5
+   |
+12 |     head: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
 </code></pre>
-<p><em>shush</em> compiler, I will use them soon.</p>
+<p><em>shush</em> compiler, we will use them soon.</p>
 <p>Alright, let's move on to writing <code>push</code> again. This time, instead of grabbing
 an <code>Option&lt;&amp;mut Node&lt;T&gt;&gt;</code> after we insert, we're just going to grab a
 <code>*mut Node&lt;T&gt;</code> to the insides of the Box right away. We know we can soundly do
@@ -204,17 +210,11 @@ Box around. Of course, this isn't <em>safe</em>, because if we just drop the Box
 have a pointer to freed memory.</p>
 <p>How do we make a raw pointer from a normal pointer? Coercions! If a variable
 is declared to be a raw pointer, a normal reference will coerce into it:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let raw_tail: *mut _ = &amp;mut *new_tail;
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">let raw_tail: *mut _ = &amp;mut *new_tail;
+</code></pre>
 <p>We have all the info we need. We can translate our code into, approximately,
 the previous reference version:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: T) {
     let mut new_tail = Box::new(Node {
         elem: elem,
         next: None,
@@ -233,14 +233,16 @@ pub fn push(&amp;mut self, elem: T) {
 
     self.tail = raw_tail;
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:32:13: 32:27 error: attempted access of field `next` on type `*mut fifth::Node&lt;T&gt;`, but no field with that name was found
-src/fifth.rs:32             self.tail.next = Some(new_tail);
-                            ^~~~~~~~~~~~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
+  --&gt; src/fifth.rs:31:23
+   |
+31 |             self.tail.next = Some(new_tail);
+   |             ----------^^^^
+   |             |
+   |             help: `self.tail` is a raw pointer; try dereferencing it: `(*self.tail).next`
 </code></pre>
 <p>Huh? We have a pointer to a Node, why can't we get the <code>next</code> field?</p>
 <p>Rust is kinda a jerk when you use raw pointers. To access the contents of a
@@ -253,11 +255,13 @@ operation. So let's do that:</p>
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:31:14: 31:28 error: attempted access of field `next` on type `*mut fifth::Node&lt;T&gt;`, but no field with that name was found
-src/fifth.rs:31             *self.tail.next = Some(new_tail);
-                             ^~~~~~~~~~~~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0609]: no field `next` on type `*mut fifth::Node&lt;T&gt;`
+  --&gt; src/fifth.rs:31:23
+   |
+31 |             *self.tail.next = Some(new_tail);
+   |             -----------^^^^
+   |             |
+   |             help: `self.tail` is a raw pointer; try dereferencing it: `(*self.tail).next`
 </code></pre>
 <p>Uuuugh operator precedence.</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -267,12 +271,13 @@ Could not compile `lists`.
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:31:14: 31:24 error: dereference of raw pointer requires unsafe function or block [E0133]
-src/fifth.rs:31             (*self.tail).next = Some(new_tail);
-                             ^~~~~~~~~~
-src/fifth.rs:31:14: 31:24 help: run `rustc --explain E0133` to see a detailed explanation
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+  --&gt; src/fifth.rs:31:13
+   |
+31 |             (*self.tail).next = Some(new_tail);
+   |             ^^^^^^^^^^^^^^^^^ dereference of raw pointer
+   |
+   = note: raw pointers may be NULL, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
 </code></pre>
 <p>THIS SHOULDN'T BE THIS HARD.</p>
 <p>Remember how I said Unsafe Rust is like an FFI language for Safe Rust? Well, the
@@ -308,10 +313,13 @@ pub fn push(&amp;mut self, elem: T) {
 }
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fifth.rs:11:5: 11:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fifth.rs:11     elem: T,
-                    ^~~~~~~
+warning: field is never used: `elem`
+  --&gt; src/fifth.rs:11:5
+   |
+11 |     elem: T,
+   |     ^^^^^^^
+   |
+   = note: #[warn(dead_code)] on by default
 </code></pre>
 <p>Yay!</p>
 <p>It's kind've interesting that that's the <em>only</em> place we've had to write an
@@ -339,15 +347,12 @@ written in order to make sure that invariants are upheld for the unsafe code.</p
 struct fields are totally private, so no one else can mess with our state in
 arbitrary ways. As long as no combination of the APIs we expose causes bad stuff
 to happen, as far as an outside observer is concerned, all of our code is safe!
-And really, this is no different from the FFI case. No one needs care
+And really, this is no different from the FFI case. No one needs to care
 if some python math library shells out to C as long as it exposes a safe
 interface.</p>
 <p>Anyway, let's move on to <code>pop</code>, which is pretty much verbatim the reference
 version:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
     self.head.take().map(|head| {
         let head = *head;
         self.head = head.next;
@@ -359,15 +364,12 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
         head.elem
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Again we see another case where safety is stateful. If we fail to null out the
 tail pointer in <em>this</em> function, we'll see no problems at all. However
 subsequent calls to <code>push</code> will start writing to the dangling tail!</p>
 <p>Let's test it out:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[cfg(test)]
+<pre><code class="language-rust ignore">#[cfg(test)]
 mod test {
     use super::List;
     #[test]
@@ -408,31 +410,29 @@ mod test {
         assert_eq!(list.pop(), None);
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>This is just the stack test, but with the expected <code>pop</code> results flipped around.
-I also added some extra steps and the end to make sure that tail-pointer
+I also added some extra steps at the end to make sure that tail-pointer
 corruption case in <code>pop</code> doesn't occur.</p>
 <pre><code class="language-text">cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
      Running target/debug/lists-5c71138492ad4b4a
 
-running 8 tests
-test first::test::basics ... ok
-test second::test::basics ... ok
+running 12 tests
 test fifth::test::basics ... ok
-test second::test::iter ... ok
-test third::test::iter ... ok
-test second::test::iter_mut ... ok
+test first::test::basics ... ok
+test fourth::test::basics ... ok
+test fourth::test::peek ... ok
+test second::test::basics ... ok
+test fourth::test::into_iter ... ok
 test second::test::into_iter ... ok
+test second::test::iter ... ok
+test second::test::iter_mut ... ok
+test second::test::peek ... ok
 test third::test::basics ... ok
+test third::test::iter ... ok
 
 test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured
-
-   Doc-tests lists
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Gold Star!</p>
 

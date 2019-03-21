@@ -138,7 +138,7 @@
                     <main>
                         <a class="header" href="#basic-data-layout" id="basic-data-layout"><h1>Basic Data Layout</h1></a>
 <p>Alright, so what's a linked list? Well basically, it's a bunch of pieces of data
-on the heap (shhh Linux Kernel!) that point to each other in sequence. Linked
+on the heap (hush, kernel people!) that point to each other in sequence. Linked
 lists are something procedural programmers shouldn't touch with a 10-foot pole,
 and what functional programmers use for everything. It seems fair, then, that we
 should ask functional programmers for the definition of a linked list. They will
@@ -164,22 +164,22 @@ pub enum List {
 <p><em>phew</em>, I'm swamped. Let's just go ahead and compile that:</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:1:1: 4:2 error: recursive type `first::List` has infinite size [E0072]
-src/first.rs:1 pub enum List {
-              ^
-src/first.rs:1:1: 4:2 help: run `rustc --explain E0072` to see a detailed explanation
-src/first.rs:1:1: 4:2 help: insert indirection (e.g., a `Box`, `Rc`, or `&amp;`) at some point to make `first::List` representable
-error: aborting due to previous error
-error: Could not compile `list`.
-
-To learn more, run the command again with --verbose.
+error[E0072]: recursive type `first::List` has infinite size
+ --&gt; src/first.rs:4:1
+  |
+4 | pub enum List {
+  | ^^^^^^^^^^^^^ recursive type has infinite size
+5 |     Empty,
+6 |     Elem(i32, List),
+  |               ---- recursive without indirection
+  |
+  = help: insert indirection (e.g., a `Box`, `Rc`, or `&amp;`) at some point to make `first::List` representable
 </code></pre>
-<p>Noooooooo!!!! Functional programmers tricked us! That made us do something
-<em>illegal</em>! This is entrapment!</p>
-<p>...</p>
-<p>I'm ok now. Are you ok now? If we actually check out the error message (instead
-of getting ready to flee the country, as *ahem* <em>some</em> of us did), we can see
-that rustc is actually telling us exactly how to solve this problem:</p>
+<p>Well. I don't know about you, but I certainly feel betrayed by the functional
+programming community.</p>
+<p>If we actually check out the error message (after we get over the whole
+betrayal thing), we can see that rustc is actually telling us exactly
+how to solve this problem:</p>
 <blockquote>
 <p>insert indirection (e.g., a <code>Box</code>, <code>Rc</code>, or <code>&amp;</code>) at some point to make <code>first::List</code> representable</p>
 </blockquote>
@@ -220,7 +220,8 @@ enum List&lt;T&gt; {
 <p><code>Cons(T, List&lt;T&gt;),</code></p>
 <p>It wouldn't work. This is because the size of a List depends on how many elements are in the list, and so we don't know how much memory to allocate for a Cons. By introducing a Box, which has a defined size, we know how big Cons needs to be.</p>
 </blockquote>
-<p>Wow, uh. That is perhaps the most relevant and helpful documentation I have ever seen. Literally the first thing in the documentation is <em>exactly what we're trying to write, why it didn't work, and how to fix it</em>. Dang, yo. Docs.</p>
+<p>Wow, uh. That is perhaps the most relevant and helpful documentation I have ever seen. Literally the first thing in the documentation is <em>exactly what we're trying to write, why it didn't work, and how to fix it</em>.</p>
+<p>Dang, docs rule.</p>
 <p>Ok, let's do that:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -234,7 +235,7 @@ pub enum List {
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
 </code></pre>
 <p>Hey it built!</p>
-<p>...but this is actually a really stupid definition of a List, for a few reasons.</p>
+<p>...but this is actually a really foolish definition of a List, for a few reasons.</p>
 <p>Consider a list with two elements:</p>
 <pre><code class="language-text">[] = Stack
 () = Heap
@@ -256,16 +257,13 @@ key difference is the absence of the <em>junk</em> from our first layout. What i
 this junk? To understand that, we'll need to look at how an enum is laid out
 in memory.</p>
 <p>In general, if we have an enum like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-enum Foo {
+<pre><code class="language-rust ignore">enum Foo {
     D1(T1),
     D2(T2),
     ...
     Dn(Tn),
 }
-#}</code></pre></pre>
+</code></pre>
 <p>A Foo will need to store some integer to indicate which <em>variant</em> of the enum it
 represents (<code>D1</code>, <code>D2</code>, .. <code>Dn</code>). This is the <em>tag</em> of the enum. It will also
 need enough space to store the <em>largest</em> of <code>T1</code>, <code>T2</code>, .. <code>Tn</code> (plus some extra
@@ -316,8 +314,8 @@ pub enum List {
     ElemThenNotEmpty(i32, Box&lt;List&gt;),
 }
 #}</code></pre></pre>
-<p>Hopefully this seems like an even worse idea to you. For one, this really
-complicates our logic. In particular, there is now a completely invalid state:
+<p>Hopefully this seems like an even worse idea to you. Most notably, this really
+complicates our logic, because there is now a completely invalid state:
 <code>ElemThenNotEmpty(0, Box(Empty))</code>. It also <em>still</em> suffers from non-uniformly
 allocating our elements.</p>
 <p>However it does have <em>one</em> interesting property: it totally avoids allocating
@@ -326,24 +324,22 @@ in doing so it manages to waste <em>even more space</em>! This is because the pr
 layout took advantage of the <em>null pointer optimization</em>.</p>
 <p>We previously saw that every enum has to store a <em>tag</em> to specify which variant
 of the enum its bits represent. However, if we have a special kind of enum:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-enum Foo {
+<pre><code class="language-rust ignore">enum Foo {
     A,
     B(ContainsANonNullPtr),
 }
-#}</code></pre></pre>
+</code></pre>
 <p>the null pointer optimization kicks in, which <em>eliminates the space needed for
 the tag</em>. If the variant is A, the whole enum is set to all <code>0</code>'s. Otherwise,
 the variant is B. This works because B can never be all <code>0</code>'s, since it contains
 a non-zero pointer. Slick!</p>
 <p>Can you think of other enums and types that could do this kind of optimization?
 There's actually a lot! This is why Rust leaves enum layout totally unspecified.
-Sadly the null pointer optimization is the only one implemented today -- though
-it's pretty important! It means <code>&amp;</code>, <code>&amp;mut</code>, <code>Box</code>, <code>Rc</code>, <code>Arc</code>, <code>Vec</code>, and
+There are a few more complicated enum layout optimizations that Rust will do for
+us, but the null pointer one is definitely the most important!
+It means <code>&amp;</code>, <code>&amp;mut</code>, <code>Box</code>, <code>Rc</code>, <code>Arc</code>, <code>Vec</code>, and
 several other important types in Rust have no overhead when put in an <code>Option</code>!
-(We'll get to most of these in due time).</p>
+(We'll get to most of these in due time.)</p>
 <p>So how do we avoid the extra junk, uniformly allocate, <em>and</em> get that sweet
 null-pointer optimization? We need to better separate out the idea of having an
 element from allocating another list. To do this, we have to think a little more
@@ -352,7 +348,7 @@ C-like: structs!</p>
 structs let us declare a type that contains <em>many</em> values at once. Let's break
 our List into two types: A List, and a Node.</p>
 <p>As before, a List is either Empty or has an element followed by another List.
-However by representing the &quot;has an element followed by another List&quot; case by an
+By representing the &quot;has an element followed by another List&quot; case by an
 entirely separate type, we can hoist the Box to be in a more optimal position:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -377,12 +373,15 @@ pub enum List {
 demonstrate that our first layout (as suggested by the official Rust
 documentation) was problematic.</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:8:11: 8:18 error: private type in exported type signature
-src/first.rs:8    More(Box&lt;Node&gt;),
-                           ^~~~~~~
-error: aborting due to previous error
-Could not compile `lists`.
+warning: private type `first::Node` in public interface (error E0446)
+ --&gt; src/first.rs:8:10
+  |
+8 |     More(Box&lt;Node&gt;),
+  |          ^^^^^^^^^
+  |
+  = note: #[warn(private_in_public)] on by default
+  = warning: this was previously accepted by the compiler but
+    is being phased out; it will become a hard error in a future release!
 </code></pre>
 <p>:(</p>
 <p>Rust is mad at us again. We marked the <code>List</code> as public (because we want people
@@ -411,22 +410,38 @@ struct Node {
 <p>Because <code>List</code> is a struct with a single field, its size is the same as that
 field. Yay zero-cost abstractions!</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:2:2: 2:15 warning: struct field is never used: `head`, #[warn(dead_code)] on by default
-src/first.rs:2    head: Link,
-                  ^~~~~~~~~~~~~
-src/first.rs:6:2: 6:7 warning: variant is never used: `Empty`, #[warn(dead_code)] on by default
-src/first.rs:6    Empty,
-                  ^~~~~
-src/first.rs:7:2: 7:20 warning: variant is never used: `More`, #[warn(dead_code)] on by default
-src/first.rs:7    More(Box&lt;Node&gt;),
-                  ^~~~~~~~~~~~~~~~~~
-src/first.rs:11:2: 11:9 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/first.rs:11   elem: i32,
-                  ^~~~~~~
-src/first.rs:12:2: 12:15 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/first.rs:12   next: Link,
-                  ^~~~~~~~~~~~~
+warning: field is never used: `head`
+ --&gt; src/first.rs:2:5
+  |
+2 |     head: Link,
+  |     ^^^^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
+
+warning: variant is never constructed: `Empty`
+ --&gt; src/first.rs:6:5
+  |
+6 |     Empty,
+  |     ^^^^^
+
+warning: variant is never constructed: `More`
+ --&gt; src/first.rs:7:5
+  |
+7 |     More(Box&lt;Node&gt;),
+  |     ^^^^^^^^^^^^^^^
+
+warning: field is never used: `elem`
+  --&gt; src/first.rs:11:5
+   |
+11 |     elem: i32,
+   |     ^^^^^^^^^
+
+warning: field is never used: `next`
+  --&gt; src/first.rs:12:5
+   |
+12 |     next: Link,
+   |     ^^^^^^^^^^
+
 </code></pre>
 <p>Alright, that compiled! Rust is pretty mad, because as far as it can tell,
 everything we've written is totally useless: we never use <code>head</code>, and no one who

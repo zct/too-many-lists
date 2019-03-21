@@ -137,17 +137,14 @@
                 <div id="content" class="content">
                     <main>
                         <a class="header" href="#pop" id="pop"><h1>Pop</h1></a>
-<p>Like <code>push</code>, <code>pop</code> wants to mutate the list. However, unlike <code>push</code> we actually
-want to return something. However <code>pop</code> also has to deal with a tricky corner
+<p>Like <code>push</code>, <code>pop</code> wants to mutate the list. Unlike <code>push</code>, we actually
+want to return something. But <code>pop</code> also has to deal with a tricky corner
 case: what if the list is empty? To represent this case, we use the trusty
 <code>Option</code> type:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
-    //TODO
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    // TODO
 }
-#}</code></pre></pre>
+</code></pre>
 <p><code>Option&lt;T&gt;</code> is an enum that represents a value that may exist. It can either be
 <code>Some(T)</code> or <code>None</code>. We could make our own enum for this like we did for
 Link, but we want our users to be able to understand what the heck our return
@@ -174,22 +171,22 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:27:2: 36:3 error: not all control paths return a value [E0269]
-src/first.rs:27   pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
-src/first.rs:28       match self.head {
-src/first.rs:29           Link::Empty =&gt; {
-src/first.rs:30               // TODO
-src/first.rs:31           }
-src/first.rs:32           Link::More(node) =&gt; {
-              ...
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0308]: mismatched types
+  --&gt; src/first.rs:27:30
+   |
+27 |     pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+   |            ---               ^^^^^^^^^^^ expected enum `std::option::Option`, found ()
+   |            |
+   |            this function's body doesn't return
+   |
+   = note: expected type `std::option::Option&lt;i32&gt;`
+              found type `()`
 </code></pre>
 <p>Whoops, <code>pop</code> has to return a value, and we're not doing that yet. We <em>could</em>
 return <code>None</code>, but in this case it's probably a better idea to return
 <code>unimplemented!()</code>, to indicate that we aren't done implementing the function.
-<code>unimplemented!()</code> is a macro (<code>!</code> indicates a macro) that panics (basically
-just crashes in a controlled manner) the program when we get to it.</p>
+<code>unimplemented!()</code> is a macro (<code>!</code> indicates a macro) that panics the program
+when we get to it (~crashes it in a controlled manner).</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
@@ -215,36 +212,33 @@ lets us express really simple things a bit more concisely. You can always
 explicitly return early with <code>return</code> like any other C-like language.</p>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:28:9: 28:13 error: cannot move out of borrowed content
-src/first.rs:28       match self.head {
-                            ^~~~
-src/first.rs:32:15: 32:19 note: attempting to move value to here
-src/first.rs:32           Link::More(node) =&gt; {
-                                     ^~~~
-src/first.rs:32:15: 32:19 help: to prevent the move, use `ref node` or `ref mut node` to capture value by reference
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/first.rs:28:15
+   |
+28 |         match self.head {
+   |               ^^^^^^^^^
+   |               |
+   |               cannot move out of borrowed content
+   |               help: consider borrowing here: `&amp;self.head`
+...
+32 |             Link::More(node) =&gt; {
+   |                        ---- data moved here
+   |
+note: move occurs because `node` has type `std::boxed::Box&lt;first::Node&gt;`, which does not implement the `Copy` trait
+  --&gt; src/first.rs:32:24
+   |
+32 |             Link::More(node) =&gt; {
+   |                        ^^^^
 </code></pre>
 <p>Come on Rust, get off our back! As always, Rust is hella mad at us. Thankfully,
-this time it's also giving us the full scoop!</p>
-<pre><code class="language-text">src/first.rs:17:9: 17:13 error: cannot move out of borrowed content
-src/first.rs:17       match self.head {
-                            ^~~~
-src/first.rs:21:15: 21:19 note: attempting to move value to here
-src/first.rs:21           Link::More(node) =&gt; {
-                                     ^~~~
+this time it's also giving us the full scoop! By default, a pattern match will
+try to move its contents into the new branch, but we can't do this because we
+don't own self by-value here.</p>
+<pre><code class="language-text">help: consider borrowing here: `&amp;self.head`
 </code></pre>
-<p>Pattern matches by default move the value they match on, so that's why Rust's
-mad.</p>
-<pre><code class="language-text">help: to prevent the move, use `ref node` or `ref mut node` to capture value by reference
-</code></pre>
-<p>to avoid that, we use the <code>ref</code> keyword to indicate that we want to bind the
-<code>node</code> subpattern by reference instead. Let's do that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
-    match self.head {
+<p>Rust says we should add a reference to our <code>match</code> to fix that. 🤷‍♀️ Let's try it:</p>
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    match &amp;self.head {
         Link::Empty =&gt; {
             // TODO
         }
@@ -254,18 +248,30 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     };
     unimplemented!()
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:13:2: 13:9 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/first.rs:13   elem: i32,
-                  ^~~~~~~
-src/first.rs:14:2: 14:15 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/first.rs:14   next: Link&lt;T&gt;,
-                  ^~~~~~~~~~~~~
-src/first.rs:32:15: 32:23 warning: unused variable: `node`, #[warn(unused_variables)] on by default
-src/first.rs:32           Link::More(ref node) =&gt; {
-                                     ^~~~~~~~
+warning: unused variable: `node`
+  --&gt; src/first.rs:32:24
+   |
+32 |             Link::More(node) =&gt; {
+   |                        ^^^^ help: consider prefixing with an underscore: `_node`
+   |
+   = note: #[warn(unused_variables)] on by default
+
+warning: field is never used: `elem`
+  --&gt; src/first.rs:13:5
+   |
+13 |     elem: i32,
+   |     ^^^^^^^^^
+   |
+   = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `next`
+  --&gt; src/first.rs:14:5
+   |
+14 |     next: Link,
+   |     ^^^^^^^^^^
 </code></pre>
 <p>Hooray, compiling again! Now let's figure out that logic. We want to make an
 Option, so let's make a variable for that. In the Empty case we need to return
@@ -289,25 +295,17 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
 }
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/first.rs:39:29: 39:33 error: cannot move out of borrowed content
-src/first.rs:39                 self.head = node.next;
-                                            ^~~~
-src/first.rs:39:17: 39:38 error: cannot assign to `self.head` because it is borrowed
-src/first.rs:39                 self.head = node.next;
-                                ^~~~~~~~~~~~~~~~~~~~~
-src/first.rs:37:24: 37:32 note: borrow of `self.head` occurs here
-src/first.rs:37             Link::More(ref node) =&gt; {
-                                       ^~~~~~~~
-error: aborting due to 2 previous errors
-Could not compile `lists`.
+   Compiling lists v0.1.0 (/Users/ABeingessner/dev/temp/lists)
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/first.rs:35:29
+   |
+35 |                 self.head = node.next;
+   |                             ^^^^^^^^^ cannot move out of borrowed content
+
 </code></pre>
 <p><em>head</em></p>
 <p><em>desk</em></p>
-<p>Now we have two <em>different</em> errors. First, we're trying to move out of <code>node</code>
-when all we have is a shared reference to it. Second, we're trying to mutate
-<code>self.head</code> while we've already borrowed it to get the reference to <code>node</code>!</p>
-<p>This is a tangled mess.</p>
+<p>We're trying to move out of <code>node</code> when all we have is a shared reference to it.</p>
 <p>We should probably step back and think about what we're trying to do. We want
 to:</p>
 <ul>
@@ -317,20 +315,18 @@ to:</p>
 <ul>
 <li>remove the head of the list</li>
 <li>remove its <code>elem</code></li>
-<li>replace the lists head with its <code>next</code></li>
+<li>replace the list's head with its <code>next</code></li>
 <li>return <code>Some(elem)</code></li>
 </ul>
 </li>
 </ul>
 <p>The key insight is we want to <em>remove</em> things, which means we want to get the
 head of the list <em>by value</em>. We certainly can't do that through the shared
-reference we get through <code>ref node</code>. We also &quot;only&quot; have a mutable reference,
-so the only way we can move stuff is to <em>replace it</em>. Looks like we're doing
-the Empty dance again! Let's try that:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+reference we get through <code>&amp;self.head</code>. We also &quot;only&quot; have a mutable reference
+to <code>self</code>, so the only way we can move stuff is to <em>replace it</em>. Looks like we're doing
+the Empty dance again!</p>
+<p>Let's try that:</p>
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     let result;
     match mem::replace(&amp;mut self.head, Link::Empty) {
         Link::Empty =&gt; {
@@ -343,24 +339,22 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     };
     result
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
+   Finished dev [unoptimized + debuginfo] target(s) in 0.22s
 </code></pre>
 <p>O M G</p>
 <p>It compiled without <em>any</em> warnings!!!!!</p>
 <p>Actually I'm going to apply my own personal lint here: we made this <code>result</code>
 value to return, but actually we didn't need to do that at all! Just as a
-function evaluated to its last expression, every block also evaluates to
+function evaluates to its last expression, every block also evaluates to
 its last expression. Normally we supress this behaviour with semi-colons,
 which instead makes the block evaluate to the empty tuple, <code>()</code>. This is
 actually the value that functions which don't declare a return value -- like
 <code>push</code> -- return.</p>
 <p>So instead, we can write <code>pop</code> as:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
+<pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     match mem::replace(&amp;mut self.head, Link::Empty) {
         Link::Empty =&gt; None,
         Link::More(node) =&gt; {
@@ -369,79 +363,15 @@ pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Which is a bit more concise and idiomatic. Note that the Link::Empty branch
 completely lost its braces, because we only have one expression to
 evaluate. Just a nice shorthand for simple cases.</p>
-<pre><code class="language-text">&gt; cargo build
+<pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/first.rs:36:22: 36:31 error: use of moved value: `node` [E0382]
-src/first.rs:36                 Some(node.elem)
-                                     ^~~~~~~~~
-src/first.rs:35:29: 35:38 note: `node` moved here (through moving `node.next`) because it has type `first::Link`, which is non-copyable
-src/first.rs:35                 self.head = node.next;
-                                            ^~~~~~~~~
-error: aborting due to previous error
+   Finished dev [unoptimized + debuginfo] target(s) in 0.22s
 </code></pre>
-<p>WHAT. COME ON.</p>
-<p>Why the heck did our code stop working?!</p>
-<p>It turns out we accidentally got lucky with the previous code. We have just had
-our first run in with the magic of Copy. When we introduced <a href="first-ownership.html">ownership</a> we
-said that when you move stuff, you can't use it anymore. For some types, this
-makes perfect sense. Our good friend Box manages an allocation on the heap for
-us, and we certainly don't want two pieces of code to think that they need to
-free its memory.</p>
-<p>However for other types this is <em>butts</em>. Integers have no
-ownership semantics; they're just meaningless numbers! This is why integers are
-marked as Copy. Copy types are known to be perfectly copyable by a bitwise copy.
-As such, they have a super power: when moved, the old value <em>is</em> still usable.
-As a consequence, you can even move a Copy type out of a reference without
-replacement!</p>
-<p>All numeric primitives in rust (i32, u64, bool, f32, char, etc...) are Copy.
-Also, shared references are Copy, which is super useful! You can also declare
-any user-defined type to be Copy as well, as long as all its components are
-Copy.</p>
-<p>Anyway, back to the code: what went wrong? In our first iteration, we were
-actually <em>copying</em> the i32 <code>elem</code> when we assigned to result, so the node was
-left unscathed for the next operation. Now we're <em>moving</em> the <code>next</code> value
-(which isn't Copy), and that consumes the whole Box before we can get to <code>elem</code>.</p>
-<p>Now, we could just rearrange again to get <code>elem</code> first, but we're only using
-i32 as a placeholder for <em>some</em> data. Later we'll want to work with non-Copy
-data, so we should figure out how to handle this now.</p>
-<p>The <em>right</em> answer is to pull the <em>whole</em> node out of the Box, so that we can
-tear it apart in peace. We do that by explicitly dereferencing it:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
-    match mem::replace(&amp;mut self.head, Link::Empty) {
-        Link::Empty =&gt; None,
-        Link::More(boxed_node) =&gt; {
-            let node = *boxed_node;
-            self.head = node.next;
-            Some(node.elem)
-        }
-    }
-}
-#}</code></pre></pre>
-<p>After that, Rust understands an on-the-stack value well enough to let you take
-it apart piece-by-piece.</p>
-<pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-</code></pre>
-<p>Nice.</p>
-<p>Box is actually really special in Rust, because it's sufficiently built into the
-language that the compiler lets you do some stuff that nothing else can do. We
-actually have been doing one such thing this whole time: <code>DerefMove</code>. Whenever
-you have a pointer type you can dereference it with <code>*</code> or <code>.</code> to get at its
-contents. Usually you can get a <code>Deref</code> or maybe even a <code>DerefMut</code>,
-corresponding to a shared or mutable reference respectively.</p>
-<p>However because Box totally owns its contents, you can actually <em>move out of</em>
-a dereference. This is total magic, because there's no way for any other type
-to opt into this. There's tons of other cool tricks the compiler knows how to do
-with Box because it <em>just is</em> Box, but they were all feature-gated at 1.0
-pending further design. Ideally Box will be totally user definable in the
-future.</p>
+<p>Nice, still works!</p>
 
                     </main>
 

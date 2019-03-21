@@ -161,18 +161,20 @@ generic. Of course, we can't <em>just</em> do this, or else the compiler's going
 to be Super Mad.</p>
 <pre><code class="language-text">&gt; cargo test
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/second.rs:12:6: 12:10 error: wrong number of type arguments: expected 1, found 0 [E0243]
-src/second.rs:12 impl List {
-                      ^~~~
-src/second.rs:12:6: 12:10 help: run `rustc --explain E0243` to see a detailed explanation
-src/second.rs:35:15: 35:19 error: wrong number of type arguments: expected 1, found 0 [E0243]
-src/second.rs:35 impl Drop for List {
-                               ^~~~
-src/second.rs:35:15: 35:19 help: run `rustc --explain E0243` to see a detailed explanation
-error: aborting due to 2 previous errors
+error[E0107]: wrong number of type arguments: expected 1, found 0
+  --&gt; src/second.rs:14:6
+   |
+14 | impl List {
+   |      ^^^^ expected 1 type argument
+
+error[E0107]: wrong number of type arguments: expected 1, found 0
+  --&gt; src/second.rs:36:15
+   |
+36 | impl Drop for List {
+   |               ^^^^ expected 1 type argument
+
 </code></pre>
-<p>The compiler is even telling us about some fancy error code, but honestly the
-problem is pretty clear, we're talking about this <code>List</code> thing but that's not
+<p>The problem is pretty clear: we're talking about this <code>List</code> thing but that's not
 real anymore. Like Option and Box, we now always have to talk about
 <code>List&lt;Something&gt;</code>.</p>
 <p>But what's the Something we use in all these impls? Just like List, we want our
@@ -197,7 +199,6 @@ impl&lt;T&gt; List&lt;T&gt; {
 
     pub fn pop(&amp;mut self) -&gt; Option&lt;T&gt; {
         self.head.take().map(|node| {
-            let node = *node;
             self.head = node.next;
             node.elem
         })

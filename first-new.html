@@ -138,38 +138,29 @@
                     <main>
                         <a class="header" href="#new" id="new"><h1>New</h1></a>
 <p>To associate actual code with a type, we use <code>impl</code> blocks:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl List {
+<pre><code class="language-rust ignore">impl List {
     // TODO, make code happen
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Now we just need to figure out how to actually write code. In Rust we declare
 a function like so:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn foo(arg1: Type1, arg2: Type2) -&gt; ReturnType {
+<pre><code class="language-rust ignore">fn foo(arg1: Type1, arg2: Type2) -&gt; ReturnType {
     // body
 }
-#}</code></pre></pre>
+</code></pre>
 <p>The first thing we want is a way to <em>construct</em> a list. Since we hide the
 implementation details, we need to provide that as a function. The usual way
 to do that in Rust is to provide a static method, which is just a
 normal function inside an <code>impl</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl List {
+<pre><code class="language-rust ignore">impl List {
     pub fn new() -&gt; Self {
         List { head: Link::Empty }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <p>A few notes on this:</p>
 <ul>
-<li>Self is an alias for &quot;that type I wrote at top next to <code>impl</code>&quot;. Great for
+<li>Self is an alias for &quot;that type I wrote at the top next to <code>impl</code>&quot;. Great for
 not repeating yourself!</li>
 <li>We create an instance of a struct in much the same way we declare it, except
 instead of providing the types of its fields, we initialize them with values.</li>

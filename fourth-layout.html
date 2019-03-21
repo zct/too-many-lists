@@ -139,19 +139,16 @@
                         <a class="header" href="#layout" id="layout"><h1>Layout</h1></a>
 <p>The key to our design is the <code>RefCell</code> type. The heart of
 RefCell is a pair of methods:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn borrow&lt;'a&gt;(&amp;'a self) -&gt; Ref&lt;'a, T&gt;
-fn borrow_mut&lt;'a&gt;(&amp;'a self) -&gt; RefMut&lt;'a, T&gt;
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">fn borrow(&amp;self) -&gt; Ref&lt;'_, T&gt;;
+fn borrow_mut(&amp;self) -&gt; RefMut&lt;'_, T&gt;;
+</code></pre>
 <p>The rules for <code>borrow</code> and <code>borrow_mut</code> are exactly those of <code>&amp;</code> and <code>&amp;mut</code>:
 you can call <code>borrow</code> as many times as you want, but <code>borrow_mut</code> requires
 exclusivity.</p>
 <p>Rather than enforcing this statically, RefCell enforces them at runtime.
 If you break the rules, RefCell will just panic and crash the program.
 Why does it return these Ref and RefMut things? Well, they basically behave
-like <code>Rc</code>s but for borrowing. They keep the RefCell borrowed until they go out
+like <code>Rc</code>s but for borrowing. They also keep the RefCell borrowed until they go out
 of scope. We'll get to that later.</p>
 <p>Now with Rc and RefCell we can become... an incredibly verbose pervasively
 mutable garbage collected language that can't collect cycles! Y-yaaaaay...</p>
@@ -181,27 +178,37 @@ struct Node&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:5:5: 5:18 warning: struct field is never used: `head`, #[warn(dead_code)] on by default
-src/fourth.rs:5     head: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
-src/fourth.rs:6:5: 6:18 warning: struct field is never used: `tail`, #[warn(dead_code)] on by default
-src/fourth.rs:6     tail: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
-src/fourth.rs:11:1: 15:2 warning: struct is never used: `Node`, #[warn(dead_code)] on by default
-src/fourth.rs:11 struct Node&lt;T&gt; {
-src/fourth.rs:12     elem: T,
-src/fourth.rs:13     next: Link&lt;T&gt;,
-src/fourth.rs:14     prev: Link&lt;T&gt;,
-src/fourth.rs:15 }
-src/fourth.rs:12:5: 12:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fourth.rs:12     elem: T,
-                     ^~~~~~~
-src/fourth.rs:13:5: 13:18 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/fourth.rs:13     next: Link&lt;T&gt;,
-                     ^~~~~~~~~~~~~
-src/fourth.rs:14:5: 14:18 warning: struct field is never used: `prev`, #[warn(dead_code)] on by default
-src/fourth.rs:14     prev: Link&lt;T&gt;,
-                     ^~~~~~~~~~~~~
+warning: field is never used: `head`
+ --&gt; src/fourth.rs:5:5
+  |
+5 |     head: Link&lt;T&gt;,
+  |     ^^^^^^^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `tail`
+ --&gt; src/fourth.rs:6:5
+  |
+6 |     tail: Link&lt;T&gt;,
+  |     ^^^^^^^^^^^^^
+
+warning: field is never used: `elem`
+  --&gt; src/fourth.rs:12:5
+   |
+12 |     elem: T,
+   |     ^^^^^^^
+
+warning: field is never used: `next`
+  --&gt; src/fourth.rs:13:5
+   |
+13 |     next: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
+
+warning: field is never used: `prev`
+  --&gt; src/fourth.rs:14:5
+   |
+14 |     prev: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
 </code></pre>
 <p>Hey, it built! Lots of dead code warnings, but it built! Let's try to use it.</p>
 

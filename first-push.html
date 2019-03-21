@@ -145,7 +145,7 @@ so we'll want to take <code>&amp;mut self</code>. We also need to take an i32 to
     }
 }
 </code></pre>
-<p>First things first, we need to make a node to store our element in:</p>
+<p>First thing's first, we need to make a node to store our element in:</p>
 <pre><code class="language-rust ignore">    pub fn push(&amp;mut self, elem: i32) {
         let new_node = Node {
             elem: elem,
@@ -154,10 +154,7 @@ so we'll want to take <code>&amp;mut self</code>. We also need to take an i32 to
     }
 </code></pre>
 <p>What goes <code>next</code>? Well, the entire old list! Can we... just do that?</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl List {
+<pre><code class="language-rust ignore">impl List {
     pub fn push(&amp;mut self, elem: i32) {
         let new_node = Node {
             elem: elem,
@@ -165,14 +162,13 @@ impl List {
         };
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:19:10: 19:14 error: cannot move out of borrowed content
-src/first.rs:19           next: self.head,
-                                ^~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/first.rs:19:19
+   |
+19 |             next: self.head,
+   |                   ^^^^^^^^^ cannot move out of borrowed content
 </code></pre>
 <p>Nooooope. Rust is telling us the right thing, but it's certainly not obvious
 what exactly it means, or what to do about it:</p>
@@ -186,10 +182,7 @@ the <em>one</em> thing you can't do with an <code>&amp;mut</code>: It would be s
 and Rust is very polite (it would also be incredibly dangerous, but surely
 <em>that</em> isn't why it cares).</p>
 <p>What if we put something back? Namely, the node that we're creating:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push(&amp;mut self, elem: i32) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: i32) {
     let new_node = Box::new(Node {
         elem: elem,
         next: self.head,
@@ -197,17 +190,16 @@ pub fn push(&amp;mut self, elem: i32) {
 
     self.head = Link::More(new_node);
 }
-#}</code></pre></pre>
+</code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
-src/first.rs:19:10: 19:14 error: cannot move out of borrowed content
-src/first.rs:19           next: self.head,
-                                ^~~~
-error: aborting due to previous error
-Could not compile `lists`.
+error[E0507]: cannot move out of borrowed content
+  --&gt; src/first.rs:19:19
+   |
+19 |             next: self.head,
+   |                   ^^^^^^^^^ cannot move out of borrowed content
 </code></pre>
 <p>No dice. In principle, this is something Rust could actually accept, but it
-won't (for various reasons -- the most serious being exception safety). We need
+won't (for various reasons -- the most serious being <a href="https://doc.rust-lang.org/nightly/nomicon/exception-safety.html">exception safety</a>). We need
 some way to get the head without Rust noticing that it's gone. For advice, we
 turn to infamous Rust Hacker Indiana Jones:</p>
 <p><img src="img/indy.gif" alt="Indy Prepares to mem::replace" /></p>
@@ -215,16 +207,10 @@ turn to infamous Rust Hacker Indiana Jones:</p>
 function lets us steal a value out of a borrow by <em>replacing</em> it with another
 value. Let's just pull in <code>std::mem</code> at the top of the file, so that <code>mem</code> is in
 local scope:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use std::mem;
-#}</code></pre></pre>
+<pre><code class="language-rust ignore">use std::mem;
+</code></pre>
 <p>and use it appropriately:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push(&amp;mut self, elem: i32) {
+<pre><code class="language-rust ignore">pub fn push(&amp;mut self, elem: i32) {
     let new_node = Box::new(Node {
         elem: elem,
         next: mem::replace(&amp;mut self.head, Link::Empty),
@@ -232,7 +218,7 @@ pub fn push(&amp;mut self, elem: i32) {
 
     self.head = Link::More(new_node);
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Here we <code>replace</code> self.head temporarily with Link::Empty before replacing it
 with the new head of the list. I'm not gonna lie: this is a pretty unfortunate
 thing to have to do. Sadly, we must (for now).</p>

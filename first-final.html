@@ -175,7 +175,6 @@ impl List {
         match mem::replace(&amp;mut self.head, Link::Empty) {
             Link::Empty =&gt; None,
             Link::More(node) =&gt; {
-                let node = *node;
                 self.head = node.next;
                 Some(node.elem)
             }
@@ -186,6 +185,7 @@ impl List {
 impl Drop for List {
     fn drop(&amp;mut self) {
         let mut cur_link = mem::replace(&amp;mut self.head, Link::Empty);
+
         while let Link::More(mut boxed_node) = cur_link {
             cur_link = mem::replace(&amp;mut boxed_node.next, Link::Empty);
         }

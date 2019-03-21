@@ -173,12 +173,19 @@ pub fn append(&amp;self, elem: T) -&gt; List&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/third.rs:10:5: 10:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/third.rs:10     elem: T,
-                    ^~~~~~~
-src/third.rs:11:5: 11:18 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/third.rs:11     next: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
+warning: field is never used: `elem`
+  --&gt; src/third.rs:10:5
+   |
+10 |     elem: T,
+   |     ^^^^^^^
+   |
+   = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `next`
+  --&gt; src/third.rs:11:5
+   |
+11 |     next: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
 </code></pre>
 <p>Wow, Rust is really hard-nosed about actually using fields. It can tell no
 consumer can ever actually observe the use of these fields! Still, we seem good
@@ -195,15 +202,14 @@ pub fn tail(&amp;self) -&gt; List&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/third.rs:28:22: 28:61 error: mismatched types:
- expected `core::option::Option&lt;alloc::rc::Rc&lt;third::Node&lt;_&gt;&gt;&gt;`,
-    found `core::option::Option&lt;core::option::Option&lt;alloc::rc::Rc&lt;third::Node&lt;T&gt;&gt;&gt;&gt;`
-(expected struct `alloc::rc::Rc`,
-    found enum `core::option::Option`) [E0308]
-src/third.rs:28         List { head: self.head.as_ref().map(|node| node.next.clone()) }
-                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src/third.rs:28:22: 28:61 help: run `rustc --explain E0308` to see a detailed explanation
-error: aborting due to previous error
+error[E0308]: mismatched types
+  --&gt; src/third.rs:27:22
+   |
+27 |         List { head: self.head.as_ref().map(|node| node.next.clone()) }
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected struct `std::rc::Rc`, found enum `std::option::Option`
+   |
+   = note: expected type `std::option::Option&lt;std::rc::Rc&lt;_&gt;&gt;`
+              found type `std::option::Option&lt;std::option::Option&lt;std::rc::Rc&lt;_&gt;&gt;&gt;`
 </code></pre>
 <p>Hrm, we messed up. <code>map</code> expects us to return a Y, but here we're returning an
 <code>Option&lt;Y&gt;</code>. Thankfully, this is another common Option pattern, and we can just
@@ -284,16 +290,16 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Perfect!</p>
-<p>Iter is identical to the mutable list case:</p>
+<p>Iter is also identical to how it was for our mutable list:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-pub struct Iter&lt;'a, T:'a&gt; {
+pub struct Iter&lt;'a, T&gt; {
     next: Option&lt;&amp;'a Node&lt;T&gt;&gt;,
 }
 
 impl&lt;T&gt; List&lt;T&gt; {
-    pub fn iter&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;'a, T&gt; {
+    pub fn iter(&amp;self) -&gt; Iter&lt;'_, T&gt; {
         Iter { next: self.head.as_ref().map(|node| &amp;**node) }
     }
 }

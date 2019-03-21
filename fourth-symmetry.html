@@ -144,10 +144,7 @@ next &lt;-&gt; prev
 front -&gt; back
 </code></pre>
 <p>Oh, also we need to add <code>_mut</code> variants for peeking.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn push_back(&amp;mut self, elem: T) {
+<pre><code class="language-rust ignore">pub fn push_back(&amp;mut self, elem: T) {
     let new_tail = Node::new(elem);
     match self.tail.take() {
         Some(old_tail) =&gt; {
@@ -194,9 +191,9 @@ pub fn peek_front_mut(&amp;mut self) -&gt; Option&lt;RefMut&lt;T&gt;&gt; {
         RefMut::map(node.borrow_mut(), |node| &amp;mut node.elem)
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <p>And massively flesh out our tests:</p>
-<pre><code>#[test]
+<pre><code class="language-rust ignore">#[test]
 fn basics() {
     let mut list = List::new();
 

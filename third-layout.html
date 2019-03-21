@@ -147,9 +147,13 @@ list2 = tail(list1) = B -&gt; C -&gt; D
 list3 = push(list2, X) = X -&gt; B -&gt; C -&gt; D
 </code></pre>
 <p>But at the end we want the memory to look like this:</p>
-<pre><code class="language-text">list1 -&gt; A ---v
+<pre><code class="language-text">list1 -&gt; A ---+
+              |
+              v
 list2 ------&gt; B -&gt; C -&gt; D
-list3 -&gt; X ---^
+              ^
+              |
+list3 -&gt; X ---+
 </code></pre>
 <p>This just can't work with Boxes, because ownership of <code>B</code> is <em>shared</em>. Who
 should free it? If I drop list2, does it free B? With boxes we certainly would
@@ -160,15 +164,15 @@ be freed only after everyone stops looking at it. Hooray!</p>
 <p>Rust doesn't have anything like the garbage collectors these languages have.
 They have <em>tracing</em> GC, which will dig through all the memory that's sitting
 around at runtime and figure out what's garbage automatically. Instead, all
-Rust has today is <em>reference counting</em>. Reference counting is basically a
-poor-man's GC. For many workloads, it has significantly less throughput
+Rust has today is <em>reference counting</em>. Reference counting can be thought of
+as a very simple GC. For many workloads, it has significantly less throughput
 than a tracing collector, and it completely falls over if you manage to
-build cycles. Thankfully, for our usecase we'll never run into cycles
+build cycles. But hey, it's all we've got! Thankfully, for our usecase we'll never run into cycles
 (feel free to try to prove this to yourself -- I sure won't).</p>
-<p>So how do we do reference counted garbage collection? <code>Rc</code>! Rc is just like
+<p>So how do we do reference-counted garbage collection? <code>Rc</code>! Rc is just like
 Box, but we can duplicate it, and its memory will <em>only</em> be freed when <em>all</em>
 the Rc's derived from it are dropped. Unforuntately, this flexibility comes at
-a serious cost: we can only Deref an Rc. No DerefMut or DerefMove. This means
+a serious cost: we can only take a shared reference to its internals. This means
 we can't ever really get data out of one of our lists, nor can we mutate them.</p>
 <p>So what's our layout gonna look like? Well, previously we had:</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -204,10 +208,15 @@ struct Node&lt;T&gt; {
 #}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/third.rs:5:23: 5:34 error: use of undeclared type name `Rc` [E0412]
-src/third.rs:5 type Link&lt;T&gt; = Option&lt;Rc&lt;Node&lt;T&gt;&gt;&gt;;
-                                     ^~~~~~~~~~~
-error: aborting due to previous error
+error[E0412]: cannot find type `Rc` in this scope
+ --&gt; src/third.rs:5:23
+  |
+5 | type Link&lt;T&gt; = Option&lt;Rc&lt;Node&lt;T&gt;&gt;&gt;;
+  |                       ^^ not found in this scope
+help: possible candidate is found in another module, you can import it into scope
+  |
+1 | use std::rc::Rc;
+  |
 </code></pre>
 <p>Oh dang, sick burn. Unlike everything we used for our mutable lists, Rc is so
 lame that it's not even implicitly imported into every single Rust program.
@@ -219,18 +228,28 @@ use std::rc::Rc;
 #}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/third.rs:4:5: 4:18 warning: struct field is never used: `head`, #[warn(dead_code)] on by default
-src/third.rs:4     head: Link&lt;T&gt;,
-                   ^~~~~~~~~~~~~
-src/third.rs:10:5: 10:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/third.rs:10     elem: T,
-                    ^~~~~~~
-src/third.rs:11:5: 11:18 warning: struct field is never used: `next`, #[warn(dead_code)] on by default
-src/third.rs:11     next: Link&lt;T&gt;,
-                    ^~~~~~~~~~~~~
+warning: field is never used: `head`
+ --&gt; src/third.rs:4:5
+  |
+4 |     head: Link&lt;T&gt;,
+  |     ^^^^^^^^^^^^^
+  |
+  = note: #[warn(dead_code)] on by default
+
+warning: field is never used: `elem`
+  --&gt; src/third.rs:10:5
+   |
+10 |     elem: T,
+   |     ^^^^^^^
+
+warning: field is never used: `next`
+  --&gt; src/third.rs:11:5
+   |
+11 |     next: Link&lt;T&gt;,
+   |     ^^^^^^^^^^^^^
 </code></pre>
-<p>Seems legit. Rust continues to be a complete joke to write. I bet we can just
-find-and-replace Box with Rc and call it a day.</p>
+<p>Seems legit. Rust continues to be a <em>completely</em> trivial to write. I bet we can just
+find-and-replace Box with Rc and call it a day!</p>
 <p>...</p>
 <p>No. No we can't.</p>
 

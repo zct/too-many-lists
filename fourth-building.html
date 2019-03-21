@@ -203,14 +203,17 @@ pub fn push_front(&amp;mut self, elem: T) {
 #}</code></pre></pre>
 <pre><code class="language-text">cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:37:17: 37:30 error: attempted access of field `prev` on type `alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`, but no field with that name was found
-src/fourth.rs:37                 old_head.prev = Some(new_head.clone());
-                                 ^~~~~~~~~~~~~
-src/fourth.rs:38:17: 38:30 error: attempted access of field `next` on type `alloc::rc::Rc&lt;core::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`, but no field with that name was found
-src/fourth.rs:38                 new_head.next = Some(old_head);
-                                 ^~~~~~~~~~~~~
-error: aborting due to 2 previous errors
-Could not compile `lists`.
+error[E0609]: no field `prev` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
+  --&gt; src/fourth.rs:39:26
+   |
+39 |                 old_head.prev = Some(new_head.clone()); // +1 new_head
+   |                          ^^^^ unknown field
+
+error[E0609]: no field `next` on type `std::rc::Rc&lt;std::cell::RefCell&lt;fourth::Node&lt;T&gt;&gt;&gt;`
+  --&gt; src/fourth.rs:40:26
+   |
+40 |                 new_head.next = Some(old_head);         // +1 old_head
+   |                          ^^^^ unknown field
 </code></pre>
 <p>Alright. Compiler error. Good start. Good start.</p>
 <p>Why can't we access the <code>prev</code> and <code>next</code> fields on our nodes? It worked before
@@ -303,9 +306,13 @@ pub fn push_front(&amp;mut self, elem: T) {
 #}</code></pre></pre>
 <pre><code class="language-text">&gt; cargo build
    Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/too-many-lists/lists)
-src/fourth.rs:12:5: 12:12 warning: struct field is never used: `elem`, #[warn(dead_code)] on by default
-src/fourth.rs:12     elem: T,
-                     ^~~~~~~
+warning: field is never used: `elem`
+  --&gt; src/fourth.rs:12:5
+   |
+12 |     elem: T,
+   |     ^^^^^^^
+   |
+   = note: #[warn(dead_code)] on by default
 </code></pre>
 <p>Hey, it built! Docs win again.</p>
 

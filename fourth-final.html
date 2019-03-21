@@ -137,11 +137,11 @@
                 <div id="content" class="content">
                     <main>
                         <a class="header" href="#final-code" id="final-code"><h1>Final Code</h1></a>
-<p>Alright, so that's implementing a 100% safe doubly linked list in Rust. It
-relies on some unstable standard library features, and had massive
-implementation leak issues particularly surrounding acquiring internal
-references.</p>
-<p>It also was riddled with tons of &quot;unnecessary&quot; runtime checks for
+<p>Alright, so that's implementing a 100% safe doubly linked list in Rust. It was
+a nightmare to implement, leaks implementation details, and doesn't support several
+fundamental operations.</p>
+<p>But, it exists.</p>
+<p>Oh, I guess it's also riddled with tons of &quot;unnecessary&quot; runtime checks for
 correctness between <code>Rc</code> and <code>RefCell</code>. I put unnecessary in quotes because
 they're actually necessary to guarantee the whole <em>actually being safe</em> thing.
 We encountered a few places where those checks actually <em>were</em> necessary.
@@ -153,8 +153,8 @@ getting back all the control by making our implementation <em>unsafe</em>.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-use std::cell::{Ref, RefMut, RefCell};
 use std::rc::Rc;
+use std::cell::{Ref, RefMut, RefCell};
 
 pub struct List&lt;T&gt; {
     head: Link&lt;T&gt;,
@@ -169,7 +169,6 @@ struct Node&lt;T&gt; {
     prev: Link&lt;T&gt;,
 }
 
-pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
 
 impl&lt;T&gt; Node&lt;T&gt; {
     fn new(elem: T) -&gt; Rc&lt;RefCell&lt;Self&gt;&gt; {
@@ -216,21 +215,6 @@ impl&lt;T&gt; List&lt;T&gt; {
         }
     }
 
-    pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
-        self.head.take().map(|old_head| {
-            match old_head.borrow_mut().next.take() {
-                Some(new_head) =&gt; {
-                    new_head.borrow_mut().prev.take();
-                    self.head = Some(new_head);
-                }
-                None =&gt; {
-                    self.tail.take();
-                }
-            }
-            Rc::try_unwrap(old_head).ok().unwrap().into_inner().elem
-        })
-    }
-
     pub fn pop_back(&amp;mut self) -&gt; Option&lt;T&gt; {
         self.tail.take().map(|old_tail| {
             match old_tail.borrow_mut().prev.take() {
@@ -246,15 +230,24 @@ impl&lt;T&gt; List&lt;T&gt; {
         })
     }
 
-    pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
-        self.head.as_ref().map(|node| {
-            Ref::map(node.borrow(), |node| &amp;node.elem)
+    pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
+        self.head.take().map(|old_head| {
+            match old_head.borrow_mut().next.take() {
+                Some(new_head) =&gt; {
+                    new_head.borrow_mut().prev.take();
+                    self.head = Some(new_head);
+                }
+                None =&gt; {
+                    self.tail.take();
+                }
+            }
+            Rc::try_unwrap(old_head).ok().unwrap().into_inner().elem
         })
     }
 
-    pub fn peek_front_mut(&amp;mut self) -&gt; Option&lt;RefMut&lt;T&gt;&gt; {
+    pub fn peek_front(&amp;self) -&gt; Option&lt;Ref&lt;T&gt;&gt; {
         self.head.as_ref().map(|node| {
-            RefMut::map(node.borrow_mut(), |node| &amp;mut node.elem)
+            Ref::map(node.borrow(), |node| &amp;node.elem)
         })
     }
 
@@ -270,6 +263,12 @@ impl&lt;T&gt; List&lt;T&gt; {
         })
     }
 
+    pub fn peek_front_mut(&amp;mut self) -&gt; Option&lt;RefMut&lt;T&gt;&gt; {
+        self.head.as_ref().map(|node| {
+            RefMut::map(node.borrow_mut(), |node| &amp;mut node.elem)
+        })
+    }
+
     pub fn into_iter(self) -&gt; IntoIter&lt;T&gt; {
         IntoIter(self)
     }
@@ -281,8 +280,11 @@ impl&lt;T&gt; Drop for List&lt;T&gt; {
     }
 }
 
+pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
+
 impl&lt;T&gt; Iterator for IntoIter&lt;T&gt; {
     type Item = T;
+
     fn next(&amp;mut self) -&gt; Option&lt;T&gt; {
         self.0.pop_front()
     }
