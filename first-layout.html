@@ -163,7 +163,7 @@ pub enum List {
 </code></pre>
 <p><em>phew</em>, I'm swamped. Let's just go ahead and compile that:</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
+
 error[E0072]: recursive type `first::List` has infinite size
  --&gt; src/first.rs:4:1
   |
@@ -229,7 +229,8 @@ enum List&lt;T&gt; {
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
+
+   Finished dev [unoptimized + debuginfo] target(s) in 0.22s
 </code></pre>
 <p>Hey it built!</p>
 <p>...but this is actually a really foolish definition of a List, for a few reasons.</p>
@@ -364,6 +365,7 @@ pub enum List {
 demonstrate that our first layout (as suggested by the official Rust
 documentation) was problematic.</p>
 <pre><code class="language-text">&gt; cargo build
+
 warning: private type `first::Node` in public interface (error E0446)
  --&gt; src/first.rs:8:10
   |
@@ -398,6 +400,7 @@ struct Node {
 <p>Because <code>List</code> is a struct with a single field, its size is the same as that
 field. Yay zero-cost abstractions!</p>
 <pre><code class="language-text">&gt; cargo build
+
 warning: field is never used: `head`
  --&gt; src/first.rs:2:5
   |

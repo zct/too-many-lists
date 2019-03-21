@@ -167,7 +167,7 @@ More? Pattern matching with <code>match</code>!</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
+
 error[E0308]: mismatched types
   --&gt; src/first.rs:27:30
    |
@@ -205,7 +205,7 @@ expression (basically line) in a function is implicitly its return value. This
 lets us express really simple things a bit more concisely. You can always
 explicitly return early with <code>return</code> like any other C-like language.</p>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
+
 error[E0507]: cannot move out of borrowed content
   --&gt; src/first.rs:28:15
    |
@@ -244,7 +244,7 @@ don't own self by-value here.</p>
 }
 </code></pre>
 <pre><code class="language-text">&gt; cargo build
-   Compiling lists v0.1.0 (file:///Users/ABeingessner/dev/lists)
+
 warning: unused variable: `node`
   --&gt; src/first.rs:32:24
    |
