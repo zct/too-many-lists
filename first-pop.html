@@ -196,7 +196,7 @@ when we get to it (~crashes it in a controlled manner).</p>
     unimplemented!()
 }
 </code></pre>
-<p>Unconditional panics are an example of a <a href="http://doc.rust-lang.org/nightly/book/functions.html#diverging-functions">diverging function</a>.
+<p>Unconditional panics are an example of a <a href="https://doc.rust-lang.org/nightly/book/ch19-04-advanced-types.html#the-never-type-that-never-returns">diverging function</a>.
 Diverging functions never return to the caller, so they may be used in places
 where a value of any type is expected. Here, <code>unimplemented!()</code> is being
 used in place of a value of type <code>Option&lt;T&gt;</code>.</p>
