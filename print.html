@@ -2344,7 +2344,7 @@ error[E0507]: cannot move out of borrowed content
 <p>Ok looks like we've got two different errors here. The first one looks really clear
 though, it even tells us how to fix it! You can't upgrade a shared reference to a mutable
 one, so <code>iter_mut</code> needs to take <code>&amp;mut self</code>. Just a silly copy-paste error.</p>
-<pre><code class="language-rust ignore">pub fn iter_mut(&amp;self) -&gt; IterMut&lt;'_, T&gt; {
+<pre><code class="language-rust ignore">pub fn iter_mut(&amp;mut self) -&gt; IterMut&lt;'_, T&gt; {
     IterMut { next: self.head.as_mut().map(|node| &amp;mut **node) }
 }
 </code></pre>
