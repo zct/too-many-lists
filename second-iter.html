@@ -336,7 +336,7 @@ constraints all work out!</p>
 
 impl&lt;T&gt; List&lt;T&gt; {
     pub fn iter(&amp;self) -&gt; Iter&lt;T&gt; {
-        Iter { next: self.head.map(|node| &amp;*node) }
+        Iter { next: self.head.map(|node| &amp;node) }
     }
 }
 
@@ -344,7 +344,7 @@ impl&lt;T&gt; Iterator for Iter&lt;T&gt; {
     type Item = &amp;T;
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
         self.next.map(|node| {
-            self.next = node.next.map(|node| &amp;*node);
+            self.next = node.next.map(|node| &amp;node);
             &amp;node.elem
         })
     }
@@ -362,7 +362,7 @@ impl&lt;T&gt; List&lt;T&gt; {
     // creates the iter. Now &amp;self needs to be valid as long as the
     // Iter is around.
     pub fn iter&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;'a, T&gt; {
-        Iter { next: self.head.map(|node| &amp;*node) }
+        Iter { next: self.head.map(|node| &amp;node) }
     }
 }
 
@@ -375,7 +375,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     // Self continues to be incredibly hype and amazing
     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
         self.next.map(|node| {
-            self.next = node.next.map(|node| &amp;**node);
+            self.next = node.next.map(|node| &amp;node);
             &amp;node.elem
         })
     }
