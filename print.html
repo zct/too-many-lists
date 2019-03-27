@@ -2351,7 +2351,7 @@ one, so <code>iter_mut</code> needs to take <code>&amp;mut self</code>. Just a s
 <p>What about the other one?</p>
 <p>Oops! I actually accidentally made an error when writing the <code>iter</code> impl in
 the previous section, and we were just getting lucky that it worked!</p>
-<p>We have just had our first run in with the magic of Copy. When we introduced [ownership][] we
+<p>We have just had our first run in with the magic of Copy. When we introduced <a href="first-ownership.html">ownership</a> we
 said that when you move stuff, you can't use it anymore. For some types, this
 makes perfect sense. Our good friend Box manages an allocation on the heap for
 us, and we certainly don't want two pieces of code to think that they need to
