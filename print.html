@@ -4083,7 +4083,7 @@ hits the stable release. So let's continue along with the latest nightly build:<
             (&amp;node.next, &amp;node.elem)
         });
 
-        self.0 = next.as_ref().map(|head| head);
+        self.0 = next.as_ref().map(|head| head.borrow());
 
         elem
     })
