@@ -181,7 +181,7 @@ over and over. Can we memoize this work? Why, yes! We can store a pointer to
 the end of the list, and just jump straight to there!</p>
 <p>It turns out that only one inversion of <code>push</code> and <code>pop</code> works with this.
 To invert <code>pop</code> we would have to move the &quot;tail&quot; pointer backwards, but
-because our list is singly-linked, we can't do that effeciently.
+because our list is singly-linked, we can't do that efficiently.
 If we instead invert <code>push</code> we only have to move the &quot;head&quot; pointer
 forwards, which is easy.</p>
 <p>Let's try that:</p>
