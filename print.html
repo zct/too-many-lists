@@ -958,7 +958,7 @@ None. In the More case we need to return <code>Some(i32)</code>, and change the 
 the list. So, let's try to do basically that?</p>
 <pre><code class="language-rust ignore">pub fn pop(&amp;mut self) -&gt; Option&lt;i32&gt; {
     let result;
-    match self.head {
+    match &amp;self.head {
         Link::Empty =&gt; {
             result = None;
         }
