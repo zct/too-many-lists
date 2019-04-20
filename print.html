@@ -170,12 +170,12 @@ making them real.</p>
 <p>Everything's in the sidebar (may be collapsed on mobile), but for quick
 reference, here's what we're going to be making:</p>
 <ol>
-<li><a href="first.html">A Bad Singly Linked Stack</a></li>
-<li><a href="second.html">An Ok Singly Linked Stack</a></li>
-<li><a href="third.html">A Persistent Singly Linked Stack</a></li>
-<li><a href="fourth.html">A Bad But Safe Doubly Linked Deque</a></li>
-<li><a href="fifth.html">An Unsafe Singly Linked Queue</a></li>
-<li><a href="sixth.html">TODO: An Ok Unsafe Doubly Linked Deque</a></li>
+<li><a href="first.html">A Bad Singly-Linked Stack</a></li>
+<li><a href="second.html">An Ok Singly-Linked Stack</a></li>
+<li><a href="third.html">A Persistent Singly-Linked Stack</a></li>
+<li><a href="fourth.html">A Bad But Safe Doubly-Linked Deque</a></li>
+<li><a href="fifth.html">An Unsafe Singly-Linked Queue</a></li>
+<li><a href="sixth.html">TODO: An Ok Unsafe Doubly-Linked Deque</a></li>
 <li><a href="infinity.html">Bonus: A Bunch of Silly Lists</a></li>
 </ol>
 <p>Just so we're all the same page, I'll be writing out all the commands that I
@@ -319,9 +319,9 @@ without you having to worry about it. However this comes at the cost of being
 <em>able</em> to worry about it. There are usually escape hatches, but at some limit
 you're just writing procedural code again.</p>
 <p>Even in functional languages, you should endeavour to use the appropriate data
-structure for the job when you actually need a data structure. Yes, singly
-linked lists are your primary tool for control flow, but they're a really poor
-way to actually store a bunch of data and query it.</p>
+structure for the job when you actually need a data structure. Yes,
+singly-linked lists are your primary tool for control flow, but they're a
+really poor way to actually store a bunch of data and query it.</p>
 <a class="header" href="#linked-lists-are-great-for-building-concurrent-data-structures" id="linked-lists-are-great-for-building-concurrent-data-structures"><h2>Linked lists are great for building concurrent data structures!</h2></a>
 <p>Yes! Although writing a concurrent data structure is really a whole different
 beast, and isn't something that should be taken lightly. Certainly not something
@@ -343,7 +343,7 @@ patterns are probably a bit too tangled, depending on the details.</p>
 <p><em>But yes, you can do some really cool crazy stuff with cursors.</em></p>
 <a class="header" href="#theyre-simple-and-great-for-teaching" id="theyre-simple-and-great-for-teaching"><h2>They're simple and great for teaching!</h2></a>
 <p>Well, yeah. You're reading a book dedicated to that premise.
-Well, singly linked lists are pretty simple. Doubly linked lists
+Well, singly-linked lists are pretty simple. Doubly-linked lists
 can get kinda gnarly, as we'll see.</p>
 <a class="header" href="#take-a-breath" id="take-a-breath"><h1>Take a Breath</h1></a>
 <p>Ok. That's out of the way. Let's write a bajillion linked lists.</p>
@@ -2642,7 +2642,7 @@ mod test {
 <a class="header" href="#a-persistent-singly-linked-stack" id="a-persistent-singly-linked-stack"><h1>A Persistent Singly-Linked Stack</h1></a>
 <p>Alright, we've mastered the art of mutable singly-linked stacks.</p>
 <p>Let's move from <em>single</em> ownership to <em>shared</em> ownership by writing a
-<em>persistent</em> immutable singly linked list. This will be exactly the list
+<em>persistent</em> immutable singly-linked list. This will be exactly the list
 that functional programmers have come to know and love. You can get the
 head <em>or</em> the tail and put someone's head on someone else's tail...
 and... that's basically it. Immutability is a hell of a drug.</p>
@@ -3171,9 +3171,9 @@ mod test {
 <a class="header" href="#a-bad-but-safe-doubly-linked-deque" id="a-bad-but-safe-doubly-linked-deque"><h1>A Bad but Safe Doubly-Linked Deque</h1></a>
 <p>Now that we've seen Rc and heard about interior mutability, this gives an
 interesting thought... maybe we <em>can</em> mutate through an Rc. And if <em>that's</em>
-the case, maybe we can implement a <em>doubly</em> linked list totally safely!</p>
+the case, maybe we can implement a <em>doubly-linked</em> list totally safely!</p>
 <p>In the process we'll become familiar with <em>interior mutability</em>, and probably
-learn the hard way that safe doesn't mean <em>correct</em>. Doubly linked lists are
+learn the hard way that safe doesn't mean <em>correct</em>. Doubly-linked lists are
 hard, and I always make a mistake somewhere.</p>
 <p>Let's add a new file called <code>fourth.rs</code>:</p>
 <pre><code class="language-rust ignore">// in lib.rs
@@ -3202,7 +3202,7 @@ like <code>Rc</code>s but for borrowing. They also keep the RefCell borrowed unt
 of scope. We'll get to that later.</p>
 <p>Now with Rc and RefCell we can become... an incredibly verbose pervasively
 mutable garbage collected language that can't collect cycles! Y-yaaaaay...</p>
-<p>Alright, we want to be <em>doubly linked</em>. This means each node has a pointer to
+<p>Alright, we want to be <em>doubly-linked</em>. This means each node has a pointer to
 the previous and next node. Also, the list itself has a pointer to the
 first and last node. This gives us fast insertion and removal on <em>both</em>
 ends of the list.</p>
@@ -3604,7 +3604,7 @@ Drop is a little more conceptually interesting this time around. Where
 previously we bothered to implement Drop for our stacks just to avoid unbounded
 recursion, now we need to implement Drop to get <em>anything</em> to happen at all.</p>
 <p><code>Rc</code> can't deal with cycles. If there's a cycle, everything will keep everything
-else alive. A doubly linked list, as it turns out, is just a big chain of tiny
+else alive. A doubly-linked list, as it turns out, is just a big chain of tiny
 cycles! So when we drop our list, the two end nodes will have their refcounts
 decremented down to 1... and then nothing else will happen. Well, if our list
 contains exactly one node we're good to go. But ideally a list should work right
@@ -3660,7 +3660,7 @@ error[E0515]: cannot return value referencing temporary value
    |             returns a value referencing data owned by the current function
 </code></pre>
 <p>Ok I'm just burning my computer.</p>
-<p>This is exactly the same logic as our singly linked stack. Why are things
+<p>This is exactly the same logic as our singly-linked stack. Why are things
 different. WHY.</p>
 <p>The answer is really the whole moral of this chapter: RefCells make everything
 sadness. Up until now, RefCells have just been a nuisance. Now they're going to
@@ -4209,7 +4209,7 @@ never makes it out to consumers of the API. Interior mutability is great for
 writing safe <em>applications</em>. Not so much safe <em>libraries</em>.</p>
 <p>Anyway, that's me giving up on Iter and IterMut. We could do them, but <em>ugh</em>.</p>
 <a class="header" href="#final-code-2" id="final-code-2"><h1>Final Code</h1></a>
-<p>Alright, so that's implementing a 100% safe doubly linked list in Rust. It was
+<p>Alright, so that's implementing a 100% safe doubly-linked list in Rust. It was
 a nightmare to implement, leaks implementation details, and doesn't support several
 fundamental operations.</p>
 <p>But, it exists.</p>
@@ -4217,7 +4217,7 @@ fundamental operations.</p>
 correctness between <code>Rc</code> and <code>RefCell</code>. I put unnecessary in quotes because
 they're actually necessary to guarantee the whole <em>actually being safe</em> thing.
 We encountered a few places where those checks actually <em>were</em> necessary.
-Doubly linked lists have a horribly tangled aliasing and ownership story!</p>
+Doubly-linked lists have a horribly tangled aliasing and ownership story!</p>
 <p>Still, it's a thing we can do. Especially if we don't care about exposing
 internal data structures to our consumers.</p>
 <p>From here on out, we're going to be focusing on other side of this coin:
@@ -4463,7 +4463,7 @@ control. Surely Rust doesn't really expect you to do that sort of thing
 in general? Well, yes and no. Rc and Refcell can be great for handling
 simple cases, but they can get unwieldy. Especially if you
 want to hide that it's happening. There's gotta be a better way!</p>
-<p>In this chapter we're going to roll back to singly linked lists and
+<p>In this chapter we're going to roll back to singly-linked lists and
 implement a singly-linked queue to dip our toes into <em>raw pointers</em>
 and <em>Unsafe Rust</em>.</p>
 <p>Let's add a new file called <code>fifth.rs</code>:</p>
@@ -4480,7 +4480,7 @@ mostly an augmentation of a stack in the world of linked lists. Still, we're
 going to go from scratch because there's some fundamental issues we want to
 address with layout and what-not.</p>
 <a class="header" href="#layout-2" id="layout-2"><h1>Layout</h1></a>
-<p>So what's a singly-linked queue like? Well, when we had a singly linked stack
+<p>So what's a singly-linked queue like? Well, when we had a singly-linked stack
 we pushed onto one end of the list, and then popped off the same end. The only
 difference between a stack and a queue is that a queue pops off the <em>other</em>
 end. So from our stack implementation we have:</p>
@@ -5606,7 +5606,7 @@ they interact with Rust.</p>
 <li>TODO: std::channel? -- That's like another whole chapter. Or 3.</li>
 </ol>
 <a class="header" href="#the-double-singly-linked-list" id="the-double-singly-linked-list"><h1>The Double Singly-Linked List</h1></a>
-<p>We struggled with doubly linked lists because they have tangled ownership
+<p>We struggled with doubly-linked lists because they have tangled ownership
 semantics: no node strictly owns any other node. However we struggled
 with this because we brought in our preconceived notions of what a linked
 list <em>is</em>. Namely, we assumed that all the links go in the same direction.</p>

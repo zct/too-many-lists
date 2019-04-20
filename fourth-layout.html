@@ -152,7 +152,7 @@ like <code>Rc</code>s but for borrowing. They also keep the RefCell borrowed unt
 of scope. We'll get to that later.</p>
 <p>Now with Rc and RefCell we can become... an incredibly verbose pervasively
 mutable garbage collected language that can't collect cycles! Y-yaaaaay...</p>
-<p>Alright, we want to be <em>doubly linked</em>. This means each node has a pointer to
+<p>Alright, we want to be <em>doubly-linked</em>. This means each node has a pointer to
 the previous and next node. Also, the list itself has a pointer to the
 first and last node. This gives us fast insertion and removal on <em>both</em>
 ends of the list.</p>

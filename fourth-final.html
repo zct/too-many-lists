@@ -137,7 +137,7 @@
                 <div id="content" class="content">
                     <main>
                         <a class="header" href="#final-code" id="final-code"><h1>Final Code</h1></a>
-<p>Alright, so that's implementing a 100% safe doubly linked list in Rust. It was
+<p>Alright, so that's implementing a 100% safe doubly-linked list in Rust. It was
 a nightmare to implement, leaks implementation details, and doesn't support several
 fundamental operations.</p>
 <p>But, it exists.</p>
@@ -145,7 +145,7 @@ fundamental operations.</p>
 correctness between <code>Rc</code> and <code>RefCell</code>. I put unnecessary in quotes because
 they're actually necessary to guarantee the whole <em>actually being safe</em> thing.
 We encountered a few places where those checks actually <em>were</em> necessary.
-Doubly linked lists have a horribly tangled aliasing and ownership story!</p>
+Doubly-linked lists have a horribly tangled aliasing and ownership story!</p>
 <p>Still, it's a thing we can do. Especially if we don't care about exposing
 internal data structures to our consumers.</p>
 <p>From here on out, we're going to be focusing on other side of this coin:
