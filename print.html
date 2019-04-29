@@ -3025,7 +3025,7 @@ thread-safe or not? Can we accidentally mess up?</p>
 first-class way with two traits: <code>Send</code> and <code>Sync</code>.</p>
 <p>A type is <em>Send</em> if it's safe to <em>move</em> to another thread. A type is <em>Sync</em> if
 it's safe to <em>share</em> between multiple threads. That is, if <code>T</code> is Sync, <code>&amp;T</code> is
-Send. Safe in this case means it's impossible to to cause <em>data races</em>, (not to
+Send. Safe in this case means it's impossible to cause <em>data races</em>, (not to
 be mistaken with the more general issue of <em>race conditions</em>).</p>
 <p>These are marker traits, which is a fancy way of saying they're traits that
 provide absolutely no interface. You either <em>are</em> Send, or you aren't. It's just
