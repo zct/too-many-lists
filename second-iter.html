@@ -277,7 +277,7 @@ collector ensures that everything magically lives as long as it needs to. Most
 data in Rust is <em>manually</em> managed, so that data needs another solution. C and
 C++ give us a clear example what happens if you just let people take pointers
 to random data on the stack: pervasive unmanageable unsafety. This can be
-roughly seperated into two classes of error:</p>
+roughly separated into two classes of error:</p>
 <ul>
 <li>Holding a pointer to something that went out of scope</li>
 <li>Holding a pointer to something that got mutated away</li>
@@ -323,7 +323,7 @@ fn foo&lt;'a, 'b, 'c&gt;(&amp;'a self, &amp;'b B, &amp;'c C) -&gt; &amp;'a D;
 <p>So what does <code>fn foo&lt;'a&gt;(&amp;'a A) -&gt; &amp;'a B</code> <em>mean</em>? In practical terms, all it
 means is that the input must live at least as long as the output. So if you keep
 the output around for a long time, this will expand the region that the input must
-be valid for. Once you stop using the output, the compiler will know its ok for
+be valid for. Once you stop using the output, the compiler will know it's ok for
 the input to become invalid too.</p>
 <p>With this system set up, Rust can ensure nothing is used after free, and nothing
 is mutated while outstanding references exist. It just makes sure the
@@ -582,7 +582,7 @@ test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured
     }
 }
 </code></pre>
-<p>Yay less lifetimes!</p>
+<p>Yay fewer lifetimes!</p>
 <p>Or, if you're not comfortable &quot;hiding&quot; that a struct contains a lifetime,
 you can use the Rust 2018 &quot;explicitly elided lifetime&quot; syntax,  <code>'_</code>:</p>
 <pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
