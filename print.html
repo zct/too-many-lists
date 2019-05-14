@@ -1251,6 +1251,19 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 
 </code></pre>
 <p>Great!</p>
+<hr />
+<p><span style="float:left"><img src="img/profbee.gif" alt="Bonus" /></span></p>
+<a class="header" href="#bonus-section-for-premature-optimization" id="bonus-section-for-premature-optimization"><h2>Bonus Section For Premature Optimization!</h2></a>
+<p>Our implementation of drop is actually <em>very</em> similar to
+<code>while let Link::More(_) = self.pop() { }</code>, which is certainly simpler. How is
+it different, and what performance issues could result from it once we start
+generalizing our list to store things other than integers?</p>
+<p><details>
+<summary>Click to expand for answer</summary></p>
+<p>Pop returns <code>Option&lt;i32&gt;</code>, while our implementation only manipulates Links (<code>Box&lt;Node&gt;</code>). So our implementation only moves around pointers to nodes, while the pop-based one will move around the values we stored in nodes. This could be very expensive if we generalize our list and someone uses it to store instances of VeryBigThingWithADropImpl (VBTWADI). Box is able to run the drop implementation of its contents in-place, so it doesn't suffer from this issue. Since VBTWADI is <em>exactly</em> the kind of thing that actually makes using a linked-list desirable over an array, behaving poorly on this case would be a bit of a disappointment.</p>
+<p>If you wish to have the best of both implementations, you could add a new method,
+<code>fn pop_node(&amp;mut self) -&gt; Link</code>, from-which <code>pop</code> and <code>drop</code> can both be cleanly derived.</p>
+<p></details></p>
 <a class="header" href="#the-final-code" id="the-final-code"><h1>The Final Code</h1></a>
 <p>Alright, 6000 words later, here's all the code we managed to actually write:</p>
 <pre><pre class="playpen"><code class="language-rust">
