@@ -229,7 +229,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 <p><span style="float:left"><img src="img/profbee.gif" alt="Bonus" /></span></p>
 <a class="header" href="#bonus-section-for-premature-optimization" id="bonus-section-for-premature-optimization"><h2>Bonus Section For Premature Optimization!</h2></a>
 <p>Our implementation of drop is actually <em>very</em> similar to
-<code>while let Link::More(_) = self.pop() { }</code>, which is certainly simpler. How is
+<code>while let Some(_) = self.pop() { }</code>, which is certainly simpler. How is
 it different, and what performance issues could result from it once we start
 generalizing our list to store things other than integers?</p>
 <p><details>
