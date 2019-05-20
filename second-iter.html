@@ -314,7 +314,7 @@ fn foo&lt;'a&gt;(&amp;'a A) -&gt; &amp;'a B;
 
 // Many inputs, assume they're all independent
 fn foo(&amp;A, &amp;B, &amp;C); // sugar for:
-fn foo&lt;'a, 'b, 'c&gt;(&amp;'a, &amp;'b, &amp;'c);
+fn foo&lt;'a, 'b, 'c&gt;(&amp;'a A, &amp;'b B, &amp;'c C);
 
 // Methods, assume all output lifetimes are derived from `self`
 fn foo(&amp;self, &amp;B, &amp;C) -&gt; &amp;D; // sugar for:
@@ -516,7 +516,7 @@ impl&lt;'a, T&gt; Iterator for Iter&lt;'a, T&gt; {
     }
 }
 </code></pre>
-<pre><code class="language-text">lists::cargo build
+<pre><code class="language-text">cargo build
 
 </code></pre>
 <p>🎉 🎉 🎉</p>
