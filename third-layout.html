@@ -171,7 +171,7 @@ build cycles. But hey, it's all we've got! Thankfully, for our usecase we'll nev
 (feel free to try to prove this to yourself -- I sure won't).</p>
 <p>So how do we do reference-counted garbage collection? <code>Rc</code>! Rc is just like
 Box, but we can duplicate it, and its memory will <em>only</em> be freed when <em>all</em>
-the Rc's derived from it are dropped. Unforuntately, this flexibility comes at
+the Rc's derived from it are dropped. Unfortunately, this flexibility comes at
 a serious cost: we can only take a shared reference to its internals. This means
 we can't ever really get data out of one of our lists, nor can we mutate them.</p>
 <p>So what's our layout gonna look like? Well, previously we had:</p>
