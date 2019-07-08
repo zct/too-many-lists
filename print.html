@@ -4,6 +4,10 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Learning Rust With Entirely Too Many Linked Lists</title>
+        
+        <meta name="robots" content="noindex" />
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="Learning Rust With Entirely Too Many Linked Lists">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +36,10 @@
     </head>
     <body class="light">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">var path_to_root = "";</script>
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
@@ -53,8 +60,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -72,7 +79,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="first.html"><strong aria-hidden="true">2.</strong> A Bad Stack</a></li><li><ol class="section"><li><a href="first-layout.html"><strong aria-hidden="true">2.1.</strong> Layout</a></li><li><a href="first-new.html"><strong aria-hidden="true">2.2.</strong> New</a></li><li><a href="first-ownership.html"><strong aria-hidden="true">2.3.</strong> Ownership 101</a></li><li><a href="first-push.html"><strong aria-hidden="true">2.4.</strong> Push</a></li><li><a href="first-pop.html"><strong aria-hidden="true">2.5.</strong> Pop</a></li><li><a href="first-test.html"><strong aria-hidden="true">2.6.</strong> Testing</a></li><li><a href="first-drop.html"><strong aria-hidden="true">2.7.</strong> Drop</a></li><li><a href="first-final.html"><strong aria-hidden="true">2.8.</strong> Final Code</a></li></ol></li><li><a href="second.html"><strong aria-hidden="true">3.</strong> An Ok Stack</a></li><li><ol class="section"><li><a href="second-option.html"><strong aria-hidden="true">3.1.</strong> Option</a></li><li><a href="second-generic.html"><strong aria-hidden="true">3.2.</strong> Generic</a></li><li><a href="second-peek.html"><strong aria-hidden="true">3.3.</strong> Peek</a></li><li><a href="second-into-iter.html"><strong aria-hidden="true">3.4.</strong> IntoIter</a></li><li><a href="second-iter.html"><strong aria-hidden="true">3.5.</strong> Iter</a></li><li><a href="second-iter-mut.html"><strong aria-hidden="true">3.6.</strong> IterMut</a></li><li><a href="second-final.html"><strong aria-hidden="true">3.7.</strong> Final Code</a></li></ol></li><li><a href="third.html"><strong aria-hidden="true">4.</strong> A Persistent Stack</a></li><li><ol class="section"><li><a href="third-layout.html"><strong aria-hidden="true">4.1.</strong> Layout</a></li><li><a href="third-basics.html"><strong aria-hidden="true">4.2.</strong> Basics</a></li><li><a href="third-drop.html"><strong aria-hidden="true">4.3.</strong> Drop</a></li><li><a href="third-arc.html"><strong aria-hidden="true">4.4.</strong> Arc</a></li><li><a href="third-final.html"><strong aria-hidden="true">4.5.</strong> Final Code</a></li></ol></li><li><a href="fourth.html"><strong aria-hidden="true">5.</strong> A Bad Safe Deque</a></li><li><ol class="section"><li><a href="fourth-layout.html"><strong aria-hidden="true">5.1.</strong> Layout</a></li><li><a href="fourth-building.html"><strong aria-hidden="true">5.2.</strong> Building</a></li><li><a href="fourth-breaking.html"><strong aria-hidden="true">5.3.</strong> Breaking</a></li><li><a href="fourth-peek.html"><strong aria-hidden="true">5.4.</strong> Peek</a></li><li><a href="fourth-symmetry.html"><strong aria-hidden="true">5.5.</strong> Symmetric Cases</a></li><li><a href="fourth-iteration.html"><strong aria-hidden="true">5.6.</strong> Iteration</a></li><li><a href="fourth-final.html"><strong aria-hidden="true">5.7.</strong> Final Code</a></li></ol></li><li><a href="fifth.html"><strong aria-hidden="true">6.</strong> An Unsafe Queue</a></li><li><ol class="section"><li><a href="fifth-layout.html"><strong aria-hidden="true">6.1.</strong> Layout</a></li><li><a href="fifth-unsafe.html"><strong aria-hidden="true">6.2.</strong> Unsafe</a></li><li><a href="fifth-basics.html"><strong aria-hidden="true">6.3.</strong> Basics</a></li><li><a href="fifth-extras.html"><strong aria-hidden="true">6.4.</strong> Extras</a></li><li><a href="fifth-final.html"><strong aria-hidden="true">6.5.</strong> Final Code</a></li></ol></li><li><a href="sixth.html"><strong aria-hidden="true">7.</strong> An Ok Unsafe Deque</a></li><li><a href="infinity.html"><strong aria-hidden="true">8.</strong> A Bunch of Silly Lists</a></li><li><ol class="section"><li><a href="infinity-double-single.html"><strong aria-hidden="true">8.1.</strong> The Double Single</a></li></ol></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="first.html"><strong aria-hidden="true">2.</strong> A Bad Stack</a></li><li><ol class="section"><li><a href="first-layout.html"><strong aria-hidden="true">2.1.</strong> Layout</a></li><li><a href="first-new.html"><strong aria-hidden="true">2.2.</strong> New</a></li><li><a href="first-ownership.html"><strong aria-hidden="true">2.3.</strong> Ownership 101</a></li><li><a href="first-push.html"><strong aria-hidden="true">2.4.</strong> Push</a></li><li><a href="first-pop.html"><strong aria-hidden="true">2.5.</strong> Pop</a></li><li><a href="first-test.html"><strong aria-hidden="true">2.6.</strong> Testing</a></li><li><a href="first-drop.html"><strong aria-hidden="true">2.7.</strong> Drop</a></li><li><a href="first-final.html"><strong aria-hidden="true">2.8.</strong> Final Code</a></li></ol></li><li><a href="second.html"><strong aria-hidden="true">3.</strong> An Ok Stack</a></li><li><ol class="section"><li><a href="second-option.html"><strong aria-hidden="true">3.1.</strong> Option</a></li><li><a href="second-generic.html"><strong aria-hidden="true">3.2.</strong> Generic</a></li><li><a href="second-peek.html"><strong aria-hidden="true">3.3.</strong> Peek</a></li><li><a href="second-into-iter.html"><strong aria-hidden="true">3.4.</strong> IntoIter</a></li><li><a href="second-iter.html"><strong aria-hidden="true">3.5.</strong> Iter</a></li><li><a href="second-iter-mut.html"><strong aria-hidden="true">3.6.</strong> IterMut</a></li><li><a href="second-final.html"><strong aria-hidden="true">3.7.</strong> Final Code</a></li></ol></li><li><a href="third.html"><strong aria-hidden="true">4.</strong> A Persistent Stack</a></li><li><ol class="section"><li><a href="third-layout.html"><strong aria-hidden="true">4.1.</strong> Layout</a></li><li><a href="third-basics.html"><strong aria-hidden="true">4.2.</strong> Basics</a></li><li><a href="third-drop.html"><strong aria-hidden="true">4.3.</strong> Drop</a></li><li><a href="third-arc.html"><strong aria-hidden="true">4.4.</strong> Arc</a></li><li><a href="third-final.html"><strong aria-hidden="true">4.5.</strong> Final Code</a></li></ol></li><li><a href="fourth.html"><strong aria-hidden="true">5.</strong> A Bad Safe Deque</a></li><li><ol class="section"><li><a href="fourth-layout.html"><strong aria-hidden="true">5.1.</strong> Layout</a></li><li><a href="fourth-building.html"><strong aria-hidden="true">5.2.</strong> Building</a></li><li><a href="fourth-breaking.html"><strong aria-hidden="true">5.3.</strong> Breaking</a></li><li><a href="fourth-peek.html"><strong aria-hidden="true">5.4.</strong> Peek</a></li><li><a href="fourth-symmetry.html"><strong aria-hidden="true">5.5.</strong> Symmetric Cases</a></li><li><a href="fourth-iteration.html"><strong aria-hidden="true">5.6.</strong> Iteration</a></li><li><a href="fourth-final.html"><strong aria-hidden="true">5.7.</strong> Final Code</a></li></ol></li><li><a href="fifth.html"><strong aria-hidden="true">6.</strong> An Unsafe Queue</a></li><li><ol class="section"><li><a href="fifth-layout.html"><strong aria-hidden="true">6.1.</strong> Layout</a></li><li><a href="fifth-unsafe.html"><strong aria-hidden="true">6.2.</strong> Unsafe</a></li><li><a href="fifth-basics.html"><strong aria-hidden="true">6.3.</strong> Basics</a></li><li><a href="fifth-extras.html"><strong aria-hidden="true">6.4.</strong> Extras</a></li><li><a href="fifth-final.html"><strong aria-hidden="true">6.5.</strong> Final Code</a></li></ol></li><li><a href="sixth.html"><strong aria-hidden="true">7.</strong> An Ok Unsafe Deque</a></li><li><a href="infinity.html"><strong aria-hidden="true">8.</strong> A Bunch of Silly Lists</a></li><li><ol class="section"><li><a href="infinity-double-single.html"><strong aria-hidden="true">8.1.</strong> The Double Single</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -89,7 +99,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -102,12 +112,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title">Learning Rust With Entirely Too Many Linked Lists</h1> 
+                        <h1 class="menu-title">Learning Rust With Entirely Too Many Linked Lists</h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -136,7 +147,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#learn-rust-with-entirely-too-many-linked-lists" id="learn-rust-with-entirely-too-many-linked-lists"><h1>Learn Rust With Entirely Too Many Linked Lists</h1></a>
+                        <h1><a class="header" href="#learn-rust-with-entirely-too-many-linked-lists" id="learn-rust-with-entirely-too-many-linked-lists">Learn Rust With Entirely Too Many Linked Lists</a></h1>
 <blockquote>
 <p>Got any issues or want to check out all the final code at once?
 <a href="https://github.com/Gankro/too-many-lists">Everything's on Github!</a></p>
@@ -204,7 +215,7 @@ serious pretty much the entire time. I think programming should be fun, dang it!
 If you're the type of person who wants maximally information-dense, serious, and
 formal content, this book is not for you. Nothing I will ever make is for you.
 You are wrong.</p>
-<a class="header" href="#an-obligatory-public-service-announcement" id="an-obligatory-public-service-announcement"><h1>An Obligatory Public Service Announcement</h1></a>
+<h1><a class="header" href="#an-obligatory-public-service-announcement" id="an-obligatory-public-service-announcement">An Obligatory Public Service Announcement</a></h1>
 <p>Just so we're totally 100% clear: I hate linked lists. With
 a passion. Linked lists are terrible data structures. Now of course there's
 several great use cases for a linked list:</p>
@@ -238,14 +249,14 @@ paragraph!</p>
 <p>Just so I can link directly to a detailed argument, here are several attempts
 at counter-arguments I have seen, and my response to them. Feel free to skip
 to <a href="first.html">the first chapter</a> if you just want to learn some Rust!</p>
-<a class="header" href="#performance-doesnt-always-matter" id="performance-doesnt-always-matter"><h2>Performance doesn't always matter</h2></a>
+<h2><a class="header" href="#performance-doesnt-always-matter" id="performance-doesnt-always-matter">Performance doesn't always matter</a></h2>
 <p>Yes! Maybe your application is I/O-bound or the code in question is in some
 cold case that just doesn't matter. But this isn't even an argument for using
 a linked list. This is an argument for using <em>whatever at all</em>. Why settle for
 a linked list? Use a linked hash map!</p>
 <p>If performance doesn't matter, then it's <em>surely</em> fine to apply the natural
 default of an array.</p>
-<a class="header" href="#they-have-o1-split-append-insert-remove-if-you-have-a-pointer-there" id="they-have-o1-split-append-insert-remove-if-you-have-a-pointer-there"><h2>They have O(1) split-append-insert-remove if you have a pointer there</h2></a>
+<h2><a class="header" href="#they-have-o1-split-append-insert-remove-if-you-have-a-pointer-there" id="they-have-o1-split-append-insert-remove-if-you-have-a-pointer-there">They have O(1) split-append-insert-remove if you have a pointer there</a></h2>
 <p>Yep! Although as <a href="https://www.youtube.com/watch?v=YQs6IC-vgmo">Bjarne Stroustrup notes</a> <em>this doesn't actually
 matter</em> if the time it takes to get that pointer completely dwarfs the
 time it would take to just copy over all the elements in an array (which is
@@ -255,7 +266,7 @@ costs, the penalty <em>every other</em> operation takes due to caching effects a
 complexity will eliminate any theoretical gains.</p>
 <p><em>But yes, if you're profiling your application to spend a lot of time in
 splitting and merging, you may have gains in a linked list</em>.</p>
-<a class="header" href="#i-cant-afford-amortization" id="i-cant-afford-amortization"><h2>I can't afford amortization</h2></a>
+<h2><a class="header" href="#i-cant-afford-amortization" id="i-cant-afford-amortization">I can't afford amortization</a></h2>
 <p>You've already entered a pretty niche space -- most can afford amortization.
 Still, arrays are amortized <em>in the worst case</em>. Just because you're using an
 array, doesn't mean you have amortized costs. If you can predict how many
@@ -270,7 +281,7 @@ allocator.</p>
 <p>How's that for low latency?</p>
 <p><em>But yes, if you can't predict your load, there are worst-case
 latency savings to be had!</em></p>
-<a class="header" href="#linked-lists-waste-less-space" id="linked-lists-waste-less-space"><h2>Linked lists waste less space</h2></a>
+<h2><a class="header" href="#linked-lists-waste-less-space" id="linked-lists-waste-less-space">Linked lists waste less space</a></h2>
 <p>Well, this is complicated. A &quot;standard&quot; array resizing strategy is to grow
 or shrink so that at most half the array is empty. This is indeed a lot of
 wasted space. Especially in Rust, we don't automatically shrink collections
@@ -291,7 +302,7 @@ deallocating nodes is being done densely and you're not losing memory to
 fragmentation.</p>
 <p><em>But yes, if you have huge elements, can't predict your load, and have a
 decent allocator, there are memory savings to be had!</em></p>
-<a class="header" href="#i-use-linked-lists-all-the-time-in-functional-language" id="i-use-linked-lists-all-the-time-in-functional-language"><h2>I use linked lists all the time in &lt;functional language&gt;</h2></a>
+<h2><a class="header" href="#i-use-linked-lists-all-the-time-in-functional-language" id="i-use-linked-lists-all-the-time-in-functional-language">I use linked lists all the time in &lt;functional language&gt;</a></h2>
 <p>Great! Linked lists are super elegant to use in functional languages
 because you can manipulate them without any mutation, can describe them
 recursively, and also work with infinite lists due to the magic of laziness.</p>
@@ -322,7 +333,7 @@ you're just writing procedural code again.</p>
 structure for the job when you actually need a data structure. Yes,
 singly-linked lists are your primary tool for control flow, but they're a
 really poor way to actually store a bunch of data and query it.</p>
-<a class="header" href="#linked-lists-are-great-for-building-concurrent-data-structures" id="linked-lists-are-great-for-building-concurrent-data-structures"><h2>Linked lists are great for building concurrent data structures!</h2></a>
+<h2><a class="header" href="#linked-lists-are-great-for-building-concurrent-data-structures" id="linked-lists-are-great-for-building-concurrent-data-structures">Linked lists are great for building concurrent data structures!</a></h2>
 <p>Yes! Although writing a concurrent data structure is really a whole different
 beast, and isn't something that should be taken lightly. Certainly not something
 many people will even <em>consider</em> doing. Once one's been written, you're also not
@@ -330,25 +341,25 @@ really choosing to use a linked list. You're choosing to use an MPSC queue or
 whatever. The implementation strategy is pretty far removed in this case!</p>
 <p><em>But yes, linked lists are the defacto heroes of the dark world of lock-free
 concurrency.</em></p>
-<a class="header" href="#mumble-mumble-kernel-embedded-something-something-intrusive" id="mumble-mumble-kernel-embedded-something-something-intrusive"><h2>Mumble mumble kernel embedded something something intrusive.</h2></a>
+<h2><a class="header" href="#mumble-mumble-kernel-embedded-something-something-intrusive" id="mumble-mumble-kernel-embedded-something-something-intrusive">Mumble mumble kernel embedded something something intrusive.</a></h2>
 <p>It's niche. You're talking about a situation where you're not even using
 your language's <em>runtime</em>. Is that not a red flag that you're doing something
 strange?</p>
 <p>It's also wildly unsafe.</p>
 <p><em>But sure. Build your awesome zero-allocation lists on the stack.</em></p>
-<a class="header" href="#iterators-dont-get-invalidated-by-unrelated-insertionsremovals" id="iterators-dont-get-invalidated-by-unrelated-insertionsremovals"><h2>Iterators don't get invalidated by unrelated insertions/removals</h2></a>
+<h2><a class="header" href="#iterators-dont-get-invalidated-by-unrelated-insertionsremovals" id="iterators-dont-get-invalidated-by-unrelated-insertionsremovals">Iterators don't get invalidated by unrelated insertions/removals</a></h2>
 <p>That's a delicate dance you're playing. Especially if you don't have
 a garbage collector. I might argue that your control flow and ownership
 patterns are probably a bit too tangled, depending on the details.</p>
 <p><em>But yes, you can do some really cool crazy stuff with cursors.</em></p>
-<a class="header" href="#theyre-simple-and-great-for-teaching" id="theyre-simple-and-great-for-teaching"><h2>They're simple and great for teaching!</h2></a>
+<h2><a class="header" href="#theyre-simple-and-great-for-teaching" id="theyre-simple-and-great-for-teaching">They're simple and great for teaching!</a></h2>
 <p>Well, yeah. You're reading a book dedicated to that premise.
 Well, singly-linked lists are pretty simple. Doubly-linked lists
 can get kinda gnarly, as we'll see.</p>
-<a class="header" href="#take-a-breath" id="take-a-breath"><h1>Take a Breath</h1></a>
+<h1><a class="header" href="#take-a-breath" id="take-a-breath">Take a Breath</a></h1>
 <p>Ok. That's out of the way. Let's write a bajillion linked lists.</p>
 <p><a href="first.html">On to the first chapter!</a></p>
-<a class="header" href="#a-bad-singly-linked-stack" id="a-bad-singly-linked-stack"><h1>A Bad Singly-Linked Stack</h1></a>
+<h1><a class="header" href="#a-bad-singly-linked-stack" id="a-bad-singly-linked-stack">A Bad Singly-Linked Stack</a></h1>
 <p>This one's gonna be <em>by far</em> the longest, as we need to introduce basically
 all of Rust, and are gonna build up some things &quot;the hard way&quot; to better
 understand the language.</p>
@@ -358,7 +369,7 @@ something that our lib uses. All that requires is that we put this at the top of
 <pre><code class="language-rust ignore">// in lib.rs
 pub mod first;
 </code></pre>
-<a class="header" href="#basic-data-layout" id="basic-data-layout"><h1>Basic Data Layout</h1></a>
+<h1><a class="header" href="#basic-data-layout" id="basic-data-layout">Basic Data Layout</a></h1>
 <p>Alright, so what's a linked list? Well basically, it's a bunch of pieces of data
 on the heap (hush, kernel people!) that point to each other in sequence. Linked
 lists are something procedural programmers shouldn't touch with a 10-foot pole,
@@ -661,7 +672,7 @@ everything we've written is totally useless: we never use <code>head</code>, and
 uses our library can either since it's private. Transitively, that means Link
 and Node are useless too. So let's solve that! Let's implement some code for our
 List!</p>
-<a class="header" href="#new" id="new"><h1>New</h1></a>
+<h1><a class="header" href="#new" id="new">New</a></h1>
 <p>To associate actual code with a type, we use <code>impl</code> blocks:</p>
 <pre><code class="language-rust ignore">impl List {
     // TODO, make code happen
@@ -694,7 +705,7 @@ instead of providing the types of its fields, we initialize them with values.</l
 This makes simple functions a little neater. You can still use <code>return</code>
 to return early like other C-like languages.</li>
 </ul>
-<a class="header" href="#ownership-101" id="ownership-101"><h1>Ownership 101</h1></a>
+<h1><a class="header" href="#ownership-101" id="ownership-101">Ownership 101</a></h1>
 <p>Now that we can construct a list, it'd be nice to be able to <em>do</em> something
 with it. We do that with &quot;normal&quot; (non-static) methods. Methods are a special
 case of function in Rust because of  the <code>self</code> argument, which doesn't have
@@ -732,7 +743,7 @@ mutate anything. Think of <code>&amp;</code> as putting the value out on display
 This is why shared references aren't called <em>immutable</em> references. Really,
 mutable references could be called <em>unique</em> references, but we've found that
 relating ownership to mutability gives the right intuition 99% of the time.</p>
-<a class="header" href="#push" id="push"><h1>Push</h1></a>
+<h1><a class="header" href="#push" id="push">Push</a></h1>
 <p>So let's write pushing a value onto a list. <code>push</code> <em>mutates</em> the list,
 so we'll want to take <code>&amp;mut self</code>. We also need to take an i32 to push:</p>
 <pre><code class="language-rust ignore">impl List {
@@ -821,7 +832,7 @@ thing to have to do. Sadly, we must (for now).</p>
 <p>But hey, that's <code>push</code> all done! Probably. We should probably test it, honestly.
 Right now the easiest way to do that is probably to write <code>pop</code>, and make sure
 that it produces the right results.</p>
-<a class="header" href="#pop" id="pop"><h1>Pop</h1></a>
+<h1><a class="header" href="#pop" id="pop">Pop</a></h1>
 <p>Like <code>push</code>, <code>pop</code> wants to mutate the list. Unlike <code>push</code>, we actually
 want to return something. But <code>pop</code> also has to deal with a tricky corner
 case: what if the list is empty? To represent this case, we use the trusty
@@ -1048,7 +1059,7 @@ evaluate. Just a nice shorthand for simple cases.</p>
    Finished dev [unoptimized + debuginfo] target(s) in 0.22s
 </code></pre>
 <p>Nice, still works!</p>
-<a class="header" href="#testing" id="testing"><h1>Testing</h1></a>
+<h1><a class="header" href="#testing" id="testing">Testing</a></h1>
 <p>Alright, so we've got <code>push</code> and <code>pop</code> written, now we can actually test out
 our stack! Rust and cargo support testing as a first-class feature, so this
 will be super easy. All we have to do is write a function, and annotate it with
@@ -1162,7 +1173,7 @@ mod test {
 }
 </code></pre>
 <p>And that's everything for testing!</p>
-<a class="header" href="#drop" id="drop"><h1>Drop</h1></a>
+<h1><a class="header" href="#drop" id="drop">Drop</a></h1>
 <p>We can make a stack, push on to, pop off it, and we've even tested that it all
 works right!</p>
 <p>Do we need to worry about cleaning up our list? Technically, no, not at all!
@@ -1253,18 +1264,18 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 <p>Great!</p>
 <hr />
 <p><span style="float:left"><img src="img/profbee.gif" alt="Bonus" /></span></p>
-<a class="header" href="#bonus-section-for-premature-optimization" id="bonus-section-for-premature-optimization"><h2>Bonus Section For Premature Optimization!</h2></a>
+<h2><a class="header" href="#bonus-section-for-premature-optimization" id="bonus-section-for-premature-optimization">Bonus Section For Premature Optimization!</a></h2>
 <p>Our implementation of drop is actually <em>very</em> similar to
 <code>while let Some(_) = self.pop() { }</code>, which is certainly simpler. How is
 it different, and what performance issues could result from it once we start
 generalizing our list to store things other than integers?</p>
-<p><details>
-<summary>Click to expand for answer</summary></p>
+<details>
+  <summary>Click to expand for answer</summary>
 <p>Pop returns <code>Option&lt;i32&gt;</code>, while our implementation only manipulates Links (<code>Box&lt;Node&gt;</code>). So our implementation only moves around pointers to nodes, while the pop-based one will move around the values we stored in nodes. This could be very expensive if we generalize our list and someone uses it to store instances of VeryBigThingWithADropImpl (VBTWADI). Box is able to run the drop implementation of its contents in-place, so it doesn't suffer from this issue. Since VBTWADI is <em>exactly</em> the kind of thing that actually makes using a linked-list desirable over an array, behaving poorly on this case would be a bit of a disappointment.</p>
 <p>If you wish to have the best of both implementations, you could add a new method,
 <code>fn pop_node(&amp;mut self) -&gt; Link</code>, from-which <code>pop</code> and <code>drop</code> can both be cleanly derived.</p>
-<p></details></p>
-<a class="header" href="#the-final-code" id="the-final-code"><h1>The Final Code</h1></a>
+</details>
+<h1><a class="header" href="#the-final-code" id="the-final-code">The Final Code</a></h1>
 <p>Alright, 6000 words later, here's all the code we managed to actually write:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -1356,7 +1367,7 @@ mod test {
 #}</code></pre></pre>
 <p>Geez. 80 lines, and half of it was tests! Well, I did say this first one was
 going to take a while!</p>
-<a class="header" href="#an-ok-singly-linked-stack" id="an-ok-singly-linked-stack"><h1>An Ok Singly-Linked Stack</h1></a>
+<h1><a class="header" href="#an-ok-singly-linked-stack" id="an-ok-singly-linked-stack">An Ok Singly-Linked Stack</a></h1>
 <p>In the previous chapter we wrote up a minimum viable singly-linked
 stack. However there's a few design decisions that make it kind of sucky.
 Let's make it less sucky. In doing so, we will:</p>
@@ -1380,7 +1391,7 @@ pub mod first;
 pub mod second;
 </code></pre>
 <p>And copy everything from <code>first.rs</code> into it.</p>
-<a class="header" href="#using-option" id="using-option"><h1>Using Option</h1></a>
+<h1><a class="header" href="#using-option" id="using-option">Using Option</a></h1>
 <p>Particularly observant readers may have noticed that we actually reinvented
 a really bad version of Option:</p>
 <pre><code class="language-rust ignore">enum Link {
@@ -1519,7 +1530,7 @@ test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured
 
 </code></pre>
 <p>Great! Let's move on to actually improving the code's <em>behaviour</em>.</p>
-<a class="header" href="#making-it-all-generic" id="making-it-all-generic"><h1>Making it all Generic</h1></a>
+<h1><a class="header" href="#making-it-all-generic" id="making-it-all-generic">Making it all Generic</a></h1>
 <p>We've already touched a bit on generics with Option and Box. However so
 far we've managed to avoid declaring any new type that is actually generic
 over arbitrary elements.</p>
@@ -1615,7 +1626,7 @@ Also of interest, we don't write <code>List&lt;T&gt;</code> when we construct an
 list. That part's inferred for us based on the fact that we're returning it
 from a function that expects a <code>List&lt;T&gt;</code>.</p>
 <p>Alright, let's move on to totally new <em>behaviour</em>!</p>
-<a class="header" href="#peek" id="peek"><h1>Peek</h1></a>
+<h1><a class="header" href="#peek" id="peek">Peek</a></h1>
 <p>One thing we didn't even bother to implement last time was peeking. Let's go
 ahead and do that. All we need to do is return a reference to the element in
 the head of the list, if it exists. Sounds easy, let's try:</p>
@@ -1763,7 +1774,7 @@ test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured
 
 </code></pre>
 <p>Much better!</p>
-<a class="header" href="#intoiter" id="intoiter"><h1>IntoIter</h1></a>
+<h1><a class="header" href="#intoiter" id="intoiter">IntoIter</a></h1>
 <p>Collections are iterated in Rust using the <em>Iterator</em> trait. It's a bit more
 complicated than <code>Drop</code>:</p>
 <pre><code class="language-rust ignore">pub trait Iterator {
@@ -1836,7 +1847,7 @@ test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured
 
 </code></pre>
 <p>Nice!</p>
-<a class="header" href="#iter" id="iter"><h1>Iter</h1></a>
+<h1><a class="header" href="#iter" id="iter">Iter</a></h1>
 <p>Alright, let's try to implement Iter. This time we won't be able to rely on
 List giving us all the features we want. We'll need to roll our own. The
 basic logic we want is to hold a pointer to the current node we want to yield
@@ -2291,7 +2302,7 @@ you can use the Rust 2018 &quot;explicitly elided lifetime&quot; syntax,  <code>
     }
 }
 </code></pre>
-<a class="header" href="#itermut" id="itermut"><h1>IterMut</h1></a>
+<h1><a class="header" href="#itermut" id="itermut">IterMut</a></h1>
 <p>I'm gonna be honest, IterMut is WILD. Which in itself seems like a wild
 thing to say; surely it's identical to Iter!</p>
 <p>Semantically, yes, but the nature of shared and mutable references means
@@ -2454,7 +2465,7 @@ definitely disjoint.</li>
 <p>It turns out that you can apply this basic logic to get a safe IterMut for an
 array or a tree as well! You can even make the iterator DoubleEnded, so that
 you can consume the iterator from the front <em>and</em> the back at once! Woah!</p>
-<a class="header" href="#final-code" id="final-code"><h1>Final Code</h1></a>
+<h1><a class="header" href="#final-code" id="final-code">Final Code</a></h1>
 <p>Alright, that's it for the second list; here's the final code!</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -2652,7 +2663,7 @@ mod test {
 
 #}</code></pre></pre>
 <p>Getting beefier!</p>
-<a class="header" href="#a-persistent-singly-linked-stack" id="a-persistent-singly-linked-stack"><h1>A Persistent Singly-Linked Stack</h1></a>
+<h1><a class="header" href="#a-persistent-singly-linked-stack" id="a-persistent-singly-linked-stack">A Persistent Singly-Linked Stack</a></h1>
 <p>Alright, we've mastered the art of mutable singly-linked stacks.</p>
 <p>Let's move from <em>single</em> ownership to <em>shared</em> ownership by writing a
 <em>persistent</em> immutable singly-linked list. This will be exactly the list
@@ -2669,7 +2680,7 @@ pub mod second;
 pub mod third;
 </code></pre>
 <p>No copy-pasta this time. This is a clean room operation.</p>
-<a class="header" href="#layout" id="layout"><h1>Layout</h1></a>
+<h1><a class="header" href="#layout" id="layout">Layout</a></h1>
 <p>Alright, back to the drawing board on layout.</p>
 <p>The most important thing about
 a persistent list is that you can manipulate the tails of lists basically
@@ -2776,7 +2787,7 @@ warning: field is never used: `next`
 find-and-replace Box with Rc and call it a day!</p>
 <p>...</p>
 <p>No. No we can't.</p>
-<a class="header" href="#basics" id="basics"><h1>Basics</h1></a>
+<h1><a class="header" href="#basics" id="basics">Basics</a></h1>
 <p>We already know a lot of the basics of Rust now, so we can do a lot of the
 simple stuff again.</p>
 <p>For the constructor, we can again just copy-paste:</p>
@@ -2962,7 +2973,7 @@ test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured
 <p>(chumps did)</p>
 <p>Note that we can't implement IntoIter or IterMut for this type. We only have
 shared access to elements.</p>
-<a class="header" href="#drop-1" id="drop-1"><h1>Drop</h1></a>
+<h1><a class="header" href="#drop-1" id="drop-1">Drop</a></h1>
 <p>Like the mutable lists, we have a recursive destructor problem.
 Admittedly, this isn't as bad of a problem for the immutable list: if we ever
 hit another node that's the head of another list <em>somewhere</em>, we won't
@@ -3018,7 +3029,7 @@ test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 </code></pre>
 <p>Great!
 Nice.</p>
-<a class="header" href="#arc" id="arc"><h1>Arc</h1></a>
+<h1><a class="header" href="#arc" id="arc">Arc</a></h1>
 <p>One reason to use an immutable linked list is to share data across threads.
 After all, shared mutable state is the root of all evil, and one way to solve
 that is to kill the <em>mutable</em> part forever.</p>
@@ -3072,7 +3083,7 @@ memory models or non-derived Send implementations. Needless to say, as you get
 deeper into Rust's thread-safety story, stuff gets more complicated. As a
 high-level consumer, it all <em>just works</em> and you don't really need to think
 about it.</p>
-<a class="header" href="#final-code-1" id="final-code-1"><h1>Final Code</h1></a>
+<h1><a class="header" href="#final-code-1" id="final-code-1">Final Code</a></h1>
 <p>That's all I really have to say on the immutable stack. We're getting pretty
 good at implementing lists now!</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -3181,7 +3192,7 @@ mod test {
     }
 }
 #}</code></pre></pre>
-<a class="header" href="#a-bad-but-safe-doubly-linked-deque" id="a-bad-but-safe-doubly-linked-deque"><h1>A Bad but Safe Doubly-Linked Deque</h1></a>
+<h1><a class="header" href="#a-bad-but-safe-doubly-linked-deque" id="a-bad-but-safe-doubly-linked-deque">A Bad but Safe Doubly-Linked Deque</a></h1>
 <p>Now that we've seen Rc and heard about interior mutability, this gives an
 interesting thought... maybe we <em>can</em> mutate through an Rc. And if <em>that's</em>
 the case, maybe we can implement a <em>doubly-linked</em> list totally safely!</p>
@@ -3199,7 +3210,7 @@ pub mod fourth;
 <p>This will be another clean-room operation, though as usual we'll probably find
 some logic that applies verbatim again.</p>
 <p>Disclaimer: this chapter is basically a demonstration that this is a very bad idea.</p>
-<a class="header" href="#layout-1" id="layout-1"><h1>Layout</h1></a>
+<h1><a class="header" href="#layout-1" id="layout-1">Layout</a></h1>
 <p>The key to our design is the <code>RefCell</code> type. The heart of
 RefCell is a pair of methods:</p>
 <pre><code class="language-rust ignore">fn borrow(&amp;self) -&gt; Ref&lt;'_, T&gt;;
@@ -3271,7 +3282,7 @@ warning: field is never used: `prev`
    |     ^^^^^^^^^^^^^
 </code></pre>
 <p>Hey, it built! Lots of dead code warnings, but it built! Let's try to use it.</p>
-<a class="header" href="#building-up" id="building-up"><h1>Building Up</h1></a>
+<h1><a class="header" href="#building-up" id="building-up">Building Up</a></h1>
 <p>Alright, we'll start with building the list. That's pretty straight-forward
 with this new system. <code>new</code> is still trivial, just None out all the fields.
 Also because it's getting a bit unwieldy, let's break out a Node constructor
@@ -3371,7 +3382,7 @@ tracked 'at runtime', unlike Rust's native reference types which are entirely tr
 statically, at compile time. Because <code>RefCell&lt;T&gt;</code> borrows are dynamic it is possible to attempt
 to borrow a value that is already mutably borrowed; when this happens it results in thread
 panic.</p>
-<a class="header" href="#when-to-choose-interior-mutability" id="when-to-choose-interior-mutability"><h1>When to choose interior mutability</h1></a>
+<h1><a class="header" href="#when-to-choose-interior-mutability" id="when-to-choose-interior-mutability">When to choose interior mutability</a></h1>
 <p>The more common inherited mutability, where one must have unique access to mutate a value, is
 one of the key language elements that enables Rust to reason strongly about pointer aliasing,
 statically preventing crash bugs. Because of that, inherited mutability is preferred, and
@@ -3383,7 +3394,7 @@ appropriate, or even <em>must</em> be used, e.g.</p>
 <li>Implementation details of logically-immutable methods.</li>
 <li>Mutating implementations of <code>Clone</code>.</li>
 </ul>
-<a class="header" href="#introducing-inherited-mutability-roots-to-shared-types" id="introducing-inherited-mutability-roots-to-shared-types"><h2>Introducing inherited mutability roots to shared types</h2></a>
+<h2><a class="header" href="#introducing-inherited-mutability-roots-to-shared-types" id="introducing-inherited-mutability-roots-to-shared-types">Introducing inherited mutability roots to shared types</a></h2>
 <p>Shared smart pointer types, including <code>Rc&lt;T&gt;</code> and <code>Arc&lt;T&gt;</code>, provide containers that can be
 cloned and shared between multiple parties. Because the contained values may be
 multiply-aliased, they can only be borrowed as shared references, not mutable references.
@@ -3438,7 +3449,7 @@ warning: field is never used: `elem`
    = note: #[warn(dead_code)] on by default
 </code></pre>
 <p>Hey, it built! Docs win again.</p>
-<a class="header" href="#breaking-down" id="breaking-down"><h1>Breaking Down</h1></a>
+<h1><a class="header" href="#breaking-down" id="breaking-down">Breaking Down</a></h1>
 <p><code>pop_front</code> should be the same basic logic as <code>push_front</code>, but backwards. Let's
 try:</p>
 <pre><code class="language-rust ignore">pub fn pop_front(&amp;mut self) -&gt; Option&lt;T&gt; {
@@ -3638,7 +3649,7 @@ people who understand things!)</p>
 <p>We could look at implementing the <code>_back</code> versions of <code>push</code> and <code>pop</code>, but
 they're just copy-paste jobs which we'll defer to later in the chapter. For now
 let's look at more interesting things!</p>
-<a class="header" href="#peeking" id="peeking"><h1>Peeking</h1></a>
+<h1><a class="header" href="#peeking" id="peeking">Peeking</a></h1>
 <p>Alright, we made it through <code>push</code> and <code>pop</code>. I'm not gonna lie, it got a
 bit emotional there. Compile-time correctness is a hell of a drug.</p>
 <p>Let's cool off by doing something simple: let's just implement <code>peek_front</code>.
@@ -3804,7 +3815,7 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured
 
 </code></pre>
 <p>Great!</p>
-<a class="header" href="#symmetric-junk" id="symmetric-junk"><h1>Symmetric Junk</h1></a>
+<h1><a class="header" href="#symmetric-junk" id="symmetric-junk">Symmetric Junk</a></h1>
 <p>Alright let's get all that combinatoric symmetry over with.</p>
 <p>All we have to do is some basic text replacement:</p>
 <pre><code class="language-text">tail &lt;-&gt; head
@@ -3954,9 +3965,9 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured
 
 </code></pre>
 <p>Nice. Copy-pasting is the best kind of programming.</p>
-<a class="header" href="#iteration" id="iteration"><h1>Iteration</h1></a>
+<h1><a class="header" href="#iteration" id="iteration">Iteration</a></h1>
 <p>Let's take a crack at iterating this bad-boy.</p>
-<a class="header" href="#intoiter-1" id="intoiter-1"><h2>IntoIter</h2></a>
+<h2><a class="header" href="#intoiter-1" id="intoiter-1">IntoIter</a></h2>
 <p>IntoIter, as always, is going to be the easiest. Just wrap the stack and
 call <code>pop</code>:</p>
 <pre><code class="language-rust ignore">pub struct IntoIter&lt;T&gt;(List&lt;T&gt;);
@@ -4033,7 +4044,7 @@ test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured
 
 </code></pre>
 <p>Nice.</p>
-<a class="header" href="#iter-1" id="iter-1"><h2>Iter</h2></a>
+<h2><a class="header" href="#iter-1" id="iter-1">Iter</a></h2>
 <p>Iter will be a bit less forgiving. We'll have to deal with those awful <code>Ref</code>
 things again! Because of Refs, we can't store <code>&amp;Node</code>s like we did before.
 Instead, let's try to store <code>Ref&lt;Node&gt;</code>s:</p>
@@ -4221,7 +4232,7 @@ not be mutable accessing the same element!</p>
 never makes it out to consumers of the API. Interior mutability is great for
 writing safe <em>applications</em>. Not so much safe <em>libraries</em>.</p>
 <p>Anyway, that's me giving up on Iter and IterMut. We could do them, but <em>ugh</em>.</p>
-<a class="header" href="#final-code-2" id="final-code-2"><h1>Final Code</h1></a>
+<h1><a class="header" href="#final-code-2" id="final-code-2">Final Code</a></h1>
 <p>Alright, so that's implementing a 100% safe doubly-linked list in Rust. It was
 a nightmare to implement, leaks implementation details, and doesn't support several
 fundamental operations.</p>
@@ -4470,7 +4481,7 @@ mod test {
     }
 }
 #}</code></pre></pre>
-<a class="header" href="#an-unsafe-singly-linked-queue" id="an-unsafe-singly-linked-queue"><h1>An Unsafe Singly-Linked Queue</h1></a>
+<h1><a class="header" href="#an-unsafe-singly-linked-queue" id="an-unsafe-singly-linked-queue">An Unsafe Singly-Linked Queue</a></h1>
 <p>Ok that reference-counted interior mutability stuff got a little out of
 control. Surely Rust doesn't really expect you to do that sort of thing
 in general? Well, yes and no. Rc and Refcell can be great for handling
@@ -4492,7 +4503,7 @@ pub mod fifth;
 mostly an augmentation of a stack in the world of linked lists. Still, we're
 going to go from scratch because there's some fundamental issues we want to
 address with layout and what-not.</p>
-<a class="header" href="#layout-2" id="layout-2"><h1>Layout</h1></a>
+<h1><a class="header" href="#layout-2" id="layout-2">Layout</a></h1>
 <p>So what's a singly-linked queue like? Well, when we had a singly-linked stack
 we pushed onto one end of the list, and then popped off the same end. The only
 difference between a stack and a queue is that a queue pops off the <em>other</em>
@@ -4907,7 +4918,7 @@ nonsense! Real. Hard. Unchecked. Pointers.</p>
 <p>Let's be C everyone. Let's be C all day.</p>
 <p>I'm home. I'm ready.</p>
 <p>Hello <code>unsafe</code>.</p>
-<a class="header" href="#unsafe-rust" id="unsafe-rust"><h1>Unsafe Rust</h1></a>
+<h1><a class="header" href="#unsafe-rust" id="unsafe-rust">Unsafe Rust</a></h1>
 <p>This is a serious, big, complicated, and dangerous topic.
 It's so serious that I wrote <a href="https://doc.rust-lang.org/nightly/nomicon/">an entire other book</a> on it.</p>
 <p>The long and the short of it is that <em>every</em> language is actually unsafe as soon
@@ -4942,7 +4953,7 @@ you don't actually have permission to mutate the referrent of the pointer,
 you're gonna have a bad time.</p>
 <p>Anyway, we'll get a better feel for this as we write some code. For now,
 <code>*mut T == &amp;unchecked mut T</code>!</p>
-<a class="header" href="#basics-1" id="basics-1"><h1>Basics</h1></a>
+<h1><a class="header" href="#basics-1" id="basics-1">Basics</a></h1>
 <p>Alright, back to basics. How do we construct our list?</p>
 <p>Before we just did:</p>
 <pre><code class="language-rust ignore">impl&lt;T&gt; List&lt;T&gt; {
@@ -5232,7 +5243,7 @@ test third::test::iter ... ok
 test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured
 </code></pre>
 <p>Gold Star!</p>
-<a class="header" href="#extra-junk" id="extra-junk"><h1>Extra Junk</h1></a>
+<h1><a class="header" href="#extra-junk" id="extra-junk">Extra Junk</a></h1>
 <p>Now that <code>push</code> and <code>pop</code> are written, everything else is exactly the same
 as the stack case. Only operations that change the length of the list need
 to actually worry about the tail pointer.</p>
@@ -5391,7 +5402,7 @@ test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured
 <p>Shout-outs to copy-paste programming.</p>
 <p>At first I thought we'd have to mess around with IntoIter, but we still
 conveniently pop in iteration order!</p>
-<a class="header" href="#final-code-3" id="final-code-3"><h1>Final Code</h1></a>
+<h1><a class="header" href="#final-code-3" id="final-code-3">Final Code</a></h1>
 <p>Alright, so with a teeny-tiny dash of unsafety we managed to get a linear
 time improvement over the naive safe queue, and we managed to reuse almost
 all of the logic from the safe stack!</p>
@@ -5601,11 +5612,11 @@ mod test {
     }
 }
 #}</code></pre></pre>
-<a class="header" href="#an-ok-unsafe-doubly-linked-deque" id="an-ok-unsafe-doubly-linked-deque"><h1>An Ok Unsafe Doubly-Linked Deque</h1></a>
+<h1><a class="header" href="#an-ok-unsafe-doubly-linked-deque" id="an-ok-unsafe-doubly-linked-deque">An Ok Unsafe Doubly-Linked Deque</a></h1>
 <p>Nope, still haven't written this one! It's really just not that much more instructive.</p>
 <p>Read <a href="https://doc.rust-lang.org/nightly/nomicon/">The Rustonomicon</a> and the source for <a href="https://github.com/rust-lang/rust/blob/master/src/liballoc/collections/linked_list.rs">std::collections::LinkedList</a> if you
 really want more!</p>
-<a class="header" href="#a-bunch-of-silly-lists" id="a-bunch-of-silly-lists"><h1>A Bunch of Silly Lists</h1></a>
+<h1><a class="header" href="#a-bunch-of-silly-lists" id="a-bunch-of-silly-lists">A Bunch of Silly Lists</a></h1>
 <p>Alright. That's it. We made all the lists.</p>
 <p>ahahahaha</p>
 <p>No</p>
@@ -5618,7 +5629,7 @@ they interact with Rust.</p>
 <li>TODO: SkipList?</li>
 <li>TODO: std::channel? -- That's like another whole chapter. Or 3.</li>
 </ol>
-<a class="header" href="#the-double-singly-linked-list" id="the-double-singly-linked-list"><h1>The Double Singly-Linked List</h1></a>
+<h1><a class="header" href="#the-double-singly-linked-list" id="the-double-singly-linked-list">The Double Singly-Linked List</a></h1>
 <p>We struggled with doubly-linked lists because they have tangled ownership
 semantics: no node strictly owns any other node. However we struggled
 with this because we brought in our preconceived notions of what a linked
