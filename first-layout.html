@@ -210,19 +210,22 @@ See the <a href="https://doc.rust-lang.org/std/boxed/">module-level documentatio
 <p><code>let x = Box::new(5);</code></p>
 <p>Creating a recursive data structure:</p>
 </blockquote>
-<pre><code>#[derive(Debug)]
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+#[derive(Debug)]
 enum List&lt;T&gt; {
     Cons(T, Box&lt;List&lt;T&gt;&gt;),
     Nil,
 }
-</code></pre>
+#}</code></pre></pre>
 <blockquote>
 </blockquote>
-<pre><code>fn main() {
+<pre><pre class="playpen"><code class="language-rust">fn main() {
     let list: List&lt;i32&gt; = List::Cons(1, Box::new(List::Cons(2, Box::new(List::Nil))));
     println!(&quot;{:?}&quot;, list);
 }
-</code></pre>
+</code></pre></pre>
 <blockquote>
 <p>This will print <code>Cons(1, Box(Cons(2, Box(Nil))))</code>.</p>
 <p>Recursive structures must be boxed, because if the definition of Cons looked like this:</p>
@@ -247,12 +250,12 @@ enum List&lt;T&gt; {
 <pre><code class="language-text">[] = Stack
 () = Heap
 
-[Elem A, ptr] -&gt; (Elem B, ptr) -&gt; (Empty *junk*)
+[Elem A, ptr] -&gt; (Elem B, ptr) -&gt; (Empty, *junk*)
 </code></pre>
 <p>There are two key issues:</p>
 <ul>
 <li>We're allocating a node that just says &quot;I'm not actually a Node&quot;</li>
-<li>One of our nodes isn't allocated at all.</li>
+<li>One of our nodes isn't heap-allocated at all.</li>
 </ul>
 <p>On the surface, these two seem to cancel each-other out. We allocate an
 extra node, but one of our nodes doesn't need to be allocated at all.
