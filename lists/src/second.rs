@@ -77,7 +77,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
     fn next(&mut self) -> Option<Self::Item> {
         self.next.map(|node| {
-            self.next = node.next.as_ref().map(|node| &**node);
+            self.next = node.next.as_ref().map(|node| &**node); //这里为什么要两次解引用，一次是引用，一次是Box::new
             &node.elem
         })
     }

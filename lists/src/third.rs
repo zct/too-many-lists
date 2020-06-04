@@ -39,8 +39,8 @@ impl<T> List<T> {
 impl<T> Drop for List<T> {
     fn drop(&mut self) {
         let mut head = self.head.take();
-        while let Some(node) = head {
-            if let Ok(mut node) = Rc::try_unwrap(node) {
+        while let Some(node) = head { //如果head(option<T>)解析成some(T)，就执行循环里的逻辑
+            if let Ok(mut node) = Rc::try_unwrap(node) { //如果node是唯一的引用
                 head = node.next.take();
             } else {
                 break;

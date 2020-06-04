@@ -34,8 +34,9 @@ impl<T> List<T> {
         let new_head = Node::new(elem);
         match self.head.take() {
             Some(old_head) => {
-                old_head.borrow_mut().prev = Some(new_head.clone());
-                new_head.borrow_mut().next = Some(old_head);
+                // let test_var: () = old_head;
+                old_head.borrow_mut().prev = Some(new_head.clone()); //这里的类型是Rc<RefCell> 可以直接调用boroow_mut() deref 貌似只能在方法调用时？
+                new_head.borrow_mut().next = Some(old_head);  //这里为什么不用clone,所有权转移?
                 self.head = Some(new_head);
             }
             None => {
@@ -50,7 +51,7 @@ impl<T> List<T> {
         match self.tail.take() {
             Some(old_tail) => {
                 old_tail.borrow_mut().next = Some(new_tail.clone());
-                new_tail.borrow_mut().prev = Some(old_tail);
+                new_tail.borrow_mut().prev = Some(old_tail); //这里为什么不用clone?
                 self.tail = Some(new_tail);
             }
             None => {
